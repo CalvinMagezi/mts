@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from '@tanstack/react-form';
 import { Recipe } from '../../recipe';
-import { Geese } from '../icons/Geese';
+import { MtsIcon } from '../icons/Mts';
 import { X, Save, Play, Loader2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { RecipeFormFields } from './shared/RecipeFormFields';
@@ -227,7 +227,7 @@ export default function CreateRecipeFromSessionModal({
         >
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-background-default rounded-full flex items-center justify-center">
-              <Geese className="w-6 h-6 text-iconProminent" />
+              <MtsIcon className="w-6 h-6 text-iconProminent" />
             </div>
             <div>
               <h1 className="text-xl font-medium text-textProminent">Create Recipe from Session</h1>
@@ -270,7 +270,7 @@ export default function CreateRecipeFromSessionModal({
                 {analysisStage}
               </div>
               <div className="flex items-center space-x-2 text-textSubtle">
-                <Geese className="w-5 h-5 animate-pulse" />
+                <MtsIcon className="w-5 h-5 animate-pulse" />
                 <span className="text-sm">Extracting insights from your chat</span>
               </div>
             </div>

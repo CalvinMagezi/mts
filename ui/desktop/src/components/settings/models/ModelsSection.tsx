@@ -42,7 +42,7 @@ export default function ModelsSection({ setView }: ModelsSectionProps) {
         setProvider(providerDisplayName);
       } else {
         // Fallback to original provider lookup
-        const gooseProvider = (await read('GOOSE_PROVIDER', false)) as string;
+        const gooseProvider = (await read('MTS_PROVIDER', false)) as string;
         const providers = await getProviders(true);
         const providerDetailsList = providers.filter((provider) => provider.name === gooseProvider);
 

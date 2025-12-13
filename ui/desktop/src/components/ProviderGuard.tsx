@@ -4,7 +4,7 @@ import { useConfig } from './ConfigContext';
 import { SetupModal } from './SetupModal';
 import { startOpenRouterSetup } from '../utils/openRouterSetup';
 import { startTetrateSetup } from '../utils/tetrateSetup';
-import WelcomeGooseLogo from './WelcomeGooseLogo';
+import WelcomeMtsLogo from './WelcomeMtsLogo';
 import { toastService } from '../toasts';
 import { OllamaSetup } from './OllamaSetup';
 import ApiKeyTester from './ApiKeyTester';
@@ -76,7 +76,7 @@ export default function ProviderGuard({ didSelectProvider, children }: ProviderG
   const handleApiKeySuccess = async (provider: string, _model: string, apiKey: string) => {
     const keyName = `${provider.toUpperCase()}_API_KEY`;
     await upsert(keyName, apiKey, true);
-    await upsert('GOOSE_PROVIDER', provider, false);
+    await upsert('MTS_PROVIDER', provider, false);
 
     setSwitchModelProvider(provider);
     setShowSwitchModelModal(true);
@@ -151,7 +151,7 @@ export default function ProviderGuard({ didSelectProvider, children }: ProviderG
   useEffect(() => {
     const checkProvider = async () => {
       try {
-        const provider = ((await read('GOOSE_PROVIDER', false)) as string) || '';
+        const provider = ((await read('MTS_PROVIDER', false)) as string) || '';
         const hasConfiguredProvider = provider.trim() !== '';
 
         // If user is actively testing keys, don't redirect
@@ -185,7 +185,7 @@ export default function ProviderGuard({ didSelectProvider, children }: ProviderG
   if (isChecking) {
     return (
       <div className="h-screen w-full bg-background-default flex items-center justify-center">
-        <WelcomeGooseLogo />
+        <WelcomeMtsLogo />
       </div>
     );
   }

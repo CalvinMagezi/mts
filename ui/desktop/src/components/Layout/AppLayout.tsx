@@ -68,7 +68,7 @@ const AppLayoutContent: React.FC = () => {
   const handleNewWindow = () => {
     window.electron.createChatWindow(
       undefined,
-      window.appConfig.get('GOOSE_WORKING_DIR') as string | undefined
+      window.appConfig.get('MTS_WORKING_DIR') as string | undefined
     );
   };
 

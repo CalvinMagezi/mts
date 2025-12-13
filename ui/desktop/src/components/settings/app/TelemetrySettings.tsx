@@ -6,7 +6,7 @@ import { TELEMETRY_UI_ENABLED } from '../../../updates';
 import TelemetryOptOutModal from '../../TelemetryOptOutModal';
 import { toastService } from '../../../toasts';
 
-const TELEMETRY_CONFIG_KEY = 'GOOSE_TELEMETRY_ENABLED';
+const TELEMETRY_CONFIG_KEY = 'MTS_TELEMETRY_ENABLED';
 
 interface TelemetrySettingsProps {
   isWelcome: boolean;

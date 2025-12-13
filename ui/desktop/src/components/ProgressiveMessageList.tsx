@@ -16,11 +16,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Message } from '../api';
-import GooseMessage from './GooseMessage';
+import MtsMessage from './MtsMessage';
 import UserMessage from './UserMessage';
 import { SystemNotificationInline } from './context_management/SystemNotificationInline';
 import { NotificationEvent } from '../types/message';
-import LoadingGoose from './LoadingGoose';
+import LoadingMts from './LoadingMts';
 import { ChatType } from '../types/chat';
 import { identifyConsecutiveToolCalls, isInChain } from '../utils/toolCallChaining';
 
@@ -215,7 +215,7 @@ export default function ProgressiveMessageList({
                 <UserMessage message={message} onMessageUpdate={onMessageUpdate} />
               )
             ) : (
-              <GooseMessage
+              <MtsMessage
                 sessionId={chat.sessionId}
                 messageHistoryIndex={chat.messageHistoryIndex}
                 message={message}
@@ -256,7 +256,7 @@ export default function ProgressiveMessageList({
       {/* Loading indicator when progressively rendering */}
       {isLoading && (
         <div className="flex flex-col items-center justify-center py-8">
-          <LoadingGoose message={`Loading messages... (${renderedCount}/${messages.length})`} />
+          <LoadingMts message={`Loading messages... (${renderedCount}/${messages.length})`} />
           <div className="text-xs text-text-muted mt-2">
             Press Cmd/Ctrl+F to load all messages immediately for search
           </div>

@@ -37,7 +37,7 @@ export const ToolSelectionStrategySection = () => {
     try {
       // First update the configuration
       try {
-        await upsert('GOOSE_ENABLE_ROUTER', enableRouter.toString(), false);
+        await upsert('MTS_ENABLE_ROUTER', enableRouter.toString(), false);
       } catch (error) {
         console.error('Error updating configuration:', error);
         setError(`Failed to update configuration: ${error}`);
@@ -91,7 +91,7 @@ export const ToolSelectionStrategySection = () => {
 
   const fetchCurrentStrategy = useCallback(async () => {
     try {
-      const strategy = (await read('GOOSE_ENABLE_ROUTER', false)) as string;
+      const strategy = (await read('MTS_ENABLE_ROUTER', false)) as string;
       if (strategy) {
         setRouterEnabled(strategy === 'true');
       }

@@ -316,7 +316,7 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({
       try {
         const yamlContent = recipeToYaml(parsedRecipe);
         const tempFileName = `schedule-${scheduleId}-${Date.now()}.yaml`;
-        const tempDir = window.electron.getConfig().GOOSE_WORKING_DIR || '.';
+        const tempDir = window.electron.getConfig().MTS_WORKING_DIR || '.';
         const tempFilePath = `${tempDir}/${tempFileName}`;
 
         const writeSuccess = await window.electron.writeFile(tempFilePath, yamlContent);

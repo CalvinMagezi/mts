@@ -106,8 +106,8 @@ export function OllamaSetup({ onSuccess, onCancel }: OllamaSetupProps) {
     setIsConnecting(true);
     try {
       // Set up Ollama configuration
-      await upsert('GOOSE_PROVIDER', 'ollama', false);
-      await upsert('GOOSE_MODEL', getPreferredModel(), false);
+      await upsert('MTS_PROVIDER', 'ollama', false);
+      await upsert('MTS_MODEL', getPreferredModel(), false);
       await upsert('OLLAMA_HOST', 'localhost', false);
 
       toastService.success({

@@ -34,7 +34,7 @@ export const AlertBox = ({ alert, className }: AlertBoxProps) => {
   useEffect(() => {
     const loadThreshold = async () => {
       try {
-        const threshold = await read('GOOSE_AUTO_COMPACT_THRESHOLD', false);
+        const threshold = await read('MTS_AUTO_COMPACT_THRESHOLD', false);
         if (threshold !== undefined && threshold !== null && typeof threshold === 'number') {
           setLoadedThreshold(threshold);
           setThresholdValue(Math.max(1, Math.round(threshold * 100)));
@@ -63,7 +63,7 @@ export const AlertBox = ({ alert, className }: AlertBoxProps) => {
 
       await upsertConfig({
         body: {
-          key: 'GOOSE_AUTO_COMPACT_THRESHOLD',
+          key: 'MTS_AUTO_COMPACT_THRESHOLD',
           value: newThreshold,
           is_secret: false,
         },

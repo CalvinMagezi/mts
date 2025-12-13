@@ -17,8 +17,8 @@ let cfg = {
   // Protocol registration
   protocols: [
     {
-      name: 'GooseProtocol',
-      schemes: ['goose'],
+      name: 'MtsProtocol',
+      schemes: ['mts'],
     },
   ],
   // macOS Info.plist extensions for drag-and-drop support
@@ -65,10 +65,10 @@ module.exports = {
     {
       name: '@electron-forge/maker-deb',
       config: {
-        name: 'Goose',
-        bin: 'Goose',
-        maintainer: 'Block, Inc.',
-        homepage: 'https://block.github.io/goose/',
+        name: 'MTS',
+        bin: 'MTS',
+        maintainer: 'Magezi Tech Solutions',
+        homepage: 'https://magezitech.com/',
         categories: ['Development'],
         desktopTemplate: './forge.deb.desktop',
         options: {
@@ -80,10 +80,10 @@ module.exports = {
     {
       name: '@electron-forge/maker-rpm',
       config: {
-        name: 'Goose',
-        bin: 'Goose',
-        maintainer: 'Block, Inc.',
-        homepage: 'https://block.github.io/goose/',
+        name: 'MTS',
+        bin: 'MTS',
+        maintainer: 'Magezi Tech Solutions',
+        homepage: 'https://magezitech.com/',
         categories: ['Development'],
         desktopTemplate: './forge.rpm.desktop',
         options: {

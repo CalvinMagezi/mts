@@ -137,8 +137,8 @@ export function useAgent(): UseAgentReturn {
 
         try {
           const config = window.electron.getConfig();
-          const provider = (await read('GOOSE_PROVIDER', false)) ?? config.GOOSE_DEFAULT_PROVIDER;
-          const model = (await read('GOOSE_MODEL', false)) ?? config.GOOSE_DEFAULT_MODEL;
+          const provider = (await read('MTS_PROVIDER', false)) ?? config.MTS_DEFAULT_PROVIDER;
+          const model = (await read('MTS_MODEL', false)) ?? config.MTS_DEFAULT_MODEL;
 
           if (!provider || !model) {
             setAgentState(AgentState.NO_PROVIDER);
@@ -157,7 +157,7 @@ export function useAgent(): UseAgentReturn {
                 })
               : await startAgent({
                   body: {
-                    working_dir: window.appConfig.get('GOOSE_WORKING_DIR') as string,
+                    working_dir: window.appConfig.get('MTS_WORKING_DIR') as string,
                     ...buildRecipeInput(
                       initContext.recipe,
                       recipeIdFromConfig.current,
@@ -178,7 +178,7 @@ export function useAgent(): UseAgentReturn {
 
               agentResponse = await startAgent({
                 body: {
-                  working_dir: window.appConfig.get('GOOSE_WORKING_DIR') as string,
+                  working_dir: window.appConfig.get('MTS_WORKING_DIR') as string,
                   ...buildRecipeInput(
                     initContext.recipe,
                     recipeIdFromConfig.current,

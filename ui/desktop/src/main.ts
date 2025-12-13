@@ -24,7 +24,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawn } from 'child_process';
 import 'dotenv/config';
-import { checkServerStatus, startGoosed } from './goosed';
+import { checkServerStatus, startGoosed } from './mtsd';
 import { expandTilde } from './utils/pathUtils';
 import log from './utils/logger';
 import { ensureWinShims } from './utils/winShims';
@@ -455,30 +455,30 @@ const getBundledConfig = (): BundledConfig => {
   //needed when goose is bundled for a specific provider
   //{env-macro-end}//
   return {
-    defaultProvider: process.env.GOOSE_DEFAULT_PROVIDER,
-    defaultModel: process.env.GOOSE_DEFAULT_MODEL,
-    predefinedModels: process.env.GOOSE_PREDEFINED_MODELS,
-    baseUrlShare: process.env.GOOSE_BASE_URL_SHARE,
-    version: process.env.GOOSE_VERSION,
+    defaultProvider: process.env.MTS_DEFAULT_PROVIDER,
+    defaultModel: process.env.MTS_DEFAULT_MODEL,
+    predefinedModels: process.env.MTS_PREDEFINED_MODELS,
+    baseUrlShare: process.env.MTS_BASE_URL_SHARE,
+    version: process.env.MTS_VERSION,
   };
 };
 
 const { defaultProvider, defaultModel, predefinedModels, baseUrlShare, version } =
   getBundledConfig();
 
-const SERVER_SECRET = process.env.GOOSE_EXTERNAL_BACKEND
+const SERVER_SECRET = process.env.MTS_EXTERNAL_BACKEND
   ? 'test'
   : crypto.randomBytes(32).toString('hex');
 
 let appConfig = {
-  GOOSE_DEFAULT_PROVIDER: defaultProvider,
-  GOOSE_DEFAULT_MODEL: defaultModel,
-  GOOSE_PREDEFINED_MODELS: predefinedModels,
-  GOOSE_API_HOST: 'http://127.0.0.1',
-  GOOSE_PORT: 0,
-  GOOSE_WORKING_DIR: '',
-  // If GOOSE_ALLOWLIST_WARNING env var is not set, defaults to false (strict blocking mode)
-  GOOSE_ALLOWLIST_WARNING: process.env.GOOSE_ALLOWLIST_WARNING === 'true',
+  MTS_DEFAULT_PROVIDER: defaultProvider,
+  MTS_DEFAULT_MODEL: defaultModel,
+  MTS_PREDEFINED_MODELS: predefinedModels,
+  MTS_API_HOST: 'http://127.0.0.1',
+  MTS_PORT: 0,
+  MTS_WORKING_DIR: '',
+  // If MTS_ALLOWLIST_WARNING env var is not set, defaults to false (strict blocking mode)
+  MTS_ALLOWLIST_WARNING: process.env.MTS_ALLOWLIST_WARNING === 'true',
 };
 
 const windowMap = new Map<number, BrowserWindow>();
@@ -504,7 +504,7 @@ const createChat = async (
   updateEnvironmentVariables(envToggles);
 
   const envVars = {
-    GOOSE_PATH_ROOT: process.env.GOOSE_PATH_ROOT,
+    MTS_PATH_ROOT: process.env.MTS_PATH_ROOT,
   };
   const [port, workingDir, goosedProcess, errorLog] = await startGoosed(
     app,
@@ -541,11 +541,11 @@ const createChat = async (
       additionalArguments: [
         JSON.stringify({
           ...appConfig,
-          GOOSE_PORT: port,
-          GOOSE_WORKING_DIR: workingDir,
+          MTS_PORT: port,
+          MTS_WORKING_DIR: workingDir,
           REQUEST_DIR: dir,
-          GOOSE_BASE_URL_SHARE: baseUrlShare,
-          GOOSE_VERSION: version,
+          MTS_BASE_URL_SHARE: baseUrlShare,
+          MTS_VERSION: version,
           recipeId: recipeId,
           recipeDeeplink: recipeDeeplink,
           recipeParameters: recipeParameters,
@@ -951,7 +951,7 @@ const openDirectoryDialog = async (): Promise<OpenDialogReturnValue> => {
   if (currentWindow) {
     try {
       const currentWorkingDir = await currentWindow.webContents.executeJavaScript(
-        `window.appConfig ? window.appConfig.get('GOOSE_WORKING_DIR') : null`
+        `window.appConfig ? window.appConfig.get('MTS_WORKING_DIR') : null`
       );
 
       if (currentWorkingDir && typeof currentWorkingDir === 'string') {
@@ -2306,11 +2306,11 @@ app.whenReady().then(async () => {
 });
 
 async function getAllowList(): Promise<string[]> {
-  if (!process.env.GOOSE_ALLOWLIST) {
+  if (!process.env.MTS_ALLOWLIST) {
     return [];
   }
 
-  const response = await fetch(process.env.GOOSE_ALLOWLIST);
+  const response = await fetch(process.env.MTS_ALLOWLIST);
 
   if (!response.ok) {
     throw new Error(

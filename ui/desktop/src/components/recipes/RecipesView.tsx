@@ -118,7 +118,7 @@ export default function RecipesView() {
     try {
       const newAgent = await startAgent({
         body: {
-          working_dir: window.appConfig.get('GOOSE_WORKING_DIR') as string,
+          working_dir: window.appConfig.get('MTS_WORKING_DIR') as string,
           recipe,
         },
         throwOnError: true,
@@ -137,7 +137,7 @@ export default function RecipesView() {
   const handleStartRecipeChatInNewWindow = (recipeId: string) => {
     window.electron.createChatWindow(
       undefined,
-      window.appConfig.get('GOOSE_WORKING_DIR') as string,
+      window.appConfig.get('MTS_WORKING_DIR') as string,
       undefined,
       undefined,
       'pair',

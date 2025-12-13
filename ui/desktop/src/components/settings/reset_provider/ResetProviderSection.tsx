@@ -12,8 +12,8 @@ export default function ResetProviderSection(_props: ResetProviderSectionProps) 
 
   const handleResetProvider = async () => {
     try {
-      await remove('GOOSE_PROVIDER', false);
-      await remove('GOOSE_MODEL', false);
+      await remove('MTS_PROVIDER', false);
+      await remove('MTS_MODEL', false);
 
       // Refresh the page to trigger the ProviderGuard check
       window.location.reload();

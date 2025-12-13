@@ -45,7 +45,7 @@ export const getStorageDirectory = (isGlobal: boolean): string => {
     return '~/.config/goose/recipes';
   } else {
     // For directory recipes, build absolute path using working directory
-    const workingDir = window.appConfig.get('GOOSE_WORKING_DIR') as string;
+    const workingDir = window.appConfig.get('MTS_WORKING_DIR') as string;
     return `${workingDir}/.goose/recipes`;
   }
 };

@@ -444,7 +444,7 @@ export function AppInner() {
       if ((isMac ? event.metaKey : event.ctrlKey) && event.key === 'n') {
         event.preventDefault();
         try {
-          const workingDir = window.appConfig?.get('GOOSE_WORKING_DIR');
+          const workingDir = window.appConfig?.get('MTS_WORKING_DIR');
           console.log(`Creating new chat window with working dir: ${workingDir}`);
           window.electron.createChatWindow(undefined, workingDir as string);
         } catch (error) {

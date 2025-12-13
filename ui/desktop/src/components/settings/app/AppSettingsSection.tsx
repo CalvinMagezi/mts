@@ -31,8 +31,8 @@ export default function AppSettingsSection({ scrollToSection }: AppSettingsSecti
   const [isDarkMode, setIsDarkMode] = useState(false);
   const updateSectionRef = useRef<HTMLDivElement>(null);
 
-  // Check if GOOSE_VERSION is set to determine if Updates section should be shown
-  const shouldShowUpdates = !window.appConfig.get('GOOSE_VERSION');
+  // Check if MTS_VERSION is set to determine if Updates section should be shown
+  const shouldShowUpdates = !window.appConfig.get('MTS_VERSION');
 
   // Check if running on macOS
   useEffect(() => {
@@ -437,7 +437,7 @@ export default function AppSettingsSection({ scrollToSection }: AppSettingsSecti
         </CardContent>
       </Card>
 
-      {/* Version Section - only show if GOOSE_VERSION is set */}
+      {/* Version Section - only show if MTS_VERSION is set */}
       {!shouldShowUpdates && (
         <Card className="rounded-lg">
           <CardHeader className="pb-0">
@@ -451,14 +451,14 @@ export default function AppSettingsSection({ scrollToSection }: AppSettingsSecti
                 className="h-8 w-auto"
               />
               <span className="text-2xl font-mono text-black dark:text-white">
-                {String(window.appConfig.get('GOOSE_VERSION') || 'Development')}
+                {String(window.appConfig.get('MTS_VERSION') || 'Development')}
               </span>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Update Section - only show if GOOSE_VERSION is NOT set */}
+      {/* Update Section - only show if MTS_VERSION is NOT set */}
       {UPDATES_ENABLED && shouldShowUpdates && (
         <div ref={updateSectionRef}>
           <Card className="rounded-lg">

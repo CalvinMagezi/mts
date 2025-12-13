@@ -46,11 +46,11 @@ export function LeadWorkerSettings({ isOpen, onClose }: LeadWorkerSettingsProps)
           failureThresholdConfig,
           fallbackTurnsConfig,
         ] = await Promise.all([
-          read('GOOSE_LEAD_MODEL', false),
-          read('GOOSE_LEAD_PROVIDER', false),
-          read('GOOSE_LEAD_TURNS', false),
-          read('GOOSE_LEAD_FAILURE_THRESHOLD', false),
-          read('GOOSE_LEAD_FALLBACK_TURNS', false),
+          read('MTS_LEAD_MODEL', false),
+          read('MTS_LEAD_PROVIDER', false),
+          read('MTS_LEAD_TURNS', false),
+          read('MTS_LEAD_FAILURE_THRESHOLD', false),
+          read('MTS_LEAD_FALLBACK_TURNS', false),
         ]);
 
         if (leadModelConfig) {
@@ -70,7 +70,7 @@ export function LeadWorkerSettings({ isOpen, onClose }: LeadWorkerSettingsProps)
         else setFallbackTurns(2);
 
         // Set worker model to current model or from config
-        const workerModelConfig = await read('GOOSE_MODEL', false);
+        const workerModelConfig = await read('MTS_MODEL', false);
         if (workerModelConfig) {
           setWorkerModel(workerModelConfig as string);
         } else if (currentModel) {
@@ -79,7 +79,7 @@ export function LeadWorkerSettings({ isOpen, onClose }: LeadWorkerSettingsProps)
           setWorkerModel('');
         }
 
-        const workerProviderConfig = await read('GOOSE_PROVIDER', false);
+        const workerProviderConfig = await read('MTS_PROVIDER', false);
         if (workerProviderConfig) {
           setWorkerProvider(workerProviderConfig as string);
         } else {
@@ -153,22 +153,22 @@ export function LeadWorkerSettings({ isOpen, onClose }: LeadWorkerSettingsProps)
       if (isEnabled && leadModel && workerModel) {
         // Save lead/worker configuration
         await Promise.all([
-          upsert('GOOSE_LEAD_MODEL', leadModel, false),
-          leadProvider && upsert('GOOSE_LEAD_PROVIDER', leadProvider, false),
-          upsert('GOOSE_MODEL', workerModel, false),
-          workerProvider && upsert('GOOSE_PROVIDER', workerProvider, false),
-          upsert('GOOSE_LEAD_TURNS', leadTurns, false),
-          upsert('GOOSE_LEAD_FAILURE_THRESHOLD', failureThreshold, false),
-          upsert('GOOSE_LEAD_FALLBACK_TURNS', fallbackTurns, false),
+          upsert('MTS_LEAD_MODEL', leadModel, false),
+          leadProvider && upsert('MTS_LEAD_PROVIDER', leadProvider, false),
+          upsert('MTS_MODEL', workerModel, false),
+          workerProvider && upsert('MTS_PROVIDER', workerProvider, false),
+          upsert('MTS_LEAD_TURNS', leadTurns, false),
+          upsert('MTS_LEAD_FAILURE_THRESHOLD', failureThreshold, false),
+          upsert('MTS_LEAD_FALLBACK_TURNS', fallbackTurns, false),
         ]);
       } else {
         // Remove lead/worker configuration
         await Promise.all([
-          remove('GOOSE_LEAD_MODEL', false),
-          remove('GOOSE_LEAD_PROVIDER', false),
-          remove('GOOSE_LEAD_TURNS', false),
-          remove('GOOSE_LEAD_FAILURE_THRESHOLD', false),
-          remove('GOOSE_LEAD_FALLBACK_TURNS', false),
+          remove('MTS_LEAD_MODEL', false),
+          remove('MTS_LEAD_PROVIDER', false),
+          remove('MTS_LEAD_TURNS', false),
+          remove('MTS_LEAD_FAILURE_THRESHOLD', false),
+          remove('MTS_LEAD_FALLBACK_TURNS', false),
         ]);
       }
       onClose();

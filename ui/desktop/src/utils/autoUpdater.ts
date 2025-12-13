@@ -558,7 +558,7 @@ async function githubAutoDownload(
 function updateTrayIcon(hasUpdate: boolean) {
   if (!trayRef) return;
 
-  if (process.env.GOOSE_VERSION) {
+  if (process.env.MTS_VERSION) {
     hasUpdate = false;
   }
 

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { BaseModal } from './ui/BaseModal';
 import { Button } from './ui/button';
-import { Goose } from './icons/Goose';
+import { Goose } from './icons/Mts';
 import { TELEMETRY_UI_ENABLED } from '../updates';
 import { toastService } from '../toasts';
 import { useConfig } from './ConfigContext';
 
-const TELEMETRY_CONFIG_KEY = 'GOOSE_TELEMETRY_ENABLED';
+const TELEMETRY_CONFIG_KEY = 'MTS_TELEMETRY_ENABLED';
 
 type TelemetryOptOutModalProps =
   | { controlled: false }
@@ -26,7 +26,7 @@ export default function TelemetryOptOutModal(props: TelemetryOptOutModalProps) {
 
     const checkTelemetryChoice = async () => {
       try {
-        const provider = await read('GOOSE_PROVIDER', false);
+        const provider = await read('MTS_PROVIDER', false);
 
         if (!provider || provider === '') {
           return;

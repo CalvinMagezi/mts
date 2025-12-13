@@ -6,17 +6,17 @@ default:
 
 # Run all style checks and formatting (precommit validation)
 check-everything:
-    @echo "🔧 RUNNING ALL STYLE CHECKS..."
-    @echo "  → Formatting Rust code..."
+    @echo "Running all style checks..."
+    @echo "  -> Formatting Rust code..."
     cargo fmt --all
-    @echo "  → Running clippy linting..."
+    @echo "  -> Running clippy linting..."
     ./scripts/clippy-lint.sh
-    @echo "  → Checking UI code formatting..."
+    @echo "  -> Checking UI code formatting..."
     cd ui/desktop && npm run lint:check
-    @echo "  → Validating OpenAPI schema..."
+    @echo "  -> Validating OpenAPI schema..."
     ./scripts/check-openapi-schema.sh
     @echo ""
-    @echo "✅ All style checks passed!"
+    @echo "All style checks passed!"
 
 # Default release command
 release-binary:
@@ -24,7 +24,7 @@ release-binary:
     cargo build --release
     @just copy-binary
     @echo "Generating OpenAPI schema..."
-    cargo run -p goose-server --bin generate_schema
+    cargo run -p mts-server --bin generate_schema
 
 # release-windows docker build command
 win_docker_build_sh := '''rustup target add x86_64-pc-windows-gnu && \
@@ -50,19 +50,19 @@ release-windows:
     #!/usr/bin/env sh
     if [ "$(uname)" = "Darwin" ] || [ "$(uname)" = "Linux" ]; then
         echo "Building Windows executable using Docker..."
-        docker volume create goose-windows-cache || true
+        docker volume create mts-windows-cache || true
         docker run --rm \
             -v "$(pwd)":/usr/src/myapp \
-            -v goose-windows-cache:/usr/local/cargo/registry \
+            -v mts-windows-cache:/usr/local/cargo/registry \
             -w /usr/src/myapp \
             rust:latest \
             sh -c "{{win_docker_build_sh}}"
     else
         echo "Building Windows executable using Docker through PowerShell..."
-        powershell.exe -Command "docker volume create goose-windows-cache; \`
+        powershell.exe -Command "docker volume create mts-windows-cache; \`
             docker run --rm \`
                 -v ${PWD}:/usr/src/myapp \`
-                -v goose-windows-cache:/usr/local/cargo/registry \`
+                -v mts-windows-cache:/usr/local/cargo/registry \`
                 -w /usr/src/myapp \`
                 rust:latest \`
                 sh -c '{{win_docker_build_sh}}'"
@@ -76,43 +76,43 @@ release-intel:
     @just copy-binary-intel
 
 copy-binary BUILD_MODE="release":
-    @if [ -f ./target/{{BUILD_MODE}}/goosed ]; then \
-        echo "Copying goosed binary from target/{{BUILD_MODE}}..."; \
-        cp -p ./target/{{BUILD_MODE}}/goosed ./ui/desktop/src/bin/; \
+    @if [ -f ./target/{{BUILD_MODE}}/mtsd ]; then \
+        echo "Copying mtsd binary from target/{{BUILD_MODE}}..."; \
+        cp -p ./target/{{BUILD_MODE}}/mtsd ./ui/desktop/src/bin/; \
     else \
         echo "Binary not found in target/{{BUILD_MODE}}"; \
         exit 1; \
     fi
-    @if [ -f ./target/{{BUILD_MODE}}/goose ]; then \
-        echo "Copying goose CLI binary from target/{{BUILD_MODE}}..."; \
-        cp -p ./target/{{BUILD_MODE}}/goose ./ui/desktop/src/bin/; \
+    @if [ -f ./target/{{BUILD_MODE}}/mts ]; then \
+        echo "Copying mts CLI binary from target/{{BUILD_MODE}}..."; \
+        cp -p ./target/{{BUILD_MODE}}/mts ./ui/desktop/src/bin/; \
     else \
-        echo "goose CLI binary not found in target/{{BUILD_MODE}}"; \
+        echo "mts CLI binary not found in target/{{BUILD_MODE}}"; \
         exit 1; \
     fi
 
 # Copy binary command for Intel build
 copy-binary-intel:
-    @if [ -f ./target/x86_64-apple-darwin/release/goosed ]; then \
-        echo "Copying Intel goosed binary to ui/desktop/src/bin with permissions preserved..."; \
-        cp -p ./target/x86_64-apple-darwin/release/goosed ./ui/desktop/src/bin/; \
+    @if [ -f ./target/x86_64-apple-darwin/release/mtsd ]; then \
+        echo "Copying Intel mtsd binary to ui/desktop/src/bin with permissions preserved..."; \
+        cp -p ./target/x86_64-apple-darwin/release/mtsd ./ui/desktop/src/bin/; \
     else \
         echo "Intel release binary not found."; \
         exit 1; \
     fi
-    @if [ -f ./target/x86_64-apple-darwin/release/goose ]; then \
-        echo "Copying Intel goose CLI binary to ui/desktop/src/bin..."; \
-        cp -p ./target/x86_64-apple-darwin/release/goose ./ui/desktop/src/bin/; \
+    @if [ -f ./target/x86_64-apple-darwin/release/mts ]; then \
+        echo "Copying Intel mts CLI binary to ui/desktop/src/bin..."; \
+        cp -p ./target/x86_64-apple-darwin/release/mts ./ui/desktop/src/bin/; \
     else \
-        echo "Intel goose CLI binary not found."; \
+        echo "Intel mts CLI binary not found."; \
         exit 1; \
     fi
 
 # Copy Windows binary command
 copy-binary-windows:
-    @powershell.exe -Command "if (Test-Path ./target/x86_64-pc-windows-gnu/release/goosed.exe) { \
+    @powershell.exe -Command "if (Test-Path ./target/x86_64-pc-windows-gnu/release/mtsd.exe) { \
         Write-Host 'Copying Windows binary and DLLs to ui/desktop/src/bin...'; \
-        Copy-Item -Path './target/x86_64-pc-windows-gnu/release/goosed.exe' -Destination './ui/desktop/src/bin/' -Force; \
+        Copy-Item -Path './target/x86_64-pc-windows-gnu/release/mtsd.exe' -Destination './ui/desktop/src/bin/' -Force; \
         Copy-Item -Path './target/x86_64-pc-windows-gnu/release/*.dll' -Destination './ui/desktop/src/bin/' -Force; \
     } else { \
         Write-Host 'Windows binary not found.' -ForegroundColor Red; \
@@ -129,20 +129,20 @@ run-ui-playwright:
     #!/usr/bin/env sh
     just release-binary
     echo "Running UI with Playwright debugging..."
-    RUN_DIR="$HOME/goose-runs/$(date +%Y%m%d-%H%M%S)"
+    RUN_DIR="$HOME/mts-runs/$(date +%Y%m%d-%H%M%S)"
     mkdir -p "$RUN_DIR"
     echo "Using isolated directory: $RUN_DIR"
-    cd ui/desktop && ENABLE_PLAYWRIGHT=true GOOSE_PATH_ROOT="$RUN_DIR" npm run start-gui
+    cd ui/desktop && ENABLE_PLAYWRIGHT=true MTS_PATH_ROOT="$RUN_DIR" npm run start-gui
 
 run-ui-only:
     @echo "Running UI..."
     cd ui/desktop && npm install && npm run start-gui
 
 debug-ui *alpha:
-    @echo "🚀 Starting goose frontend in external backend mode{{ if alpha == "alpha" { " with alpha features enabled" } else { "" } }}"
+    @echo "Starting MTS frontend in external backend mode{{ if alpha == "alpha" { " with alpha features enabled" } else { "" } }}"
     cd ui/desktop && \
-    export GOOSE_EXTERNAL_BACKEND=true && \
-    export GOOSE_EXTERNAL_PORT=3000 && \
+    export MTS_EXTERNAL_BACKEND=true && \
+    export MTS_EXTERNAL_PORT=3000 && \
     {{ if alpha == "alpha" { "export ALPHA=true &&" } else { "" } }} \
     npm install && \
     npm run {{ if alpha == "alpha" { "start-alpha-gui" } else { "start-gui" } }}
@@ -150,12 +150,12 @@ debug-ui *alpha:
 # Run UI with main process debugging enabled
 # To debug main process:
 # 1. Run: just debug-ui-main-process
-# 2. Open Chrome → chrome://inspect
+# 2. Open Chrome -> chrome://inspect
 # 3. Click "Open dedicated DevTools for Node"
 # 4. If not auto-detected, click "Configure" and add: localhost:9229
 
 debug-ui-main-process:
-	@echo "🔍 Starting goose UI with main process debugging enabled"
+	@echo "Starting MTS UI with main process debugging enabled"
 	@just release-binary
 	cd ui/desktop && \
 	npm install && \
@@ -182,7 +182,7 @@ run-docs:
 # Run server
 run-server:
     @echo "Running server..."
-    cargo run -p goose-server --bin goosed agent
+    cargo run -p mts-server --bin mtsd agent
 
 # Check if OpenAPI schema is up-to-date
 check-openapi-schema: generate-openapi
@@ -191,7 +191,7 @@ check-openapi-schema: generate-openapi
 # Generate OpenAPI specification without starting the UI
 generate-openapi:
     @echo "Generating OpenAPI schema..."
-    cargo run -p goose-server --bin generate_schema
+    cargo run -p mts-server --bin generate_schema
     @echo "Generating frontend API..."
     cd ui/desktop && npx @hey-api/openapi-ts
 
@@ -214,12 +214,12 @@ make-ui-windows:
     @just release-windows
     #!/usr/bin/env sh
     set -e
-    if [ -f "./target/x86_64-pc-windows-gnu/release/goosed.exe" ]; then \
+    if [ -f "./target/x86_64-pc-windows-gnu/release/mtsd.exe" ]; then \
         echo "Cleaning destination directory..." && \
         rm -rf ./ui/desktop/src/bin && \
         mkdir -p ./ui/desktop/src/bin && \
         echo "Copying Windows binary and DLLs..." && \
-        cp -f ./target/x86_64-pc-windows-gnu/release/goosed.exe ./ui/desktop/src/bin/ && \
+        cp -f ./target/x86_64-pc-windows-gnu/release/mtsd.exe ./ui/desktop/src/bin/ && \
         cp -f ./target/x86_64-pc-windows-gnu/release/*.dll ./ui/desktop/src/bin/ && \
         echo "Starting Windows package build..." && \
         (cd ui/desktop && npm run bundle:windows) && \
@@ -340,7 +340,7 @@ set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 ### profile = --release or "" for debug
 ### allparam = OR/AND/ANY/NONE --workspace --all-features --all-targets
 win-bld profile allparam:
-  cargo run {{profile}} -p goose-server --bin  generate_schema
+  cargo run {{profile}} -p mts-server --bin  generate_schema
   cargo build {{profile}} {{allparam}}
 
 ### Build just debug
@@ -412,8 +412,8 @@ win-total-rls *allparam:
   just win-run-rls
 
 build-test-tools:
-  cargo build -p goose-test
+  cargo build -p mts-test
 
 record-mcp-tests: build-test-tools
-  GOOSE_RECORD_MCP=1 cargo test --package goose --test mcp_integration_test
-  git add crates/goose/tests/mcp_replays/
+  MTS_RECORD_MCP=1 cargo test --package mts --test mcp_integration_test
+  git add crates/mts/tests/mcp_replays/

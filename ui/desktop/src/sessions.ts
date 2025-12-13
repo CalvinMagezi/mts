@@ -17,7 +17,7 @@ export async function createSession(options?: {
     recipe_id?: string;
     recipe_deeplink?: string;
   } = {
-    working_dir: window.appConfig.get('GOOSE_WORKING_DIR') as string,
+    working_dir: window.appConfig.get('MTS_WORKING_DIR') as string,
   };
 
   if (options?.recipeId) {

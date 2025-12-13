@@ -15,7 +15,7 @@ export const BottomMenuModeSelection = () => {
 
   const fetchCurrentMode = useCallback(async () => {
     try {
-      const mode = (await read('GOOSE_MODE', false)) as string;
+      const mode = (await read('MTS_MODE', false)) as string;
       if (mode) {
         setGooseMode(mode);
       }
@@ -34,7 +34,7 @@ export const BottomMenuModeSelection = () => {
     }
 
     try {
-      await upsert('GOOSE_MODE', newMode, false);
+      await upsert('MTS_MODE', newMode, false);
       setGooseMode(newMode);
     } catch (error) {
       console.error('Error updating goose mode:', error);

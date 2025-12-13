@@ -4,7 +4,7 @@ import { Greeting } from '../common/Greeting';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { ChatSmart } from '../icons/';
-import { Goose } from '../icons/Goose';
+import { Goose } from '../icons/Mts';
 import { Skeleton } from '../ui/skeleton';
 import {
   getSessionInsights,

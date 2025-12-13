@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SearchView } from './conversation/SearchView';
-import LoadingGoose from './LoadingGoose';
+import LoadingMts from './LoadingMts';
 import PopularChatTopics from './PopularChatTopics';
 import ProgressiveMessageList from './ProgressiveMessageList';
 import { MainPanelLayout } from './Layout/MainPanelLayout';
@@ -388,7 +388,7 @@ function BaseChatContent({
 
           {chatState !== ChatState.Idle && (
             <div className="absolute bottom-1 left-4 z-20 pointer-events-none">
-              <LoadingGoose
+              <LoadingMts
                 chatState={chatState}
                 message={
                   messages.length > 0

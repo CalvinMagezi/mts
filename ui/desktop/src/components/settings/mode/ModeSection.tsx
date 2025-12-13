@@ -10,7 +10,7 @@ export const ModeSection = () => {
 
   const handleModeChange = async (newMode: string) => {
     try {
-      await upsert('GOOSE_MODE', newMode, false);
+      await upsert('MTS_MODE', newMode, false);
       setCurrentMode(newMode);
     } catch (error) {
       console.error('Error updating goose mode:', error);
@@ -20,7 +20,7 @@ export const ModeSection = () => {
 
   const fetchCurrentMode = useCallback(async () => {
     try {
-      const mode = (await read('GOOSE_MODE', false)) as string;
+      const mode = (await read('MTS_MODE', false)) as string;
       if (mode) {
         setCurrentMode(mode);
       }
@@ -31,7 +31,7 @@ export const ModeSection = () => {
 
   const fetchMaxTurns = useCallback(async () => {
     try {
-      const turns = (await read('GOOSE_MAX_TURNS', false)) as number;
+      const turns = (await read('MTS_MAX_TURNS', false)) as number;
       if (turns) {
         setMaxTurns(turns);
       }
@@ -42,7 +42,7 @@ export const ModeSection = () => {
 
   const handleMaxTurnsChange = async (value: number) => {
     try {
-      await upsert('GOOSE_MAX_TURNS', value, false);
+      await upsert('MTS_MAX_TURNS', value, false);
       setMaxTurns(value);
     } catch (error) {
       console.error('Error updating max turns:', error);

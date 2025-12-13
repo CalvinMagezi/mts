@@ -222,7 +222,7 @@ const electronAPI: ElectronAPI = {
     return ipcRenderer.invoke('get-temp-image', filePath);
   },
   getVersion: (): string => {
-    return config.GOOSE_VERSION || ipcRenderer.sendSync('get-app-version') || '';
+    return config.MTS_VERSION || ipcRenderer.sendSync('get-app-version') || '';
   },
   checkForUpdates: (): Promise<{ updateInfo: unknown; error: string | null }> => {
     return ipcRenderer.invoke('check-for-updates');

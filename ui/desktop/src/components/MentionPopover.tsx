@@ -129,7 +129,7 @@ const MentionPopover = forwardRef<
     const popoverRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
 
-    const currentWorkingDir = window.appConfig.get('GOOSE_WORKING_DIR') as string;
+    const currentWorkingDir = window.appConfig.get('MTS_WORKING_DIR') as string;
 
     const scanDirectoryFromRoot = useCallback(
       async (dirPath: string, relativePath = '', depth = 0): Promise<DisplayItem[]> => {

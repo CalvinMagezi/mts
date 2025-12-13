@@ -1,6 +1,6 @@
 # AGENTS Instructions
 
-goose is an AI agent framework in Rust with CLI and Electron desktop interfaces.
+MTS is an AI agent framework in Rust with CLI and Electron desktop interfaces.
 
 ## Setup
 ```bash
@@ -13,15 +13,15 @@ cargo build
 ### Build
 ```bash
 cargo build                   # debug
-cargo build --release         # release  
+cargo build --release         # release
 just release-binary           # release + openapi
 ```
 
 ### Test
 ```bash
 cargo test                   # all tests
-cargo test -p goose          # specific crate
-cargo test --package goose --test mcp_integration_test
+cargo test -p mts            # specific crate
+cargo test --package mts --test mcp_integration_test
 just record-mcp-tests        # record MCP
 ```
 
@@ -42,12 +42,12 @@ cd ui/desktop && npm test    # test UI
 ## Structure
 ```
 crates/
-├── goose             # core logic
-├── goose-bench       # benchmarking
-├── goose-cli         # CLI entry
-├── goose-server      # backend (binary: goosed)
-├── goose-mcp         # MCP extensions
-├── goose-test        # test utilities
+├── mts               # core logic
+├── mts-bench         # benchmarking
+├── mts-cli           # CLI entry
+├── mts-server        # backend (binary: mtsd)
+├── mts-mcp           # MCP extensions
+├── mts-test          # test utilities
 ├── mcp-client        # MCP client
 ├── mcp-core          # MCP shared
 └── mcp-server        # MCP server
@@ -69,11 +69,11 @@ ui/desktop/           # Electron app
 
 ## Rules
 
-Test: Prefer tests/ folder, e.g. crates/goose/tests/
-Test: When adding features, update goose-self-test.yaml, rebuild, then run `goose run --recipe goose-self-test.yaml` to validate
+Test: Prefer tests/ folder, e.g. crates/mts/tests/
+Test: When adding features, update mts-self-test.yaml, rebuild, then run `mts run --recipe mts-self-test.yaml` to validate
 Error: Use anyhow::Result
 Provider: Implement Provider trait see providers/base.rs
-MCP: Extensions in crates/goose-mcp/
+MCP: Extensions in crates/mts-mcp/
 Server: Changes need just generate-openapi
 
 ## Code Quality
@@ -96,7 +96,7 @@ Never: Merge without ./scripts/clippy-lint.sh
 Never: Comment self-evident operations (`// Initialize`, `// Return result`), getters/setters, constructors, or standard Rust idioms
 
 ## Entry Points
-- CLI: crates/goose-cli/src/main.rs
-- Server: crates/goose-server/src/main.rs
+- CLI: crates/mts-cli/src/main.rs
+- Server: crates/mts-server/src/main.rs
 - UI: ui/desktop/src/main.ts
-- Agent: crates/goose/src/agents/agent.rs
+- Agent: crates/mts/src/agents/agent.rs
