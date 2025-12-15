@@ -37,6 +37,8 @@ import PermissionSettingsView from './components/settings/permission/PermissionS
 
 import ExtensionsView, { ExtensionsViewOptions } from './components/extensions/ExtensionsView';
 import RecipesView from './components/recipes/RecipesView';
+import TerminalCenterView from './components/terminal/TerminalCenterView';
+import { TerminalProvider } from './components/terminal/TerminalContext';
 import { View, ViewOptions } from './utils/navigationUtils';
 import { NoProviderOrModelError, useAgent } from './hooks/useAgent';
 import { useNavigation } from './hooks/useNavigation';
@@ -678,6 +680,7 @@ export function AppInner() {
             <Route path="sessions" element={<SessionsRoute />} />
             <Route path="schedules" element={<SchedulesRoute />} />
             <Route path="recipes" element={<RecipesRoute />} />
+            <Route path="terminal-center" element={<TerminalCenterView />} />
             <Route
               path="shared-session"
               element={
@@ -700,10 +703,12 @@ export default function App() {
   return (
     <ModelAndProviderProvider>
       <HashRouter>
-        <AppInner />
+        <TerminalProvider>
+          <AppInner />
+        </TerminalProvider>
+        <AnnouncementModal />
+        <TelemetryOptOutModal controlled={false} />
       </HashRouter>
-      <AnnouncementModal />
-      <TelemetryOptOutModal controlled={false} />
     </ModelAndProviderProvider>
   );
 }

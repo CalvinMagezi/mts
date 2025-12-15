@@ -117,6 +117,18 @@ type ElectronAPI = {
   hasAcceptedRecipeBefore: (recipe: Recipe) => Promise<boolean>;
   recordRecipeHash: (recipe: Recipe) => Promise<boolean>;
   openDirectoryInExplorer: (directoryPath: string) => Promise<boolean>;
+  // PTY terminal functions
+  ptyCreate: (
+    terminalId: string,
+    options?: { cwd?: string; shell?: string }
+  ) => Promise<{ success?: boolean; error?: string; pid?: number }>;
+  ptyWrite: (terminalId: string, data: string) => void;
+  ptyResize: (terminalId: string, cols: number, rows: number) => void;
+  ptyKill: (terminalId: string) => void;
+  onPtyData: (callback: (terminalId: string, data: string) => void) => void;
+  offPtyData: () => void;
+  onPtyExit: (callback: (terminalId: string, exitCode: number) => void) => void;
+  offPtyExit: () => void;
 };
 
 type AppConfigAPI = {
@@ -251,6 +263,35 @@ const electronAPI: ElectronAPI = {
   recordRecipeHash: (recipe: Recipe) => ipcRenderer.invoke('record-recipe-hash', recipe),
   openDirectoryInExplorer: (directoryPath: string) =>
     ipcRenderer.invoke('open-directory-in-explorer', directoryPath),
+  // PTY terminal functions
+  ptyCreate: (terminalId: string, options?: { cwd?: string; shell?: string }) =>
+    ipcRenderer.invoke('pty-create', terminalId, options),
+  ptyWrite: (terminalId: string, data: string) => ipcRenderer.send('pty-write', terminalId, data),
+  ptyResize: (terminalId: string, cols: number, rows: number) =>
+    ipcRenderer.send('pty-resize', terminalId, cols, rows),
+  ptyKill: (terminalId: string) => ipcRenderer.send('pty-kill', terminalId),
+  onPtyData: (callback: (terminalId: string, data: string) => void) => {
+    const wrappedCallback = (
+      _event: Electron.IpcRendererEvent,
+      terminalId: string,
+      data: string
+    ) => callback(terminalId, data);
+    ipcRenderer.on('pty-data', wrappedCallback);
+  },
+  offPtyData: () => {
+    ipcRenderer.removeAllListeners('pty-data');
+  },
+  onPtyExit: (callback: (terminalId: string, exitCode: number) => void) => {
+    const wrappedCallback = (
+      _event: Electron.IpcRendererEvent,
+      terminalId: string,
+      exitCode: number
+    ) => callback(terminalId, exitCode);
+    ipcRenderer.on('pty-exit', wrappedCallback);
+  },
+  offPtyExit: () => {
+    ipcRenderer.removeAllListeners('pty-exit');
+  },
 };
 
 const appConfigAPI: AppConfigAPI = {

@@ -17,7 +17,8 @@ export type View =
   | 'sharedSession'
   | 'loading'
   | 'recipes'
-  | 'permission';
+  | 'permission'
+  | 'terminalCenter';
 
 // TODO(Douwe): check these for usage, especially key: string for resetChat
 export type ViewOptions = {
@@ -74,6 +75,9 @@ export const createNavigationHandler = (navigate: NavigateFunction) => {
         break;
       case 'extensions':
         navigate('/extensions', { state: options });
+        break;
+      case 'terminalCenter':
+        navigate('/terminal-center', { state: options });
         break;
       default:
         navigate('/', { state: options });

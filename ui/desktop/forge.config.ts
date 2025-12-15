@@ -1,10 +1,16 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
-const { resolve } = require('path');
+const { AutoUnpackNativesPlugin } = require('@electron-forge/plugin-auto-unpack-natives');
+const { resolve, join } = require('path');
+const fs = require('fs-extra');
 
 let cfg = {
-  asar: true,
+  asar: {
+    unpack: '**/node_modules/{node-pty,nan}/**/*',
+  },
   extraResource: ['src/bin', 'src/images'],
+  // Don't prune node-pty from node_modules (it's needed at runtime)
+  prune: true,
   icon: 'src/images/icon',
   // Windows specific configuration
   win32: {
@@ -38,6 +44,22 @@ let cfg = {
 module.exports = {
   packagerConfig: cfg,
   rebuildConfig: {},
+  hooks: {
+    packageAfterCopy: async (config, buildPath) => {
+      // Copy node-pty to the app's node_modules (needed for native module)
+      const srcNodePty = resolve(__dirname, 'node_modules', 'node-pty');
+      const destNodePty = join(buildPath, 'node_modules', 'node-pty');
+
+      if (fs.existsSync(srcNodePty)) {
+        console.log(`Copying node-pty from ${srcNodePty} to ${destNodePty}`);
+        await fs.ensureDir(join(buildPath, 'node_modules'));
+        await fs.copy(srcNodePty, destNodePty);
+        console.log('node-pty copied successfully');
+      } else {
+        console.warn('node-pty not found in node_modules');
+      }
+    },
+  },
   publishers: [
     {
       name: '@electron-forge/publisher-github',
@@ -95,6 +117,7 @@ module.exports = {
     },
   ],
   plugins: [
+    new AutoUnpackNativesPlugin({}),
     {
       name: '@electron-forge/plugin-vite',
       config: {

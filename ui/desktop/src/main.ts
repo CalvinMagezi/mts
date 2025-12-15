@@ -50,6 +50,7 @@ import { UPDATES_ENABLED } from './updates';
 import './utils/recipeHash';
 import { Client, createClient, createConfig } from './api/client';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import * as pty from 'node-pty';
 
 // Updater functions (moved here to keep updates.ts minimal for release replacement)
 function shouldSetupUpdater(): boolean {
@@ -484,6 +485,9 @@ let appConfig = {
 const windowMap = new Map<number, BrowserWindow>();
 const mtsdClients = new Map<number, Client>();
 
+// Track PTY processes per window: windowId -> (terminalId -> pty process)
+const windowPtyProcesses = new Map<number, Map<string, pty.IPty>>();
+
 // Track power save blockers per window
 const windowPowerSaveBlockers = new Map<number, number>(); // windowId -> blockerId
 // Track pending initial messages per window
@@ -765,6 +769,20 @@ const createChat = async (
 
     // Clean up pending initial message
     pendingInitialMessages.delete(windowId);
+
+    // Clean up all PTY processes for this window
+    const ptys = windowPtyProcesses.get(windowId);
+    if (ptys) {
+      for (const [terminalId, ptyProcess] of ptys.entries()) {
+        try {
+          ptyProcess.kill();
+          console.log(`[Main] Killed PTY process for terminal ${terminalId} in window ${windowId}`);
+        } catch (error) {
+          console.error(`[Main] Failed to kill PTY ${terminalId} for window ${windowId}:`, error);
+        }
+      }
+      windowPtyProcesses.delete(windowId);
+    }
 
     if (windowPowerSaveBlockers.has(windowId)) {
       const blockerId = windowPowerSaveBlockers.get(windowId)!;
@@ -2292,6 +2310,107 @@ async function appMain() {
     } catch (error) {
       console.error('Error opening directory in explorer:', error);
       return false;
+    }
+  });
+
+  // PTY IPC handlers for Terminal Center
+  ipcMain.handle(
+    'pty-create',
+    async (event, terminalId: string, options?: { cwd?: string; shell?: string }) => {
+      const windowId = BrowserWindow.fromWebContents(event.sender)?.id;
+      if (!windowId) {
+        return { error: 'No window found' };
+      }
+
+      // Determine shell to use
+      const shellPath =
+        options?.shell ||
+        (process.platform === 'win32'
+          ? 'powershell.exe'
+          : process.env.SHELL || '/bin/zsh');
+
+      // Determine working directory
+      const cwd = options?.cwd || os.homedir();
+
+      try {
+        const ptyProcess = pty.spawn(shellPath, [], {
+          name: 'xterm-256color',
+          cols: 80,
+          rows: 24,
+          cwd,
+          env: process.env as Record<string, string>,
+        });
+
+        // Initialize map for this window if needed
+        if (!windowPtyProcesses.has(windowId)) {
+          windowPtyProcesses.set(windowId, new Map());
+        }
+        windowPtyProcesses.get(windowId)!.set(terminalId, ptyProcess);
+
+        // Forward PTY output to renderer
+        ptyProcess.onData((data) => {
+          const window = windowMap.get(windowId);
+          if (window && !window.isDestroyed()) {
+            window.webContents.send('pty-data', terminalId, data);
+          }
+        });
+
+        // Handle PTY exit
+        ptyProcess.onExit(({ exitCode }) => {
+          const window = windowMap.get(windowId);
+          if (window && !window.isDestroyed()) {
+            window.webContents.send('pty-exit', terminalId, exitCode);
+          }
+          windowPtyProcesses.get(windowId)?.delete(terminalId);
+          console.log(
+            `[Main] PTY ${terminalId} exited with code ${exitCode} in window ${windowId}`
+          );
+        });
+
+        console.log(
+          `[Main] Created PTY ${terminalId} in window ${windowId} with shell ${shellPath}`
+        );
+        return { success: true, pid: ptyProcess.pid };
+      } catch (error) {
+        console.error(`[Main] Failed to create PTY ${terminalId}:`, error);
+        return { error: error instanceof Error ? error.message : 'Failed to create PTY' };
+      }
+    }
+  );
+
+  ipcMain.on('pty-write', (event, terminalId: string, data: string) => {
+    const windowId = BrowserWindow.fromWebContents(event.sender)?.id;
+    if (!windowId) return;
+
+    const ptyProcess = windowPtyProcesses.get(windowId)?.get(terminalId);
+    if (ptyProcess) {
+      ptyProcess.write(data);
+    }
+  });
+
+  ipcMain.on('pty-resize', (event, terminalId: string, cols: number, rows: number) => {
+    const windowId = BrowserWindow.fromWebContents(event.sender)?.id;
+    if (!windowId) return;
+
+    const ptyProcess = windowPtyProcesses.get(windowId)?.get(terminalId);
+    if (ptyProcess) {
+      ptyProcess.resize(cols, rows);
+    }
+  });
+
+  ipcMain.on('pty-kill', (event, terminalId: string) => {
+    const windowId = BrowserWindow.fromWebContents(event.sender)?.id;
+    if (!windowId) return;
+
+    const ptyProcess = windowPtyProcesses.get(windowId)?.get(terminalId);
+    if (ptyProcess) {
+      try {
+        ptyProcess.kill();
+        windowPtyProcesses.get(windowId)?.delete(terminalId);
+        console.log(`[Main] Killed PTY ${terminalId} in window ${windowId}`);
+      } catch (error) {
+        console.error(`[Main] Failed to kill PTY ${terminalId}:`, error);
+      }
     }
   });
 }
