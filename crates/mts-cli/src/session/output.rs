@@ -273,7 +273,7 @@ fn render_tool_request(req: &ToolRequest, theme: Theme, debug: bool) {
         Ok(call) => match call.name.to_string().as_str() {
             "developer__text_editor" => render_text_editor_request(call, debug),
             "developer__shell" => render_shell_request(call, debug),
-            "dynamic_task__create_task" => render_dynamic_task_request(call, debug),
+            "subagent" => render_subagent_request(call, debug),
             "todo__write" => render_todo_request(call, debug),
             _ => render_default_request(call, debug),
         },
@@ -447,67 +447,56 @@ fn render_shell_request(call: &CallToolRequestParam, debug: bool) {
     println!();
 }
 
-fn render_dynamic_task_request(call: &CallToolRequestParam, debug: bool) {
+fn render_subagent_request(call: &CallToolRequestParam, debug: bool) {
     print_tool_header(call);
 
-    // Print task_parameters array
-    if let Some(task_parameters) = call
-        .arguments
-        .as_ref()
-        .and_then(|args| args.get("task_parameters"))
-        .and_then(|v| match v {
-            Value::Array(arr) => Some(arr),
-            _ => None,
-        })
-    {
-        println!("{}:", style("task_parameters").dim());
-        for task_param in task_parameters.iter() {
-            println!("    -");
+    if let Some(args) = &call.arguments {
+        // Print subrecipe if provided
+        if let Some(Value::String(subrecipe)) = args.get("subrecipe") {
+            println!(
+                "{}: {}",
+                style("subrecipe").dim(),
+                style(subrecipe).green()
+            );
+        }
 
-            if let Some(param_obj) = task_param.as_object() {
-                for (key, value) in param_obj {
-                    match value {
-                        Value::String(s) => {
-                            // For strings, print the full content without truncation
-                            println!("        {}: {}", style(key).dim(), style(s).green());
-                        }
-                        Value::Array(arr) => {
-                            // For arrays, print each item on its own line
-                            println!("        {}:", style(key).dim());
-                            for item in arr {
-                                if let Value::String(s) = item {
-                                    println!("            - {}", style(s).green());
-                                } else if let Value::Object(_) = item {
-                                    // For objects in arrays, print them with indentation
-                                    print!("            - ");
-                                    if let Value::Object(obj) = item {
-                                        print_params(&Some(obj.clone()), 3, debug);
-                                    }
-                                } else {
-                                    println!(
-                                        "            - {}",
-                                        style(format!("{}", item)).green()
-                                    );
-                                }
-                            }
-                        }
-                        Value::Object(_) => {
-                            // For objects, print them with proper indentation
-                            println!("        {}:", style(key).dim());
-                            if let Value::Object(obj) = value {
-                                print_params(&Some(obj.clone()), 2, debug);
-                            }
-                        }
-                        _ => {
-                            // For other types (numbers, booleans, null)
-                            println!(
-                                "        {}: {}",
-                                style(key).dim(),
-                                style(format!("{}", value)).green()
-                            );
-                        }
-                    }
-                }
+        // Print instructions if provided
+        if let Some(Value::String(instructions)) = args.get("instructions") {
+            println!(
+                "{}: {}",
+                style("instructions").dim(),
+                style(instructions).green()
+            );
+        }
+
+        // Print parameters if provided
+        if let Some(Value::Object(params)) = args.get("parameters") {
+            if !params.is_empty() {
+                println!("{}:", style("parameters").dim());
+                print_params(&Some(params.clone()), 1, debug);
+            }
+        }
+
+        // Print extensions if provided
+        if let Some(Value::Array(extensions)) = args.get("extensions") {
+            let ext_names: Vec<String> = extensions
+                .iter()
+                .filter_map(|e| e.as_str().map(String::from))
+                .collect();
+            if !ext_names.is_empty() {
+                println!(
+                    "{}: {}",
+                    style("extensions").dim(),
+                    style(ext_names.join(", ")).green()
+                );
+            }
+        }
+
+        // Print settings if provided
+        if let Some(Value::Object(settings)) = args.get("settings") {
+            if !settings.is_empty() {
+                println!("{}:", style("settings").dim());
+                print_params(&Some(settings.clone()), 1, debug);
             }
         }
     }

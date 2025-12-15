@@ -5,14 +5,8 @@ mod export;
 mod input;
 mod output;
 mod prompt;
-mod task_execution_display;
 mod thinking;
-
-use crate::session::task_execution_display::{
-    format_task_execution_notification, TASK_EXECUTION_NOTIFICATION_TYPE,
-};
 use mts::conversation::Conversation;
-use std::io::Write;
 use std::str::FromStr;
 use tokio::signal::ctrl_c;
 use tokio_util::task::AbortOnDropHandle;
@@ -1038,7 +1032,7 @@ impl CliSession {
                             match &message {
                                 ServerNotification::LoggingMessageNotification(notification) => {
                                     let data = &notification.params.data;
-                                    let (formatted_message, subagent_id, message_notification_type) = match data {
+                                    let (formatted_message, subagent_id, _message_notification_type) = match data {
                                         Value::String(s) => (s.clone(), None, None),
                                         Value::Object(o) => {
                                             // Check for subagent notification structure first
@@ -1087,8 +1081,6 @@ impl CliSession {
                                             } else if let Some(Value::String(output)) = o.get("output") {
                                                 // Fallback for other MCP notification types
                                                 (output.to_owned(), None, None)
-                                            } else if let Some(result) = format_task_execution_notification(data) {
-                                                result
                                             } else {
                                                 (data.to_string(), None, None)
                                             }
@@ -1109,21 +1101,7 @@ impl CliSession {
                                         } else if !is_json_mode {
                                             progress_bars.log(&formatted_message);
                                         }
-                                    } else if let Some(ref notification_type) = message_notification_type {
-                                        if notification_type == TASK_EXECUTION_NOTIFICATION_TYPE {
-                                            if interactive {
-                                                let _ = progress_bars.hide();
-                                                if !is_json_mode {
-                                                    print!("{}", formatted_message);
-                                                    std::io::stdout().flush().unwrap();
-                                                }
-                                            } else if !is_json_mode {
-                                                print!("{}", formatted_message);
-                                                std::io::stdout().flush().unwrap();
-                                            }
-                                        }
-                                    }
-                                    else if output::is_showing_thinking() {
+                                    } else if output::is_showing_thinking() {
                                         output::set_thinking_message(&formatted_message);
                                     } else {
                                         progress_bars.log(&formatted_message);

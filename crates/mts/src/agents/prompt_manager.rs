@@ -6,8 +6,8 @@ use serde_json::Value;
 use std::collections::HashMap;
 
 use crate::agents::extension::ExtensionInfo;
-use crate::agents::recipe_tools::dynamic_task_tools::should_enabled_subagents;
 use crate::agents::router_tools::llm_search_tool_prompt;
+use crate::agents::subagent_tool::should_enable_subagents;
 use crate::hints::load_hints::{load_hint_files, AGENTS_MD_FILENAME, MTS_HINTS_FILENAME};
 use crate::{
     config::{Config, MtsMode},
@@ -152,7 +152,7 @@ impl<'a> SystemPromptBuilder<'a, PromptManager> {
             extension_tool_limits,
             mts_mode,
             is_autonomous: mts_mode == MtsMode::Auto,
-            enable_subagents: should_enabled_subagents(self.model_name.as_str()),
+            enable_subagents: should_enable_subagents(self.model_name.as_str()),
             max_extensions: MAX_EXTENSIONS,
             max_tools: MAX_TOOLS,
         };
