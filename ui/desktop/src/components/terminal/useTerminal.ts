@@ -80,7 +80,7 @@ export const useTerminal = (options: UseTerminalOptions) => {
     requestAnimationFrame(() => {
       try {
         fitAddon.fit();
-      } catch (e) {
+      } catch {
         // Ignore fit errors during initialization
       }
     });
@@ -100,7 +100,7 @@ export const useTerminal = (options: UseTerminalOptions) => {
               if (dims) {
                 window.electron.ptyResize(terminalId, dims.cols, dims.rows);
               }
-            } catch (e) {
+            } catch {
               // Ignore
             }
           }, 50);
@@ -114,7 +114,7 @@ export const useTerminal = (options: UseTerminalOptions) => {
           if (dims) {
             window.electron.ptyResize(terminalId, dims.cols, dims.rows);
           }
-        } catch (e) {
+        } catch {
           // Ignore
         }
       }, 50);
@@ -166,14 +166,15 @@ export const useTerminal = (options: UseTerminalOptions) => {
       terminalRef.current = null;
       fitAddonRef.current = null;
     };
-  }, [terminalId]); // Only re-run if terminalId changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [terminalId]); // Only re-run if terminalId changes - other deps are intentionally excluded
 
   // Handle container resize
   const handleResize = useCallback(() => {
     if (fitAddonRef.current && terminalRef.current) {
       try {
         fitAddonRef.current.fit();
-      } catch (e) {
+      } catch {
         // Ignore fit errors
       }
     }

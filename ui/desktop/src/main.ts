@@ -1736,6 +1736,62 @@ ipcMain.handle('list-files', async (_event, dirPath, extension) => {
   }
 });
 
+// Handle recursive directory tree reading for folder tree view
+interface FileNode {
+  name: string;
+  path: string;
+  isDir: boolean;
+  children?: FileNode[];
+}
+
+async function readDirectoryTree(
+  dirPath: string,
+  currentDepth: number,
+  maxDepth: number
+): Promise<FileNode[]> {
+  try {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    const nodes: FileNode[] = [];
+
+    // Sort: directories first, then files, alphabetically
+    const sorted = entries.sort((a, b) => {
+      if (a.isDirectory() && !b.isDirectory()) return -1;
+      if (!a.isDirectory() && b.isDirectory()) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    for (const entry of sorted) {
+      // Skip hidden files and common ignore patterns
+      if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === '__pycache__') {
+        continue;
+      }
+
+      const fullPath = path.join(dirPath, entry.name);
+      const node: FileNode = {
+        name: entry.name,
+        path: fullPath,
+        isDir: entry.isDirectory(),
+      };
+
+      if (entry.isDirectory() && currentDepth < maxDepth) {
+        node.children = await readDirectoryTree(fullPath, currentDepth + 1, maxDepth);
+      }
+
+      nodes.push(node);
+    }
+
+    return nodes;
+  } catch (error) {
+    console.error('Error reading directory tree:', error);
+    return [];
+  }
+}
+
+ipcMain.handle('read-directory-tree', async (_event, dirPath: string, maxDepth = 5) => {
+  const expandedPath = expandTilde(dirPath);
+  return readDirectoryTree(expandedPath, 0, maxDepth);
+});
+
 // Handle message box dialogs
 ipcMain.handle('show-message-box', async (_event, options) => {
   return dialog.showMessageBox(options);

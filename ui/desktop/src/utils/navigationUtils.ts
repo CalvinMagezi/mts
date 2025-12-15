@@ -18,7 +18,8 @@ export type View =
   | 'loading'
   | 'recipes'
   | 'permission'
-  | 'terminalCenter';
+  | 'terminalCenter'
+  | 'folderTree';
 
 // TODO(Douwe): check these for usage, especially key: string for resetChat
 export type ViewOptions = {
@@ -78,6 +79,9 @@ export const createNavigationHandler = (navigate: NavigateFunction) => {
         break;
       case 'terminalCenter':
         navigate('/terminal-center', { state: options });
+        break;
+      case 'folderTree':
+        navigate('/folder-tree', { state: options });
         break;
       default:
         navigate('/', { state: options });

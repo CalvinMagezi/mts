@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FileText, Clock, Home, Puzzle, History, Terminal } from 'lucide-react';
+import { FileText, Clock, Home, Puzzle, History, Terminal, FolderTree } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   SidebarContent,
@@ -91,6 +91,13 @@ const menuItems: NavigationEntry[] = [
     label: 'Terminal Center',
     icon: Terminal,
     tooltip: 'Open terminal command center',
+  },
+  {
+    type: 'item',
+    path: '/folder-tree',
+    label: 'Folder Tree',
+    icon: FolderTree,
+    tooltip: 'View and share folder structure',
   },
   { type: 'separator' },
   {

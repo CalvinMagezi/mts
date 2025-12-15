@@ -38,6 +38,7 @@ import PermissionSettingsView from './components/settings/permission/PermissionS
 import ExtensionsView, { ExtensionsViewOptions } from './components/extensions/ExtensionsView';
 import RecipesView from './components/recipes/RecipesView';
 import TerminalCenterView from './components/terminal/TerminalCenterView';
+import FolderTreeView from './components/folder-tree/FolderTreeView';
 import { TerminalProvider } from './components/terminal/TerminalContext';
 import { View, ViewOptions } from './utils/navigationUtils';
 import { NoProviderOrModelError, useAgent } from './hooks/useAgent';
@@ -681,6 +682,7 @@ export function AppInner() {
             <Route path="schedules" element={<SchedulesRoute />} />
             <Route path="recipes" element={<RecipesRoute />} />
             <Route path="terminal-center" element={<TerminalCenterView />} />
+            <Route path="folder-tree" element={<FolderTreeView />} />
             <Route
               path="shared-session"
               element={
