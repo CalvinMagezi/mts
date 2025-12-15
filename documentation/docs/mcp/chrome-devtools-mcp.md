@@ -1,21 +1,21 @@
 ---
 title: Chrome DevTools Extension
-description: Add Chrome DevTools MCP Server as a goose Extension
+description: Add Chrome DevTools MCP Server as a mts Extension
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import MTSDesktopInstaller from '@site/src/components/MTSDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
-This tutorial covers how to add the Chrome DevTools MCP Server as a goose extension to enable browser automation, web performance testing, and interactive web application debugging in a Chrome browser.
+This tutorial covers how to add the Chrome DevTools MCP Server as a mts extension to enable browser automation, web performance testing, and interactive web application debugging in a Chrome browser.
 
 :::tip TLDR
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=chrome-devtools-mcp%40latest&id=chrome-devtools&name=Chrome%20DevTools&description=Browser%20automation%20and%20web%20performance%20testing%20capabilities)
+  <TabItem value="ui" label="mts Desktop" default>
+  [Launch the installer](mts://extension?cmd=npx&arg=-y&arg=chrome-devtools-mcp%40latest&id=chrome-devtools&name=Chrome%20DevTools&description=Browser%20automation%20and%20web%20performance%20testing%20capabilities)
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
   **Command**
   ```sh
   npx -y chrome-devtools-mcp@latest
@@ -31,8 +31,8 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 :::
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-    <GooseDesktopInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+    <MTSDesktopInstaller
       extensionId="chrome-devtools"
       extensionName="Chrome DevTools"
       description="Browser automation and web performance testing capabilities"
@@ -42,7 +42,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
       timeout={300}
     />
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
     <CLIExtensionInstructions
       name="Chrome DevTools"
       description="Browser automation and web performance testing capabilities"
@@ -53,14 +53,14 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 ## Example Usage
 
-In this example, I'll show you how to use goose with the Chrome DevTools Extension to perform automated performance testing on a demo website.
+In this example, I'll show you how to use mts with the Chrome DevTools Extension to perform automated performance testing on a demo website.
 
-### goose Prompt
+### mts Prompt
 ```
 Use the chrome dev tools extension to Navigate to https://www.saucedemo.com 
 Then, login as performance_glitch_user and measure the site's performance
 ```
-### goose Output
+### mts Output
 
 ```
 

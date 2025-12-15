@@ -12,7 +12,7 @@ export default function ChatSettingsSection() {
       <Card className="pb-2 rounded-lg">
         <CardHeader className="pb-0">
           <CardTitle className="">Mode</CardTitle>
-          <CardDescription>Configure how Goose interacts with tools and extensions</CardDescription>
+          <CardDescription>Configure how MTS interacts with tools and extensions</CardDescription>
         </CardHeader>
         <CardContent className="px-2">
           <ModeSection />
@@ -28,7 +28,7 @@ export default function ChatSettingsSection() {
       <Card className="pb-2 rounded-lg">
         <CardHeader className="pb-0">
           <CardTitle className="">Response Styles</CardTitle>
-          <CardDescription>Choose how Goose should format and style its responses</CardDescription>
+          <CardDescription>Choose how MTS should format and style its responses</CardDescription>
         </CardHeader>
         <CardContent className="px-2">
           <ResponseStylesSection />
@@ -51,7 +51,7 @@ export default function ChatSettingsSection() {
         <CardHeader className="pb-0">
           <CardTitle className="">Tool Selection Strategy (preview)</CardTitle>
           <CardDescription>
-            Experimental: configure how Goose selects tools for your requests, useful when there are
+            Experimental: configure how MTS selects tools for your requests, useful when there are
             many tools. Only tested with Claude models currently.
           </CardDescription>
         </CardHeader>

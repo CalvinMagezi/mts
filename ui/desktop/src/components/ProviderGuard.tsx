@@ -12,7 +12,7 @@ import { SwitchModelModal } from './settings/models/subcomponents/SwitchModelMod
 import { createNavigationHandler } from '../utils/navigationUtils';
 import TelemetrySettings from './settings/app/TelemetrySettings';
 
-import { Goose, OpenRouter, Tetrate } from './icons';
+import { MTS, OpenRouter, Tetrate } from './icons';
 
 interface ProviderGuardProps {
   didSelectProvider: boolean;
@@ -203,13 +203,13 @@ export default function ProviderGuard({ didSelectProvider, children }: ProviderG
               {/* Header section */}
               <div className="text-left mb-8 sm:mb-12">
                 <div className="space-y-3 sm:space-y-4">
-                  <div className="origin-bottom-left goose-icon-animation">
-                    <Goose className="size-6 sm:size-8" />
+                  <div className="origin-bottom-left mts-icon-animation">
+                    <MTS className="size-6 sm:size-8" />
                   </div>
-                  <h1 className="text-2xl sm:text-4xl font-light text-left">Welcome to Goose</h1>
+                  <h1 className="text-2xl sm:text-4xl font-light text-left">Welcome to MTS</h1>
                 </div>
                 <p className="text-text-muted text-base sm:text-lg mt-4 sm:mt-6">
-                  Since it’s your first time here, let’s get you set up with an AI provider so goose
+                  Since it’s your first time here, let’s get you set up with an AI provider so mts
                   can work its magic.
                 </p>
               </div>

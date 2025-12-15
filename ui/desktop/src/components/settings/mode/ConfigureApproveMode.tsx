@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../../ui/card';
 import { Button } from '../../ui/button';
-import { GooseMode, ModeSelectionItem } from './ModeSelectionItem';
+import { MTSMode, ModeSelectionItem } from './ModeSelectionItem';
 
 interface ConfigureApproveModeProps {
   onClose: () => void;
@@ -14,7 +14,7 @@ export function ConfigureApproveMode({
   handleModeChange,
   currentMode,
 }: ConfigureApproveModeProps) {
-  const approveModes: GooseMode[] = [
+  const approveModes: MTSMode[] = [
     {
       key: 'approve',
       label: 'Manual approval',
@@ -42,7 +42,7 @@ export function ConfigureApproveMode({
       handleModeChange(approveMode || '');
       onClose();
     } catch (error) {
-      console.error('Error configuring goose mode:', error);
+      console.error('Error configuring mts mode:', error);
     } finally {
       setIsSubmitting(false);
     }

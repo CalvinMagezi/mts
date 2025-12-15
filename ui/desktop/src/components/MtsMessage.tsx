@@ -243,4 +243,4 @@ export default function MtsMessage({
 }
 
 // Backward compatibility alias
-export const GooseMessage = MtsMessage;
+export const MTSMessage = MtsMessage;

@@ -6,17 +6,17 @@ sidebar_label: Configuration Files
 
 # Configuration Overview
 
-goose uses YAML [configuration files](#configuration-files) to manage settings and extensions. The primary config file is located at:
+mts uses YAML [configuration files](#configuration-files) to manage settings and extensions. The primary config file is located at:
 
-* macOS/Linux: `~/.config/goose/config.yaml`
-* Windows: `%APPDATA%\Block\goose\config\config.yaml`
+* macOS/Linux: `~/.config/mts/config.yaml`
+* Windows: `%APPDATA%\Block\mts\config\config.yaml`
 
 The configuration files allow you to set default behaviors, configure language models, set tool permissions, and manage extensions. While many settings can also be set using [environment variables](/docs/guides/environment-variables), the config files provide a persistent way to maintain your preferences.
 
 ## Configuration Files
 
 - **config.yaml** - Provider, model, extensions, and general settings
-- **permission.yaml** - Tool permission levels configured via `goose configure`
+- **permission.yaml** - Tool permission levels configured via `mts configure`
 - **secrets.yaml** - API keys and secrets (only when keyring is disabled)
 - **permissions/tool_permissions.json** - Runtime permission decisions (auto-managed)
 
@@ -26,23 +26,23 @@ The following settings can be configured at the root level of your config.yaml f
 
 | Setting | Purpose | Values | Default | Required |
 |---------|---------|---------|---------|-----------|
-| `GOOSE_PROVIDER` | Primary [LLM provider](/docs/getting-started/providers) | "anthropic", "openai", etc. | None | Yes |
-| `GOOSE_MODEL` | Default model to use | Model name (e.g., "claude-3.5-sonnet", "gpt-4") | None | Yes |
-| `GOOSE_TEMPERATURE` | Model response randomness | Float between 0.0 and 1.0 | Model-specific | No |
-| `GOOSE_MODE` | [Tool execution behavior](/docs/guides/goose-permissions) | "auto", "approve", "chat", "smart_approve" | "auto" | No |
-| `GOOSE_MAX_TURNS` | [Maximum number of turns](/docs/guides/sessions/smart-context-management#maximum-turns) allowed without user input | Integer (e.g., 10, 50, 100) | 1000 | No |
-| `GOOSE_LEAD_PROVIDER` | Provider for lead model in [lead/worker mode](/docs/guides/environment-variables#leadworker-model-configuration) | Same as `GOOSE_PROVIDER` options | Falls back to `GOOSE_PROVIDER` | No |
-| `GOOSE_LEAD_MODEL` | Lead model for lead/worker mode | Model name | None | No |
-| `GOOSE_PLANNER_PROVIDER` | Provider for [planning mode](/docs/guides/creating-plans) | Same as `GOOSE_PROVIDER` options | Falls back to `GOOSE_PROVIDER` | No |
-| `GOOSE_PLANNER_MODEL` | Model for planning mode | Model name | Falls back to `GOOSE_MODEL` | No |
-| `GOOSE_TOOLSHIM` | Enable tool interpretation | true/false | false | No |
-| `GOOSE_TOOLSHIM_OLLAMA_MODEL` | Model for tool interpretation | Model name (e.g., "llama3.2") | System default | No |
-| `GOOSE_CLI_MIN_PRIORITY` | Tool output verbosity | Float between 0.0 and 1.0 | 0.0 | No |
-| `GOOSE_CLI_THEME` | [Theme](/docs/guides/goose-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" | No |
-| `GOOSE_CLI_SHOW_COST` | Show estimated cost for token use in the CLI | true/false | false | No |
-| `GOOSE_ALLOWLIST` | URL for allowed extensions | Valid URL | None | No |
-| `GOOSE_RECIPE_GITHUB_REPO` | GitHub repository for recipes | Format: "org/repo" | None | No |
-| `GOOSE_AUTO_COMPACT_THRESHOLD` | Set the percentage threshold at which goose [automatically summarizes your session](/docs/guides/sessions/smart-context-management#automatic-compaction). | Float between 0.0 and 1.0 (disabled at 0.0)| 0.8 | No |
+| `MTS_PROVIDER` | Primary [LLM provider](/docs/getting-started/providers) | "anthropic", "openai", etc. | None | Yes |
+| `MTS_MODEL` | Default model to use | Model name (e.g., "claude-3.5-sonnet", "gpt-4") | None | Yes |
+| `MTS_TEMPERATURE` | Model response randomness | Float between 0.0 and 1.0 | Model-specific | No |
+| `MTS_MODE` | [Tool execution behavior](/docs/guides/mts-permissions) | "auto", "approve", "chat", "smart_approve" | "auto" | No |
+| `MTS_MAX_TURNS` | [Maximum number of turns](/docs/guides/sessions/smart-context-management#maximum-turns) allowed without user input | Integer (e.g., 10, 50, 100) | 1000 | No |
+| `MTS_LEAD_PROVIDER` | Provider for lead model in [lead/worker mode](/docs/guides/environment-variables#leadworker-model-configuration) | Same as `MTS_PROVIDER` options | Falls back to `MTS_PROVIDER` | No |
+| `MTS_LEAD_MODEL` | Lead model for lead/worker mode | Model name | None | No |
+| `MTS_PLANNER_PROVIDER` | Provider for [planning mode](/docs/guides/creating-plans) | Same as `MTS_PROVIDER` options | Falls back to `MTS_PROVIDER` | No |
+| `MTS_PLANNER_MODEL` | Model for planning mode | Model name | Falls back to `MTS_MODEL` | No |
+| `MTS_TOOLSHIM` | Enable tool interpretation | true/false | false | No |
+| `MTS_TOOLSHIM_OLLAMA_MODEL` | Model for tool interpretation | Model name (e.g., "llama3.2") | System default | No |
+| `MTS_CLI_MIN_PRIORITY` | Tool output verbosity | Float between 0.0 and 1.0 | 0.0 | No |
+| `MTS_CLI_THEME` | [Theme](/docs/guides/mts-cli-commands#themes) for CLI response  markdown | "light", "dark", "ansi" | "dark" | No |
+| `MTS_CLI_SHOW_COST` | Show estimated cost for token use in the CLI | true/false | false | No |
+| `MTS_ALLOWLIST` | URL for allowed extensions | Valid URL | None | No |
+| `MTS_RECIPE_GITHUB_REPO` | GitHub repository for recipes | Format: "org/repo" | None | No |
+| `MTS_AUTO_COMPACT_THRESHOLD` | Set the percentage threshold at which mts [automatically summarizes your session](/docs/guides/sessions/smart-context-management#automatic-compaction). | Float between 0.0 and 1.0 (disabled at 0.0)| 0.8 | No |
 | `otel_exporter_otlp_endpoint` | OTLP endpoint URL for [observability](/docs/guides/environment-variables#opentelemetry-protocol-otlp) | URL (e.g., `http://localhost:4318`) | None | No |
 | `otel_exporter_otlp_timeout` | Export timeout in milliseconds for [observability](/docs/guides/environment-variables#opentelemetry-protocol-otlp) | Integer (ms) | 10000 | No |
 | `SECURITY_PROMPT_ENABLED` | Enable [prompt injection detection](/docs/guides/security/prompt-injection-detection) to identify potentially harmful commands | true/false | false | No |
@@ -64,24 +64,24 @@ Here's a basic example of a config.yaml file:
 
 ```yaml
 # Model Configuration
-GOOSE_PROVIDER: "anthropic"
-GOOSE_MODEL: "claude-4.5-sonnet"
-GOOSE_TEMPERATURE: 0.7
+MTS_PROVIDER: "anthropic"
+MTS_MODEL: "claude-4.5-sonnet"
+MTS_TEMPERATURE: 0.7
 
 # Planning Configuration
-GOOSE_PLANNER_PROVIDER: "openai"
-GOOSE_PLANNER_MODEL: "gpt-4"
+MTS_PLANNER_PROVIDER: "openai"
+MTS_PLANNER_MODEL: "gpt-4"
 
 # Tool Configuration
-GOOSE_MODE: "smart_approve"
-GOOSE_TOOLSHIM: true
-GOOSE_CLI_MIN_PRIORITY: 0.2
+MTS_MODE: "smart_approve"
+MTS_TOOLSHIM: true
+MTS_CLI_MIN_PRIORITY: 0.2
 
 # Recipe Configuration
-GOOSE_RECIPE_GITHUB_REPO: "block/goose-recipes"
+MTS_RECIPE_GITHUB_REPO: "block/mts-recipes"
 
 # Search Path Configuration
-GOOSE_SEARCH_PATHS:
+MTS_SEARCH_PATHS:
   - "/usr/local/bin"
   - "~/custom/tools"
   - "/opt/homebrew/bin"
@@ -117,7 +117,7 @@ Extensions are configured under the `extensions` key. Each extension can have th
 ```yaml
 extensions:
   extension_name:
-    bundled: true/false       # Whether it's included with goose
+    bundled: true/false       # Whether it's included with mts
     display_name: "Name"      # Human-readable name (optional)
     enabled: true/false       # Whether the extension is active
     name: "extension_name"    # Internal name
@@ -134,10 +134,10 @@ extensions:
 
 ## Search Path Configuration
 
-Extensions may need to execute external commands or tools. By default, goose uses your system's PATH environment variable. You can add additional search directories in your config file:
+Extensions may need to execute external commands or tools. By default, mts uses your system's PATH environment variable. You can add additional search directories in your config file:
 
 ```yaml
-GOOSE_SEARCH_PATHS:
+MTS_SEARCH_PATHS:
   - "/usr/local/bin"
   - "~/custom/tools"
   - "/opt/homebrew/bin"
@@ -161,10 +161,10 @@ Settings are applied in the following order of precedence:
 
 ## Updating Configuration
 
-Changes to config files require restarting goose to take effect. You can verify your current configuration using:
+Changes to config files require restarting mts to take effect. You can verify your current configuration using:
 
 ```bash
-goose info -v
+mts info -v
 ```
 
 This will show all active settings and their current values.

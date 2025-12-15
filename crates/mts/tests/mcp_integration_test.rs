@@ -81,7 +81,7 @@ fn build_and_get_binary_path() -> PathBuf {
             "build",
             "--frozen",
             "-p",
-            "goose-test",
+            "mts-test",
             "--bin",
             "capture",
             "--message-format=json",
@@ -134,7 +134,7 @@ enum TestMode {
     vec![
         CallToolRequestParam { name: "get_file_contents".into(), arguments: Some(object!({
             "owner": "block",
-            "repo": "goose",
+            "repo": "mts",
             "path": "README.md",
             "sha": "ab62b863c1666232a67048b6c4e10007a2a5b83c"
         }))},
@@ -151,28 +151,28 @@ enum TestMode {
     vec![]
 )]
 #[test_case(
-    vec!["cargo", "run", "--quiet", "-p", "goose-server", "--bin", "goosed", "--", "mcp", "developer"],
+    vec!["cargo", "run", "--quiet", "-p", "mts-server", "--bin", "mtsd", "--", "mcp", "developer"],
     vec![
         CallToolRequestParam { name: "text_editor".into(), arguments: Some(object!({
             "command": "view",
-            "path": "/tmp/goose_test/goose.txt"
+            "path": "/tmp/mts_test/mts.txt"
         }))},
         CallToolRequestParam { name: "text_editor".into(), arguments: Some(object!({
             "command": "str_replace",
-            "path": "/tmp/goose_test/goose.txt",
-            "old_str": "# goose",
-            "new_str": "# goose (modified by test)"
+            "path": "/tmp/mts_test/mts.txt",
+            "old_str": "# mts",
+            "new_str": "# mts (modified by test)"
         }))},
         // Test shell command to verify file was modified
         CallToolRequestParam { name: "shell".into(), arguments: Some(object!({
-            "command": "cat /tmp/goose_test/goose.txt"
+            "command": "cat /tmp/mts_test/mts.txt"
         })) },
         // Test text_editor tool to restore original content
         CallToolRequestParam { name: "text_editor".into(), arguments: Some(object!({
             "command": "str_replace",
-            "path": "/tmp/goose_test/goose.txt",
-            "old_str": "# goose (modified by test)",
-            "new_str": "# goose"
+            "path": "/tmp/mts_test/mts.txt",
+            "old_str": "# mts (modified by test)",
+            "new_str": "# mts"
         }))},
         CallToolRequestParam { name: "list_windows".into(), arguments: Some(object!({})) },
     ],
@@ -187,11 +187,11 @@ async fn test_replayed_session(
     std::env::set_var("MTS_MCP_CLIENT_VERSION", "0.0.0");
 
     // Setup test file for developer extension tests
-    let test_file_path = "/tmp/goose_test/goose.txt";
+    let test_file_path = "/tmp/mts_test/mts.txt";
     if let Some(parent) = std::path::Path::new(test_file_path).parent() {
         fs::create_dir_all(parent).ok();
     }
-    fs::write(test_file_path, "# goose\n").ok();
+    fs::write(test_file_path, "# mts\n").ok();
     let replay_file_name = command
         .iter()
         .map(|s| s.replace("/", "_"))

@@ -296,8 +296,8 @@ impl Default for ComputerControllerServer {
 impl ComputerControllerServer {
     pub fn new() -> Self {
         // choose_app_strategy().cache_dir()
-        // - macOS/Linux: ~/.cache/goose/computer_controller/
-        // - Windows:     ~\AppData\Local\Block\goose\cache\computer_controller\
+        // - macOS/Linux: ~/.cache/mts/computer_controller/
+        // - Windows:     ~\AppData\Local\Block\mts\cache\computer_controller\
         // keep previous behavior of defaulting to /tmp/
         let cache_dir = choose_app_strategy(crate::APP_STRATEGY.clone())
             .map(|strategy| strategy.in_cache_dir("computer_controller"))
@@ -417,7 +417,7 @@ impl ComputerControllerServer {
             tool_router: Self::tool_router(),
             cache_dir,
             active_resources: Arc::new(Mutex::new(HashMap::new())),
-            http_client: Client::builder().user_agent("goose/1.0").build().unwrap(),
+            http_client: Client::builder().user_agent("mts/1.0").build().unwrap(),
             instructions,
             system_automation,
         }
@@ -1297,7 +1297,7 @@ impl ServerHandler for ComputerControllerServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
             server_info: Implementation {
-                name: "goose-computercontroller".to_string(),
+                name: "mts-computercontroller".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_owned(),
                 title: None,
                 icons: None,

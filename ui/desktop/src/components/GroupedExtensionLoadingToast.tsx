@@ -111,7 +111,7 @@ export function GroupedExtensionLoadingToast({
                             }}
                             className="self-start"
                           >
-                            Ask goose
+                            Ask mts
                           </Button>
                         ) : (
                           <Button

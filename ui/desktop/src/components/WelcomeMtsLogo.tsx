@@ -14,4 +14,4 @@ export default function WelcomeMtsLogo({ className = '' }) {
 }
 
 // Backward compatibility alias
-export const WelcomeGooseLogo = WelcomeMtsLogo;
+export const WelcomeMTSLogo = WelcomeMtsLogo;

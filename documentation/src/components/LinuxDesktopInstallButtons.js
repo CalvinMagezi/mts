@@ -2,7 +2,7 @@ import Link from "@docusaurus/Link";
 import { IconDownload } from "@site/src/components/icons/download";
 import { useState, useEffect } from "react";
 
-const FALLBACK_URL = "https://github.com/block/goose/releases/latest";
+const FALLBACK_URL = "https://github.com/block/mts/releases/latest";
 
 const LinuxDesktopInstallButtons = () => {
   const [downloadUrls, setDownloadUrls] = useState({
@@ -14,8 +14,8 @@ const LinuxDesktopInstallButtons = () => {
     const fetchLatestRelease = async () => {
       try {
         // Check cache first (1 hour expiry)
-        const cached = localStorage.getItem('goose-release-cache');
-        const cacheTime = localStorage.getItem('goose-release-cache-time');
+        const cached = localStorage.getItem('mts-release-cache');
+        const cacheTime = localStorage.getItem('mts-release-cache-time');
         const now = Date.now();
         
         if (cached && cacheTime && (now - parseInt(cacheTime)) < 3600000) {
@@ -25,7 +25,7 @@ const LinuxDesktopInstallButtons = () => {
         }
 
         // Fetch latest release from GitHub API
-        const response = await fetch('https://api.github.com/repos/block/goose/releases/latest');
+        const response = await fetch('https://api.github.com/repos/block/mts/releases/latest');
         if (!response.ok) throw new Error('API request failed');
         
         const release = await response.json();
@@ -43,8 +43,8 @@ const LinuxDesktopInstallButtons = () => {
           
           // Update state and cache
           setDownloadUrls(newUrls);
-          localStorage.setItem('goose-release-cache', JSON.stringify(newUrls));
-          localStorage.setItem('goose-release-cache-time', now.toString());
+          localStorage.setItem('mts-release-cache', JSON.stringify(newUrls));
+          localStorage.setItem('mts-release-cache-time', now.toString());
         }
       } catch (error) {
         console.warn('Failed to fetch latest release, using fallback URLs:', error);
@@ -57,7 +57,7 @@ const LinuxDesktopInstallButtons = () => {
 
   return (
     <div>
-      <p>To download Goose Desktop for Linux, click one of the buttons below:</p>
+      <p>To download MTS Desktop for Linux, click one of the buttons below:</p>
       <div className="pill-button" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
         <Link
           className="button button--primary button--lg"

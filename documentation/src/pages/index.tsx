@@ -5,7 +5,7 @@ import Layout from "@theme/Layout";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
 
 import styles from "./index.module.css";
-import { GooseLogo } from "../components/GooseLogo";
+import { MTSLogo } from "../components/MTSLogo";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -14,11 +14,11 @@ function HomepageHeader() {
       <div className={styles.wrapper}>
         <div className={styles.textColumn}>
           <div className="hero--logo">
-            <GooseLogo />
+            <MTSLogo />
           </div>
           <p className={styles.subtitle}>{siteConfig.tagline}</p>
           <Link className="button button--primary button--lg" to="docs/getting-started/installation">
-            install goose
+            install mts
           </Link>
         </div>
 
@@ -26,7 +26,7 @@ function HomepageHeader() {
           <iframe
             src="https://www.youtube.com/embed/D-DpDunrbpo"
             className="aspect-ratio"
-            title="vibe coding with goose"
+            title="vibe coding with mts"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>

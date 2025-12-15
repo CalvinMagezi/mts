@@ -34,4 +34,4 @@ export const MtshintsSection = () => {
 };
 
 // Backward compatibility alias
-export const GoosehintsSection = MtshintsSection;
+export const MTShintsSection = MtshintsSection;

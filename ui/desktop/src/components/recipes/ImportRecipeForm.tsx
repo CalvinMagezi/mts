@@ -23,8 +23,8 @@ const importRecipeSchema = z
     deeplink: z
       .string()
       .refine(
-        (value) => !value || value.trim().startsWith('goose://recipe?config='),
-        'Invalid deeplink format. Expected: goose://recipe?config=...'
+        (value) => !value || value.trim().startsWith('mts://recipe?config='),
+        'Invalid deeplink format. Expected: mts://recipe?config=...'
       ),
     recipeUploadFile: z
       .instanceof(File)
@@ -49,11 +49,11 @@ export default function ImportRecipeForm({ isOpen, onClose, onSuccess }: ImportR
     try {
       const cleanLink = deeplink.trim();
 
-      if (!cleanLink.startsWith('goose://recipe?config=')) {
-        throw new Error('Invalid deeplink format. Expected: goose://recipe?config=...');
+      if (!cleanLink.startsWith('mts://recipe?config=')) {
+        throw new Error('Invalid deeplink format. Expected: mts://recipe?config=...');
       }
 
-      const recipeEncoded = cleanLink.replace('goose://recipe?config=', '');
+      const recipeEncoded = cleanLink.replace('mts://recipe?config=', '');
 
       if (!recipeEncoded) {
         throw new Error('No recipe configuration found in deeplink');
@@ -231,14 +231,14 @@ export default function ImportRecipeForm({ isOpen, onClose, onSuccess }: ImportR
                                   ? 'border-red-500'
                                   : 'border-border-subtle'
                               } ${isDisabled ? 'cursor-not-allowed bg-gray-40 text-gray-300' : ''}`}
-                              placeholder="Paste your goose://recipe?config=... deeplink here"
+                              placeholder="Paste your mts://recipe?config=... deeplink here"
                               rows={3}
                               autoFocus={!isDisabled}
                             />
                             <p
                               className={`text-xs mt-1 ${isDisabled ? 'text-gray-300' : 'text-text-muted'}`}
                             >
-                              Paste a recipe deeplink starting with "goose://recipe?config="
+                              Paste a recipe deeplink starting with "mts://recipe?config="
                             </p>
                             {field.state.meta.errors.length > 0 && (
                               <p className="text-red-500 text-sm mt-1">
@@ -324,7 +324,7 @@ export default function ImportRecipeForm({ isOpen, onClose, onSuccess }: ImportR
               </importRecipeForm.Subscribe>
 
               <p className="text-xs text-text-muted">
-                Ensure you review contents of recipe files before adding them to your goose
+                Ensure you review contents of recipe files before adding them to your mts
                 interface.
               </p>
             </div>

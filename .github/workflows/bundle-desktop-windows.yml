@@ -165,19 +165,19 @@ jobs:
             "
 
           # Verify build succeeded
-          if [ ! -f "./target/x86_64-pc-windows-gnu/release/goosed.exe" ]; then
+          if [ ! -f "./target/x86_64-pc-windows-gnu/release/mtsd.exe" ]; then
             echo "❌ Windows binary not found."
             ls -la ./target/x86_64-pc-windows-gnu/release/ || echo "Release directory doesn't exist"
             exit 1
           fi
 
           echo "✅ Windows binary found!"
-          ls -la ./target/x86_64-pc-windows-gnu/release/goosed.exe
+          ls -la ./target/x86_64-pc-windows-gnu/release/mtsd.exe
           ls -la ./target/x86_64-pc-windows-gnu/release/*.dll
 
       - name: Prepare Windows binary and DLLs
         run: |
-          if [ ! -f "./target/x86_64-pc-windows-gnu/release/goosed.exe" ]; then
+          if [ ! -f "./target/x86_64-pc-windows-gnu/release/mtsd.exe" ]; then
             echo "Windows binary not found."
             exit 1
           fi
@@ -187,21 +187,21 @@ jobs:
           mkdir -p ./ui/desktop/src/bin
 
           echo "Copying Windows binary and DLLs..."
-          cp -f ./target/x86_64-pc-windows-gnu/release/goosed.exe ./ui/desktop/src/bin/
+          cp -f ./target/x86_64-pc-windows-gnu/release/mtsd.exe ./ui/desktop/src/bin/
           cp -f ./target/x86_64-pc-windows-gnu/release/*.dll ./ui/desktop/src/bin/
 
           # Copy Windows platform files (tools, scripts, etc.)
           if [ -d "./ui/desktop/src/platform/windows/bin" ]; then
             echo "Copying Windows platform files..."
             for file in ./ui/desktop/src/platform/windows/bin/*.{exe,dll,cmd}; do
-              if [ -f "$file" ] && [ "$(basename "$file")" != "goosed.exe" ]; then
+              if [ -f "$file" ] && [ "$(basename "$file")" != "mtsd.exe" ]; then
                 cp -f "$file" ./ui/desktop/src/bin/
               fi
             done
 
-            if [ -d "./ui/desktop/src/platform/windows/bin/goose-npm" ]; then
+            if [ -d "./ui/desktop/src/platform/windows/bin/mts-npm" ]; then
               echo "Setting up npm environment..."
-              rsync -a --delete ./ui/desktop/src/platform/windows/bin/goose-npm/ ./ui/desktop/src/bin/goose-npm/
+              rsync -a --delete ./ui/desktop/src/platform/windows/bin/mts-npm/ ./ui/desktop/src/bin/mts-npm/
             fi
             echo "Windows-specific files copied successfully"
           fi
@@ -216,12 +216,12 @@ jobs:
       - name: Copy exe/dll to final out folder and prepare flat distribution
         run: |
           cd ui/desktop
-          mkdir -p ./out/Goose-win32-x64/resources/bin
-          rsync -av src/bin/ out/Goose-win32-x64/resources/bin/
+          mkdir -p ./out/MTS-win32-x64/resources/bin
+          rsync -av src/bin/ out/MTS-win32-x64/resources/bin/
 
           # Create flat distribution structure
           mkdir -p ./dist-windows
-          cp -r ./out/Goose-win32-x64/* ./dist-windows/
+          cp -r ./out/MTS-win32-x64/* ./dist-windows/
 
           # Verify the final structure
           echo "📋 Final flat distribution structure:"
@@ -249,8 +249,8 @@ jobs:
           wget -q https://github.com/ebourg/jsign/releases/download/6.0/jsign-6.0.jar -O jsign.jar
           echo "05ca18d4ab7b8c2183289b5378d32860f0ea0f3bdab1f1b8cae5894fb225fa8a  jsign.jar" | sha256sum -c
 
-          # Sign the main Electron executable (Goose.exe)
-          echo "🔐 Signing main Electron executable: Goose.exe"
+          # Sign the main Electron executable (MTS.exe)
+          echo "🔐 Signing main Electron executable: MTS.exe"
           cd ui/desktop/dist-windows/
 
           java -jar ${GITHUB_WORKSPACE}/jsign.jar \
@@ -260,15 +260,15 @@ jobs:
             --alias windows-codesign \
             --certfile "${GITHUB_WORKSPACE}/block-codesign-cert.pem" \
             --tsaurl "http://timestamp.digicert.com" \
-            --name "Goose" \
-            --url "https://github.com/block/goose" \
-            "Goose.exe"
+            --name "MTS" \
+            --url "https://github.com/block/mts" \
+            "MTS.exe"
 
-          osslsigncode verify Goose.exe
-          echo "✅ Main executable Goose.exe signed successfully"
+          osslsigncode verify MTS.exe
+          echo "✅ Main executable MTS.exe signed successfully"
 
-          # Sign the backend executable (goosed.exe)
-          echo "🔐 Signing backend executable: goosed.exe"
+          # Sign the backend executable (mtsd.exe)
+          echo "🔐 Signing backend executable: mtsd.exe"
           cd resources/bin/
 
           java -jar ${GITHUB_WORKSPACE}/jsign.jar \
@@ -278,20 +278,20 @@ jobs:
             --alias windows-codesign \
             --certfile "${GITHUB_WORKSPACE}/block-codesign-cert.pem" \
             --tsaurl "http://timestamp.digicert.com" \
-            --name "Goose Backend" \
-            --url "https://github.com/block/goose" \
-            "goosed.exe"
+            --name "MTS Backend" \
+            --url "https://github.com/block/mts" \
+            "mtsd.exe"
 
-          osslsigncode verify goosed.exe
-          echo "✅ Backend executable goosed.exe signed successfully"
+          osslsigncode verify mtsd.exe
+          echo "✅ Backend executable mtsd.exe signed successfully"
 
           # Show final file status
           echo "📋 Final signed files:"
           cd ../../
-          ls -la Goose.exe
-          sha256sum Goose.exe
-          ls -la resources/bin/goosed.exe
-          sha256sum resources/bin/goosed.exe
+          ls -la MTS.exe
+          sha256sum MTS.exe
+          ls -la resources/bin/mtsd.exe
+          sha256sum resources/bin/mtsd.exe
 
           # Clean up certificate file
           rm -f ${GITHUB_WORKSPACE}/block-codesign-cert.pem
@@ -301,13 +301,13 @@ jobs:
         run: |
           echo "📋 Verifying both signed executables in final distribution:"
           echo "Main executable:"
-          ls -la ui/desktop/dist-windows/Goose.exe
-          osslsigncode verify ui/desktop/dist-windows/Goose.exe
+          ls -la ui/desktop/dist-windows/MTS.exe
+          osslsigncode verify ui/desktop/dist-windows/MTS.exe
           echo "✅ Main executable signature verification passed"
 
           echo "Backend executable:"
-          ls -la ui/desktop/dist-windows/resources/bin/goosed.exe
-          osslsigncode verify ui/desktop/dist-windows/resources/bin/goosed.exe
+          ls -la ui/desktop/dist-windows/resources/bin/mtsd.exe
+          osslsigncode verify ui/desktop/dist-windows/resources/bin/mtsd.exe
           echo "✅ Backend executable signature verification passed"
 
       - name: Create Windows zip package
@@ -316,17 +316,17 @@ jobs:
           echo "📦 Creating Windows zip package..."
 
           # Create a zip file from the dist-windows directory
-          zip -r "Goose-win32-x64.zip" dist-windows/
+          zip -r "MTS-win32-x64.zip" dist-windows/
 
           echo "✅ Windows zip package created:"
-          ls -la Goose-win32-x64.zip
+          ls -la MTS-win32-x64.zip
 
           # Also create the zip in the expected output structure for consistency
-          mkdir -p out/Goose-win32-x64/
-          cp Goose-win32-x64.zip out/Goose-win32-x64/
+          mkdir -p out/MTS-win32-x64/
+          cp MTS-win32-x64.zip out/MTS-win32-x64/
 
       - name: Upload Windows build artifacts
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # pin@v4
         with:
-          name: Goose-win32-x64
-          path: ui/desktop/out/Goose-win32-x64/Goose-win32-x64.zip
+          name: MTS-win32-x64
+          path: ui/desktop/out/MTS-win32-x64/MTS-win32-x64.zip

@@ -143,7 +143,7 @@ export default function ConfigSettings() {
           Configuration
         </CardTitle>
         <CardDescription>
-          Edit your goose configuration settings
+          Edit your mts configuration settings
           {currentProvider && ` (current settings for ${currentProvider})`}
         </CardDescription>
       </CardHeader>
@@ -162,7 +162,7 @@ export default function ConfigSettings() {
                 Configuration Editor
               </DialogTitle>
               <DialogDescription>
-                Edit your goose configuration settings
+                Edit your mts configuration settings
                 {currentProvider && ` (current settings for ${currentProvider})`}
               </DialogDescription>
             </DialogHeader>

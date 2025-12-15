@@ -141,4 +141,4 @@ export const MtshintsModal = ({ directory, setIsMtshintsModalOpen }: MtshintsMod
 };
 
 // Backward compatibility alias
-export const GoosehintsModal = MtshintsModal;
+export const MTShintsModal = MtshintsModal;

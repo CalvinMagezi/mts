@@ -14,11 +14,11 @@ impl Paths {
             }
         } else {
             let strategy = choose_app_strategy(AppStrategyArgs {
-                top_level_domain: "Block".to_string(),
-                author: "Block".to_string(),
-                app_name: "goose".to_string(),
+                top_level_domain: "MageziTech".to_string(),
+                author: "MageziTech".to_string(),
+                app_name: "mts".to_string(),
             })
-            .expect("goose requires a home dir");
+            .expect("mts requires a home dir");
 
             match dir_type {
                 DirType::Config => strategy.config_dir(),

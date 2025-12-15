@@ -414,7 +414,7 @@ impl ServerHandler for AutoVisualiserRouter {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
             server_info: Implementation {
-                name: "goose-autovisualiser".to_string(),
+                name: "mts-autovisualiser".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_owned(),
                 title: None,
                 icons: None,
@@ -431,8 +431,8 @@ impl ServerHandler for AutoVisualiserRouter {
 impl AutoVisualiserRouter {
     pub fn new() -> Self {
         // choose_app_strategy().cache_dir()
-        // - macOS/Linux: ~/.cache/goose/autovisualiser/
-        // - Windows:     ~\AppData\Local\Block\goose\cache\autovisualiser\
+        // - macOS/Linux: ~/.cache/mts/autovisualiser/
+        // - Windows:     ~\AppData\Local\Block\mts\cache\autovisualiser\
         let cache_dir = choose_app_strategy(crate::APP_STRATEGY.clone())
             .unwrap()
             .cache_dir()

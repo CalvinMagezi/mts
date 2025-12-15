@@ -13,7 +13,7 @@
     "start-gui": "npm run generate-api && electron-forge start",
     "start-gui-debug": "npm run generate-api && electron-forge start -- --inspect=9229",
     "start": "cd ../.. && just run-ui",
-    "start:test-error": "GOOSE_TEST_ERROR=true electron-forge start",
+    "start:test-error": "MTS_TEST_ERROR=true electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "bundle:default": "node scripts/prepare-platform-binaries.js && npm run make && (cd out/MTS-darwin-arm64 && ditto -c -k --sequesterRsrc --keepParent MTS.app MTS.zip) || echo 'out/MTS-darwin-arm64 not found; either the binary is not built or you are not on macOS'",

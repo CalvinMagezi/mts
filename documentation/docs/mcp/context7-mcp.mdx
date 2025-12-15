@@ -1,26 +1,26 @@
 ---
 title: Context7 Extension
-description: Add Context7 MCP Server as a goose Extension
+description: Add Context7 MCP Server as a mts Extension
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import MTSDesktopInstaller from '@site/src/components/MTSDesktopInstaller';
 
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/LNmPi6YCocI" /> 
 
 
-This tutorial covers how to add the [Context7 MCP Server](https://github.com/upstash/context7) as a goose extension to pull up-to-date, version-specific code and docs so goose can vibe code with real context, not hallucinated or outdated answers.
+This tutorial covers how to add the [Context7 MCP Server](https://github.com/upstash/context7) as a mts extension to pull up-to-date, version-specific code and docs so mts can vibe code with real context, not hallucinated or outdated answers.
 
 :::tip TLDR
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40upstash%2Fcontext7-mcp&id=context7&name=Context7&description=Context7%20MCP%20server%20for%20up-to-date%20code%20and%20docs)
+  <TabItem value="ui" label="mts Desktop" default>
+  [Launch the installer](mts://extension?cmd=npx&arg=-y&arg=%40upstash%2Fcontext7-mcp&id=context7&name=Context7&description=Context7%20MCP%20server%20for%20up-to-date%20code%20and%20docs)
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
   **Command**
   ```sh
   npx -y @upstash/context7-mcp
@@ -36,8 +36,8 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 :::
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-    <GooseDesktopInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+    <MTSDesktopInstaller
       extensionId="context7"
       extensionName="Context7"
       description="Context7 MCP server for up-to-date code and docs"
@@ -47,7 +47,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
       timeout={300}
     />
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
     <CLIExtensionInstructions
       name="Context7"
       description="Context7 MCP server for up-to-date code and docs"
@@ -58,24 +58,24 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 ## Example Usage
 
-In this example, goose uses Context7 to pull real-time docs, compare tools, and scaffold a modern app using only the latest, official implementation patterns.
+In this example, mts uses Context7 to pull real-time docs, compare tools, and scaffold a modern app using only the latest, official implementation patterns.
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-   1. Open a new session in goose Desktop
+  <TabItem value="ui" label="mts Desktop" default>
+   1. Open a new session in mts Desktop
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
 
-  1. Open a terminal and start a new goose session:
+  1. Open a terminal and start a new mts session:
 
   ```sh
-  goose session
+  mts session
   ```
 
   </TabItem>
 </Tabs>
 
-### goose Prompt
+### mts Prompt
 
 I need help building a modern web application. Could you:
 
@@ -103,7 +103,7 @@ I need help building a modern web application. Could you:
 
 Please reference specific documentation sections and explain why certain approaches are recommended over others.
 
-### goose Output
+### mts Output
 
 :::note Desktop
 

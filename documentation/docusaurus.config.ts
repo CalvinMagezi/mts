@@ -12,7 +12,7 @@ const inkeepIntegrationId = process.env.INKEEP_INTEGRATION_ID;
 const inkeepOrgId = process.env.INKEEP_ORG_ID;
 
 const config: Config = {
-  title: "goose",
+  title: "mts",
   tagline:
     "your local AI agent, automating engineering tasks seamlessly",
   favicon: "img/favicon.ico",
@@ -21,12 +21,12 @@ const config: Config = {
   url: "https://block.github.io/",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: process.env.TARGET_PATH || "/goose/",
+  baseUrl: process.env.TARGET_PATH || "/mts/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "block", // Usually your GitHub org/user name.
-  projectName: "goose", // Usually your repo name.
+  projectName: "mts", // Usually your repo name.
 
   onBrokenLinks: "throw",
   
@@ -52,7 +52,7 @@ const config: Config = {
         rel: "alternate",
         type: "text/plain",
         title: "LLM context",
-        href: "/goose/llms.txt",
+        href: "/mts/llms.txt",
       },
     },
   ],
@@ -97,8 +97,8 @@ const config: Config = {
       {
         redirects: [
           {
-            from: '/docs/getting-started/using-goose-free',
-            to: '/docs/getting-started/providers#using-goose-for-free'
+            from: '/docs/getting-started/using-mts-free',
+            to: '/docs/getting-started/providers#using-mts-for-free'
           },
           {
             from: '/v1/docs/getting-started/providers',
@@ -133,7 +133,7 @@ const config: Config = {
             to: '/docs/mcp/computer-controller-mcp'
           },
           {
-            from: '/docs/guides/managing-goose-sessions',
+            from: '/docs/guides/managing-mts-sessions',
             to: '/docs/guides/sessions/session-management'
           },
           {
@@ -141,7 +141,7 @@ const config: Config = {
             to: '/docs/guides/sessions/smart-context-management'
           },
           {
-            from: '/docs/guides/share-goose-sessions',
+            from: '/docs/guides/share-mts-sessions',
             to: '/docs/guides/recipes/session-recipes'
           },
           {
@@ -173,8 +173,8 @@ const config: Config = {
             to: '/docs/tutorials/benchmarking'
           },
           {
-            from: '/docs/guides/goose-in-docker',
-            to: '/docs/tutorials/goose-in-docker'
+            from: '/docs/guides/mts-in-docker',
+            to: '/docs/tutorials/mts-in-docker'
           },
           {
             from: '/docs/guides/multi-model/creating-plans',
@@ -405,12 +405,12 @@ const config: Config = {
         },
 
         {
-          href: "https://discord.gg/goose-oss",
+          href: "https://discord.gg/mts-oss",
           label: "Discord",
           position: "right",
         },
         {
-          href: "https://github.com/block/goose",
+          href: "https://github.com/block/mts",
           label: "GitHub",
           position: "right",
         },
@@ -422,7 +422,7 @@ const config: Config = {
           title: "Quick Links",
           items: [
             {
-              label: "Install goose",
+              label: "Install mts",
               to: "docs/getting-started/installation",
             },
             {
@@ -440,19 +440,19 @@ const config: Config = {
             },
             {
               label: "Discord",
-              href: "https://discord.gg/goose-oss",
+              href: "https://discord.gg/mts-oss",
             },
             {
               label: "YouTube",
-              href: "https://www.youtube.com/@goose-oss",
+              href: "https://www.youtube.com/@mts-oss",
             },
             {
               label: "LinkedIn",
-              href: "https://www.linkedin.com/company/goose-oss",
+              href: "https://www.linkedin.com/company/mts-oss",
             },
             {
               label: "Twitter / X",
-              href: "https://x.com/goose_oss",
+              href: "https://x.com/mts_oss",
             },
             {
               label: "BlueSky",
@@ -473,7 +473,7 @@ const config: Config = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/block/goose",
+              href: "https://github.com/block/mts",
             },
           ],
         },
@@ -492,19 +492,19 @@ const config: Config = {
         primaryBrandColor: "#1E1E1E",
       },
       aiChatSettings: {
-        chatSubjectName: "goose",
+        chatSubjectName: "mts",
         botAvatarSrcUrl:
           "",
         getHelpCallToActions: [
           {
             name: "GitHub",
-            url: "https://github.com/block/goose",
+            url: "https://github.com/block/mts",
             icon: {
               builtIn: "FaGithub",
             },
           },
         ],
-        quickQuestions: ["What is goose?"],
+        quickQuestions: ["What is mts?"],
       },
     },
     announcementBar: {
@@ -516,9 +516,9 @@ const config: Config = {
       isCloseable: false,
     },
     // announcementBar: {
-    //   id: 'goose-grants',
+    //   id: 'mts-grants',
     //   content:
-    //     '✨ goose grant program now open: <a href="/goose/grants">apply now</a>! ✨',
+    //     '✨ mts grant program now open: <a href="/mts/grants">apply now</a>! ✨',
     //   backgroundColor: '#20232a',
     //   textColor: '#fff',
     //   isCloseable: false,

@@ -1,18 +1,18 @@
 ---
 title: Filesystem Extension
-description: Add Filesystem MCP Server as goose Extension
+description: Add Filesystem MCP Server as mts Extension
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import MTSDesktopInstaller from '@site/src/components/MTSDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 import { PanelLeft, Settings } from 'lucide-react';
 
 <YouTubeShortEmbed videoUrl="https://youtube.com/embed/2IVPcjEr-yQ" /> 
 
-This tutorial covers how to add the [Filesystem MCP server](https://github.com/modelcontextprotocol/servers/tree/HEAD/src/filesystem) as a goose extension, enabling powerful code analysis and file management. With this extension, goose can analyze project structures, edit and organize files, detect unused dependencies, and generate documentation to improve software maintainability.
+This tutorial covers how to add the [Filesystem MCP server](https://github.com/modelcontextprotocol/servers/tree/HEAD/src/filesystem) as a mts extension, enabling powerful code analysis and file management. With this extension, mts can analyze project structures, edit and organize files, detect unused dependencies, and generate documentation to improve software maintainability.
 
 :::tip TLDR
   **Command**
@@ -30,8 +30,8 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 :::
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  <GooseDesktopInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+  <MTSDesktopInstaller
     extensionId="filesystem"
     extensionName="filesystem"
     description="Enables code analysis and file management"
@@ -53,7 +53,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   </TabItem>
 
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
     <CLIExtensionInstructions
       name="Filesystem"
       description="Enables code analysis and file management"
@@ -69,11 +69,11 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 ## Example Usage
 
-In this example, I'll use goose to perform a comprehensive security audit across multiple projects, including a payment processing system, authentication service, and e-commerce dashboard. I need to identify security vulnerabilities, implement fixes, and ensure sensitive data and operations are properly protected.
+In this example, I'll use mts to perform a comprehensive security audit across multiple projects, including a payment processing system, authentication service, and e-commerce dashboard. I need to identify security vulnerabilities, implement fixes, and ensure sensitive data and operations are properly protected.
 
-### goose Prompt
+### mts Prompt
     ```
-    Hey goose, I need to perform a security audit and implement fixes across multiple projects:
+    Hey mts, I need to perform a security audit and implement fixes across multiple projects:
 
         1. Please analyze these codebases for security issues:
             - /Users/ebonyl/e-commerce-dashboard
@@ -105,7 +105,7 @@ In this example, I'll use goose to perform a comprehensive security audit across
 
     Please focus particularly on the payment system and authentication service as they handle sensitive data.
     ```
-### goose Output
+### mts Output
     ```
     I'll help you conduct the security audit, starting with the payment system project since it handles sensitive financial data. Let me first check if we have access to these directories.
 

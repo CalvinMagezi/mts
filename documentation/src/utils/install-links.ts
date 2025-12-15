@@ -1,14 +1,14 @@
 import type { MCPServer } from "../types/server";
 
-export function getGooseInstallLink(server: MCPServer): string {
+export function getMTSInstallLink(server: MCPServer): string {
   if (server.is_builtin) {
     const queryParams = [
-      'cmd=goosed',
+      'cmd=mtsd',
       'arg=mcp',
       `arg=${encodeURIComponent(server.id)}`,
       `description=${encodeURIComponent(server.id)}`
     ].join('&');
-    return `goose://extension?${queryParams}`;
+    return `mts://extension?${queryParams}`;
   }
 
   // Handle the case where the command is a URL
@@ -32,7 +32,7 @@ export function getGooseInstallLink(server: MCPServer): string {
         ),
     ].join("&");
   
-    return `goose://extension?${queryParams}`;
+    return `mts://extension?${queryParams}`;
   }
   
   const parts = server.command.split(" ");
@@ -52,5 +52,5 @@ export function getGooseInstallLink(server: MCPServer): string {
       ),
   ].join("&");
 
-  return `goose://extension?${queryParams}`;
+  return `mts://extension?${queryParams}`;
 }

@@ -15,12 +15,12 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use thiserror::Error;
 
-const KEYRING_SERVICE: &str = "goose";
+const KEYRING_SERVICE: &str = "mts";
 const KEYRING_USERNAME: &str = "secrets";
 pub const CONFIG_YAML_NAME: &str = "config.yaml";
 
 #[cfg(test)]
-const TEST_KEYRING_SERVICE: &str = "goose-test";
+const TEST_KEYRING_SERVICE: &str = "mts-test";
 
 #[derive(Error, Debug)]
 pub enum ConfigError {
@@ -56,7 +56,7 @@ impl From<keyring::Error> for ConfigError {
     }
 }
 
-/// Configuration management for goose.
+/// Configuration management for mts.
 ///
 /// This module provides a flexible configuration system that supports:
 /// - Dynamic configuration keys
@@ -68,13 +68,13 @@ impl From<keyring::Error> for ConfigError {
 ///
 /// Configuration values are loaded with the following precedence:
 /// 1. Environment variables (exact key match)
-/// 2. Configuration file (~/.config/goose/config.yaml by default)
+/// 2. Configuration file (~/.config/mts/config.yaml by default)
 ///
 /// Secrets are loaded with the following precedence:
 /// 1. Environment variables (exact key match)
 /// 2. System keyring (which can be disabled with MTS_DISABLE_KEYRING)
 /// 3. If the keyring is disabled, secrets are stored in a secrets file
-///    (~/.config/goose/secrets.yaml by default)
+///    (~/.config/mts/secrets.yaml by default)
 ///
 /// # Examples
 ///
@@ -101,7 +101,7 @@ impl From<keyring::Error> for ConfigError {
 /// checking for environment overrides. e.g. openai_api_key will check for an
 /// environment variable OPENAI_API_KEY
 ///
-/// For goose-specific configuration, consider prefixing with "goose_" to avoid conflicts.
+/// For mts-specific configuration, consider prefixing with "mts_" to avoid conflicts.
 pub struct Config {
     config_path: PathBuf,
     secrets: SecretStorage,
@@ -220,7 +220,7 @@ fn parse_yaml_content(content: &str) -> Result<Mapping, ConfigError> {
 impl Config {
     /// Get the global configuration instance.
     ///
-    /// This will initialize the configuration with the default path (~/.config/goose/config.yaml)
+    /// This will initialize the configuration with the default path (~/.config/mts/config.yaml)
     /// if it hasn't been initialized yet.
     pub fn global() -> &'static Config {
         GLOBAL_CONFIG.get_or_init(Config::default)

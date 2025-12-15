@@ -8,9 +8,9 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PanelLeft, Settings } from 'lucide-react';
 
-Prompt injection happens when malicious instructions are hidden inside executable content. In the world of AI, prompt injection can be used to nudge AI agents (like goose) to run unsafe commands that compromise your environment or data.
+Prompt injection happens when malicious instructions are hidden inside executable content. In the world of AI, prompt injection can be used to nudge AI agents (like mts) to run unsafe commands that compromise your environment or data.
 
-You can help protect your goose workflows by enabling prompt injection detection. This feature uses pattern matching to detect common attack techniques, including:
+You can help protect your mts workflows by enabling prompt injection detection. This feature uses pattern matching to detect common attack techniques, including:
 - Attempts to delete system files or directories
 - Commands that download and execute remote scripts
 - Attempts to access or exfiltrate sensitive data like SSH keys
@@ -22,9 +22,9 @@ These checks provide a safeguard, not a guarantee. They detect known patterns bu
 
 ## How Detection Works
 
-When enabled, goose scans tool calls for risky patterns before they run:
+When enabled, mts scans tool calls for risky patterns before they run:
 
-1. **Tool call is intercepted and analyzed** - When goose prepares to execute a tool, the security system extracts the tool parameter text and checks it against [threat patterns](https://github.com/block/goose/blob/main/crates/goose/src/security/patterns.rs)
+1. **Tool call is intercepted and analyzed** - When mts prepares to execute a tool, the security system extracts the tool parameter text and checks it against [threat patterns](https://github.com/block/mts/blob/main/crates/mts/src/security/patterns.rs)
 2. **Risk is assessed** - Detected threats are assigned confidence scores
 3. **Execution pauses** - Threats that exceed your configured threshold need your decision
 4. **Security alert appears** - The alert displays the confidence level, a description of the finding, and a unique finding ID. For example:
@@ -38,7 +38,7 @@ When enabled, goose scans tool calls for risky patterns before they run:
    [Allow Once] [Deny]
    ```
 5. **You choose** whether to proceed or cancel after reviewing the alert details. Note that:
-   - Each decision is logged with its finding ID in the [goose system logs](/docs/guides/logs#system-logs)
+   - Each decision is logged with its finding ID in the [mts system logs](/docs/guides/logs#system-logs)
    - Allowed commands still run with your full permissions
 
 **Responding to Alerts:**
@@ -53,7 +53,7 @@ When in doubt, deny.
 ## Enabling Detection
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="mts Desktop" default>
     
     1. Click the <PanelLeft className="inline" size={16} /> button in the top-left to open the sidebar
     2. Click `Settings` on the sidebar
@@ -62,7 +62,7 @@ When in doubt, deny.
     5. Optionally adjust the `Detection Threshold` to [configure the sensitivity](#configuring-detection-threshold)
 
   </TabItem>
-  <TabItem value="config" label="goose config file">
+  <TabItem value="config" label="mts config file">
 
     Add these settings to your [`config.yaml`](/docs/guides/config-files):
 
@@ -75,7 +75,7 @@ When in doubt, deny.
 </Tabs>
 
 :::info Other Security Features
-Beyond prompt injection detection, goose automatically:
+Beyond prompt injection detection, mts automatically:
 - Warns you before running new or updated recipes
 - Warns you when importing recipes that contain invisible Unicode Tag Block characters
 - [Checks for known malware](/docs/troubleshooting/known-issues#malicious-package-detected) when installing extensions for locally-run MCP servers
@@ -98,5 +98,5 @@ Lower thresholds mean fewer alerts but might miss threats. Higher thresholds cat
 
 ## See Also
 
-- [goose Permission Modes](/docs/guides/goose-permissions) - Control goose's autonomy level
+- [mts Permission Modes](/docs/guides/mts-permissions) - Control mts's autonomy level
 - [Managing Tool Permissions](/docs/guides/managing-tools/tool-permissions) - Fine-grained tool control

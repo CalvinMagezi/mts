@@ -1,22 +1,22 @@
 ---
 title: Browserbase Extension
-description: Add Browserbase MCP Server as a goose Extension for Web Automation
+description: Add Browserbase MCP Server as a mts Extension for Web Automation
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import MTSDesktopInstaller from '@site/src/components/MTSDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
-This tutorial covers how to add the Browserbase MCP Server as a goose extension for browser automation, enabling programmatic control over navigation, page interactions, and content capture.
+This tutorial covers how to add the Browserbase MCP Server as a mts extension for browser automation, enabling programmatic control over navigation, page interactions, and content capture.
 
 :::tip TLDR
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=@browserbasehq/mcp&id=browserbase&name=Browserbase&description=Automate%20web%20browsing%20and%20data%20extraction&env=BROWSERBASE_PROJECT_ID%3DBrowserbase%20Project%20ID&env=BROWSERBASE_API_KEY%3DBrowserbase%20API%20Key)
+  <TabItem value="ui" label="mts Desktop" default>
+  [Launch the installer](mts://extension?cmd=npx&arg=@browserbasehq/mcp&id=browserbase&name=Browserbase&description=Automate%20web%20browsing%20and%20data%20extraction&env=BROWSERBASE_PROJECT_ID%3DBrowserbase%20Project%20ID&env=BROWSERBASE_API_KEY%3DBrowserbase%20API%20Key)
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
   **Command**
   ```sh
   npx @browserbasehq/mcp
@@ -37,8 +37,8 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 :::
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  <GooseDesktopInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+  <MTSDesktopInstaller
     extensionId="browserbase"
     extensionName="Browserbase"
     description="Automate web browsing and data extraction"
@@ -52,7 +52,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
     apiKeyLinkText="Browserbase credentials"
   />
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
     <CLIExtensionInstructions
       name="Browserbase"
       description="Automate web browsing and data extraction"
@@ -78,7 +78,7 @@ Let's use the Browserbase extension to gather information about trending MCP-rel
 Claude 4 Sonnet was used for this task.
 :::
 
-### goose Prompt
+### mts Prompt
 
 ```
 1. Go to https://github.com/trending
@@ -104,7 +104,7 @@ Claude 4 Sonnet was used for this task.
     • README excerpt
 ```
 
-### goose Output
+### mts Output
 
 ```
 # MCP Repositories Report

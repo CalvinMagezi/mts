@@ -1,17 +1,17 @@
 ---
 title: Auto Visualiser Extension
-description: Add automatic data visualization to goose
+description: Add automatic data visualization to mts
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import MTSBuiltinInstaller from '@site/src/components/MTSBuiltinInstaller';
 import ImageCarousel from '@site/src/components/ImageCarousel';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/txh6DlzPwNo" />
 
-The Auto Visualiser extension enables goose to automatically generate interactive data visualizations directly in your conversation. This built-in extension leverages MCP-UI to create charts, graphs, maps, and other visual representations of your data without requiring manual requests.
+The Auto Visualiser extension enables mts to automatically generate interactive data visualizations directly in your conversation. This built-in extension leverages MCP-UI to create charts, graphs, maps, and other visual representations of your data without requiring manual requests.
 
 This guide will cover enabling and using the Auto Visualiser MCP Server.
 
@@ -19,22 +19,22 @@ This guide will cover enabling and using the Auto Visualiser MCP Server.
 
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  <GooseBuiltinInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+  <MTSBuiltinInstaller
     extensionName="Auto Visualiser"
     description="Automatically generate interactive data visualizations"
   />
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
 
   1. Run the `configure` command:
   ```sh
-  goose configure
+  mts configure
   ```
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   mts-configure 
   │
   ◇  What would you like you configure?
   │  Toggle Extensions 
@@ -51,7 +51,7 @@ This guide will cover enabling and using the Auto Visualiser MCP Server.
 
 ## Visualization Types
 
-The Auto Visualiser is a powerful extension that integrates with goose's MCP-UI system to automatically detect when data would benefit from visualization and render interactive visual components. It analyzes data patterns in your conversations and suggests the most appropriate visualization type.
+The Auto Visualiser is a powerful extension that integrates with mts's MCP-UI system to automatically detect when data would benefit from visualization and render interactive visual components. It analyzes data patterns in your conversations and suggests the most appropriate visualization type.
 
 | Chart Type | Description | Detected When Prompt Implies |
 |------------|-------------|------------------------------|
@@ -78,7 +78,7 @@ The Auto Visualiser is a powerful extension that integrates with goose's MCP-UI 
 
 ### Features
 
-- **Automatic Detection**: goose intelligently chooses the best visualization type for your data
+- **Automatic Detection**: mts intelligently chooses the best visualization type for your data
 - **Interactive Components**: All visualizations are interactive with hover effects, zooming, and drilling capabilities
 - **MCP-UI Integration**: Leverages the emerging MCP-UI standard for seamless rendering
 - **Multiple Chart Support**: Can render multiple visualizations in a single response
@@ -88,10 +88,10 @@ The Auto Visualiser is a powerful extension that integrates with goose's MCP-UI 
 
 ## Example Usage
 
-In this example, I'll have goose analyze some sales data and automatically visualize it using the Auto Visualiser extension.
+In this example, I'll have mts analyze some sales data and automatically visualize it using the Auto Visualiser extension.
 
 
-### goose Prompt
+### mts Prompt
 ```
 I have quarterly sales data for different product categories. Can you help me understand:
 1. The hierarchical breakdown of revenue across our nested product categories
@@ -104,7 +104,7 @@ Here's the data:
 - Home & Garden: Q1: $80k, Q2: $95k, Q3: $110k, Q4: $125k
 ```
 
-### goose Output
+### mts Output
 
 :::note Desktop
 

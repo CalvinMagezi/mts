@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BaseModal } from './ui/BaseModal';
 import { Button } from './ui/button';
-import { Goose } from './icons/Mts';
+import { MTS } from './icons/Mts';
 import { TELEMETRY_UI_ENABLED } from '../updates';
 import { toastService } from '../toasts';
 import { useConfig } from './ConfigContext';
@@ -101,20 +101,20 @@ export default function TelemetryOptOutModal(props: TelemetryOptOutModalProps) {
     >
       <div className="px-2 py-3">
         <div className="flex justify-center mb-4">
-          <Goose className="size-10 text-text-default" />
+          <MTS className="size-10 text-text-default" />
         </div>
         <h2 className="text-2xl font-regular dark:text-white text-gray-900 text-center mb-3">
-          Help improve goose
+          Help improve mts
         </h2>
         <p className="text-text-default text-sm mb-3">
-          Would you like to help improve goose by sharing anonymous usage data? This helps us
-          understand how goose is used and identify areas for improvement.
+          Would you like to help improve mts by sharing anonymous usage data? This helps us
+          understand how mts is used and identify areas for improvement.
         </p>
         <div className="text-text-muted text-xs space-y-1">
           <p className="font-medium text-text-default">What we collect:</p>
           <ul className="list-disc list-inside space-y-0.5 ml-1">
             <li>Operating system, version, and architecture</li>
-            <li>goose version and install method</li>
+            <li>mts version and install method</li>
             <li>Provider and model used</li>
             <li>Extensions and tool usage counts (names only)</li>
             <li>Session metrics (duration, interaction count, token usage)</li>

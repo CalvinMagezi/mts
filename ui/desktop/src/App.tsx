@@ -302,7 +302,7 @@ const SharedSessionRouteWrapper = ({
         if (shareToken && baseUrl) {
           setIsLoadingSharedSession(true);
           try {
-            await openSharedSessionFromDeepLink(`goose://sessions/${shareToken}`, setView, baseUrl);
+            await openSharedSessionFromDeepLink(`mts://sessions/${shareToken}`, setView, baseUrl);
           } catch (error) {
             console.error('Failed to retry loading shared session:', error);
           } finally {
@@ -420,7 +420,7 @@ export function AppInner() {
       } catch (error) {
         console.error('Unexpected error opening shared session:', error);
         // Navigate to shared session view with error
-        const shareToken = link.replace('goose://sessions/', '');
+        const shareToken = link.replace('mts://sessions/', '');
         const options = {
           sessionDetails: null,
           error: error instanceof Error ? error.message : 'Unknown error',

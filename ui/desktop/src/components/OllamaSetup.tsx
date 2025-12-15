@@ -168,7 +168,7 @@ export function OllamaSetup({ onSuccess, onCancel }: OllamaSetupProps) {
                   The {getPreferredModel()} model is not installed
                 </p>
                 <p className="text-text-muted text-xs mt-1">
-                  This model is recommended for the best experience with Goose
+                  This model is recommended for the best experience with MTS
                 </p>
               </div>
               <button
@@ -211,7 +211,7 @@ export function OllamaSetup({ onSuccess, onCancel }: OllamaSetupProps) {
               disabled={isConnecting}
               className="w-full px-6 py-3 bg-background-muted text-text-standard rounded-lg hover:bg-background-hover transition-colors font-medium flex items-center justify-center gap-2"
             >
-              {isConnecting ? 'Connecting...' : 'Use Goose with Ollama'}
+              {isConnecting ? 'Connecting...' : 'Use MTS with Ollama'}
             </button>
           )}
         </div>

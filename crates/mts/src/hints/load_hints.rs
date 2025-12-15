@@ -7,7 +7,7 @@ use std::{
 use crate::config::paths::Paths;
 use crate::hints::import_files::read_referenced_files;
 
-pub const MTS_HINTS_FILENAME: &str = ".goosehints";
+pub const MTS_HINTS_FILENAME: &str = ".mtshints";
 pub const AGENTS_MD_FILENAME: &str = "AGENTS.md";
 
 fn find_git_root(start_dir: &Path) -> Option<&Path> {
@@ -102,7 +102,7 @@ pub fn load_hint_files(
 
     let mut hints = String::new();
     if !global_hints_contents.is_empty() {
-        hints.push_str("\n### Global Hints\nThese are my global goose hints.\n");
+        hints.push_str("\n### Global Hints\nThese are my global mts hints.\n");
         hints.push_str(&global_hints_contents.join("\n"));
     }
 
@@ -133,7 +133,7 @@ mod tests {
     }
 
     #[test]
-    fn test_goosehints_when_present() {
+    fn test_mtshints_when_present() {
         let dir = TempDir::new().unwrap();
 
         fs::write(dir.path().join(MTS_HINTS_FILENAME), "Test hint content").unwrap();
@@ -144,7 +144,7 @@ mod tests {
     }
 
     #[test]
-    fn test_goosehints_when_missing() {
+    fn test_mtshints_when_missing() {
         let dir = TempDir::new().unwrap();
 
         let gitignore = create_dummy_gitignore();
@@ -154,7 +154,7 @@ mod tests {
     }
 
     #[test]
-    fn test_goosehints_multiple_filenames() {
+    fn test_mtshints_multiple_filenames() {
         let dir = TempDir::new().unwrap();
 
         fs::write(
@@ -164,7 +164,7 @@ mod tests {
         .unwrap();
         fs::write(
             dir.path().join(MTS_HINTS_FILENAME),
-            "Custom hints file content from .goosehints",
+            "Custom hints file content from .mtshints",
         )
         .unwrap();
 
@@ -176,11 +176,11 @@ mod tests {
         );
 
         assert!(hints.contains("Custom hints file content from CLAUDE.md"));
-        assert!(hints.contains("Custom hints file content from .goosehints"));
+        assert!(hints.contains("Custom hints file content from .mtshints"));
     }
 
     #[test]
-    fn test_goosehints_configurable_filename() {
+    fn test_mtshints_configurable_filename() {
         let dir = TempDir::new().unwrap();
 
         fs::write(dir.path().join("CLAUDE.md"), "Custom hints file content").unwrap();
@@ -188,11 +188,11 @@ mod tests {
         let hints = load_hint_files(dir.path(), &["CLAUDE.md".to_string()], &gitignore);
 
         assert!(hints.contains("Custom hints file content"));
-        assert!(!hints.contains(".goosehints")); // Make sure it's not loading the default
+        assert!(!hints.contains(".mtshints")); // Make sure it's not loading the default
     }
 
     #[test]
-    fn test_nested_goosehints_with_git_root() {
+    fn test_nested_mtshints_with_git_root() {
         let temp_dir = TempDir::new().unwrap();
         let project_root = temp_dir.path();
 
@@ -227,7 +227,7 @@ mod tests {
     }
 
     #[test]
-    fn test_nested_goosehints_without_git_root() {
+    fn test_nested_mtshints_without_git_root() {
         let temp_dir = TempDir::new().unwrap();
         let base_dir = temp_dir.path();
 
@@ -259,7 +259,7 @@ mod tests {
     }
 
     #[test]
-    fn test_nested_goosehints_mixed_filenames() {
+    fn test_nested_mtshints_mixed_filenames() {
         let temp_dir = TempDir::new().unwrap();
         let project_root = temp_dir.path();
 
@@ -270,7 +270,7 @@ mod tests {
         fs::create_dir(&subdir).unwrap();
         fs::write(
             subdir.join(MTS_HINTS_FILENAME),
-            "Subdir .goosehints content",
+            "Subdir .mtshints content",
         )
         .unwrap();
 
@@ -285,7 +285,7 @@ mod tests {
         );
 
         assert!(hints.contains("Root CLAUDE.md content"));
-        assert!(hints.contains("Subdir .goosehints content"));
+        assert!(hints.contains("Subdir .mtshints content"));
     }
 
     #[test]

@@ -117,8 +117,8 @@ jobs:
           name: "Nightly ${{ needs.prepare-version.outputs.version }}"
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: |
-            goose-*.tar.bz2
-            Goose*.zip
+            mts-*.tar.bz2
+            MTS*.zip
             *.deb
             *.rpm
             download_cli.sh

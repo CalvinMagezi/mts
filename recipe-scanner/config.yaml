@@ -1,5 +1,5 @@
-GOOSE_MODEL: gpt-4o
-GOOSE_PROVIDER: openai
+MTS_MODEL: gpt-4o
+MTS_PROVIDER: openai
 extensions:
   developer:
     bundled: true

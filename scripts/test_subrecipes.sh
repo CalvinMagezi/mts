@@ -6,8 +6,8 @@ if [ -f .env ]; then
 fi
 
 if [ -z "$SKIP_BUILD" ]; then
-  echo "Building goose..."
-  cargo build --release --bin goose
+  echo "Building mts..."
+  cargo build --release --bin mts
   echo ""
 else
   echo "Skipping build (SKIP_BUILD is set)..."
@@ -16,16 +16,16 @@ fi
 
 SCRIPT_DIR=$(pwd)
 
-# Add goose binary to PATH so subagents can find it when spawning
+# Add mts binary to PATH so subagents can find it when spawning
 export PATH="$SCRIPT_DIR/target/release:$PATH"
 
 # Set default provider and model if not already set
 # Use fast model for CI to speed up tests
-export GOOSE_PROVIDER="${GOOSE_PROVIDER:-anthropic}"
-export GOOSE_MODEL="${GOOSE_MODEL:-claude-3-5-haiku-20241022}"
+export MTS_PROVIDER="${MTS_PROVIDER:-anthropic}"
+export MTS_MODEL="${MTS_MODEL:-claude-3-5-haiku-20241022}"
 
-echo "Using provider: $GOOSE_PROVIDER"
-echo "Using model: $GOOSE_MODEL"
+echo "Using provider: $MTS_PROVIDER"
+echo "Using model: $MTS_MODEL"
 echo ""
 
 TESTDIR=$(mktemp -d)
@@ -104,7 +104,7 @@ check_recipe_output() {
 
 echo "Running recipe with parallel subrecipes..."
 TMPFILE=$(mktemp)
-if (cd "$TESTDIR" && "$SCRIPT_DIR/target/release/goose" run --recipe project_analyzer_parallel.yaml --no-session 2>&1) | tee "$TMPFILE"; then
+if (cd "$TESTDIR" && "$SCRIPT_DIR/target/release/mts" run --recipe project_analyzer_parallel.yaml --no-session 2>&1) | tee "$TMPFILE"; then
   echo "✓ SUCCESS: Recipe completed successfully"
   RESULTS+=("✓ Recipe exit code")
   check_recipe_output "$TMPFILE" "parallel"

@@ -33,7 +33,7 @@ impl<'a> FileTraverser<'a> {
             return Err(ErrorData::new(
                 ErrorCode::INVALID_PARAMS,
                 format!(
-                    "Access to '{}' is restricted by .gooseignore",
+                    "Access to '{}' is restricted by .mtsignore",
                     path.display()
                 ),
                 None,

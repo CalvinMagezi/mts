@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Community Stars Analysis Script for block/goose repository
+Community Stars Analysis Script for block/mts repository
 
 This script analyzes GitHub contributor statistics and generates rankings for:
 - Top 5 Community All-Stars (External contributors)
-- Top 5 Team Stars (Block employees, non-goose team)
+- Top 5 Team Stars (Block employees, non-mts team)
 - Monthly Leaderboard (all eligible contributors)
 
 The script automatically:
@@ -33,7 +33,7 @@ from pathlib import Path
 import time
 
 # GitHub URL for team list file
-TEAMS_FILE_URL = "https://raw.githubusercontent.com/block/goose/main/documentation/scripts/community_stars_teams.txt"
+TEAMS_FILE_URL = "https://raw.githubusercontent.com/block/mts/main/documentation/scripts/community_stars_teams.txt"
 LOCAL_TEAMS_FILE = Path(__file__).parent / "community_stars_teams.txt"
 
 # Block-related organizations to check
@@ -95,9 +95,9 @@ def load_team_lists():
             sys.exit(1)
     
     # Parse the team lists
-    goose_maintainers = set()
-    block_non_goose = set()
-    external_goose = set()
+    mts_maintainers = set()
+    block_non_mts = set()
+    external_mts = set()
     bots = set()
     
     current_section = None
@@ -107,28 +107,28 @@ def load_team_lists():
         # Skip comments and empty lines
         if not line or line.startswith('#'):
             # Check for section headers in comments
-            if '# Goose Maintainers' in line:
-                current_section = 'goose_maintainers'
-            elif '# Block, non-goose' in line:
-                current_section = 'block_non_goose'
-            elif '# External, goose' in line:
-                current_section = 'external_goose'
+            if '# MTS Maintainers' in line:
+                current_section = 'mts_maintainers'
+            elif '# Block, non-mts' in line:
+                current_section = 'block_non_mts'
+            elif '# External, mts' in line:
+                current_section = 'external_mts'
             elif '# Bots' in line:
                 current_section = 'bots'
             continue
         
         # Add username to appropriate set (lowercase for case-insensitive matching)
         username = line.lower()
-        if current_section == 'goose_maintainers':
-            goose_maintainers.add(username)
-        elif current_section == 'block_non_goose':
-            block_non_goose.add(username)
-        elif current_section == 'external_goose':
-            external_goose.add(username)
+        if current_section == 'mts_maintainers':
+            mts_maintainers.add(username)
+        elif current_section == 'block_non_mts':
+            block_non_mts.add(username)
+        elif current_section == 'external_mts':
+            external_mts.add(username)
         elif current_section == 'bots':
             bots.add(username)
     
-    return goose_maintainers, block_non_goose, external_goose, bots
+    return mts_maintainers, block_non_mts, external_mts, bots
 
 def parse_date_range(date_input):
     """Parse various date input formats and return start/end timestamps."""
@@ -188,7 +188,7 @@ def main():
         sys.exit(1)
 
     # Load team lists
-    goose_maintainers, block_non_goose, external_goose, bots = load_team_lists()
+    mts_maintainers, block_non_mts, external_mts, bots = load_team_lists()
 
     # Load GitHub data
     github_data_file = '/tmp/github_contributors.json'
@@ -215,7 +215,7 @@ def main():
         
         for attempt in range(max_retries):
             try:
-                url = "https://api.github.com/repos/block/goose/stats/contributors"
+                url = "https://api.github.com/repos/block/mts/stats/contributors"
                 with urllib.request.urlopen(url, timeout=30) as response:
                     contributors_data = json.loads(response.read().decode('utf-8'))
                 
@@ -261,7 +261,7 @@ def main():
         username_lower = username.lower()
         
         # Skip excluded categories (case-insensitive matching)
-        if username_lower in bots or username_lower in goose_maintainers or username_lower in external_goose:
+        if username_lower in bots or username_lower in mts_maintainers or username_lower in external_mts:
             continue
         
         # Calculate stats for the specified period
@@ -280,9 +280,9 @@ def main():
         if period_commits > 0:
             total_lines = period_additions + period_deletions
             
-            # Categorize (only Block non-goose and External now)
-            if username_lower in block_non_goose:
-                category = 'block_non_goose'
+            # Categorize (only Block non-mts and External now)
+            if username_lower in block_non_mts:
+                category = 'block_non_mts'
             else:
                 # Check if user is in a Block org (with caching)
                 if username not in checked_orgs:
@@ -291,7 +291,7 @@ def main():
                     time.sleep(0.1)
                 
                 if checked_orgs[username]:
-                    category = 'block_non_goose'
+                    category = 'block_non_mts'
                     print(f"  ✓ Detected Block employee: @{username}", file=sys.stderr)
                 else:
                     category = 'external'
@@ -310,7 +310,7 @@ def main():
     contributor_stats.sort(key=lambda x: x['score'], reverse=True)
 
     # Separate by category
-    block_list = [c for c in contributor_stats if c['category'] == 'block_non_goose']
+    block_list = [c for c in contributor_stats if c['category'] == 'block_non_mts']
     external_list = [c for c in contributor_stats if c['category'] == 'external']
 
     # Get top 5 from each
@@ -333,7 +333,7 @@ def main():
         print("No external contributors found for this period.")
 
     print()
-    print("⭐ TOP 5 TEAM STARS (Block, non-goose)")
+    print("⭐ TOP 5 TEAM STARS (Block, non-mts)")
     print("-" * 70)
     if top_internal:
         for i, contrib in enumerate(top_internal, 1):
@@ -353,9 +353,9 @@ def main():
 
     print()
     print("=" * 70)
-    print(f"Total contributors (excluding bots, goose maintainers, external goose): {len(contributor_stats)}")
+    print(f"Total contributors (excluding bots, mts maintainers, external mts): {len(contributor_stats)}")
     print(f"  External: {len(external_list)}")
-    print(f"  Block (non-goose): {len(block_list)}")
+    print(f"  Block (non-mts): {len(block_list)}")
     print("=" * 70)
 
 if __name__ == "__main__":

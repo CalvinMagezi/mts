@@ -44,7 +44,7 @@ module.exports = {
       config: {
         repository: {
           owner: 'block',
-          name: 'goose',
+          name: 'mts',
         },
         prerelease: false,
         draft: true,

@@ -1,39 +1,39 @@
 ---
 title: Memory Extension
-description: Use Memory MCP Server as a goose Extension
+description: Use Memory MCP Server as a mts Extension
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseBuiltinInstaller from '@site/src/components/GooseBuiltinInstaller';
+import MTSBuiltinInstaller from '@site/src/components/MTSBuiltinInstaller';
 
 <YouTubeShortEmbed videoUrl="https://youtube.com/embed/BZ0yrSLXQwk" />
 
-The Memory extension turns goose into a knowledgeable assistant by allowing you to teach it personalized key information (e.g. commands, code snippets, preferences and configurations) that it can recall and apply later. Whether it’s project-specific (local) or universal (global) knowledge, goose learns and remembers what matters most to you.
+The Memory extension turns mts into a knowledgeable assistant by allowing you to teach it personalized key information (e.g. commands, code snippets, preferences and configurations) that it can recall and apply later. Whether it’s project-specific (local) or universal (global) knowledge, mts learns and remembers what matters most to you.
 
-This tutorial covers enabling and using the Memory MCP Server, which is a built-in goose extension.  
+This tutorial covers enabling and using the Memory MCP Server, which is a built-in mts extension.  
 
 ## Configuration
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  <GooseBuiltinInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+  <MTSBuiltinInstaller
     extensionName="Memory"
     description="Store and recall personalized information for consistent assistance"
   />
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
 
  
   1. Run the `configure` command:
   ```sh
-  goose configure
+  mts configure
   ```
 
   2. Choose to `Toggle Extensions`
   ```sh
-  ┌   goose-configure 
+  ┌   mts-configure 
   │
   ◇  What would you like to configure?
   │  Toggle Extensions 
@@ -49,22 +49,22 @@ This tutorial covers enabling and using the Memory MCP Server, which is a built-
 </Tabs>
 
 ## Why Use Memory?  
-With the Memory extension, you’re not just storing static notes, you’re teaching goose how to assist you better. Imagine telling goose:  
+With the Memory extension, you’re not just storing static notes, you’re teaching mts how to assist you better. Imagine telling mts:  
 
 > _learn everything about MCP servers and save it to memory._
 
 Later, you can ask:
 > _utilizing our MCP server knowledge help me build an MCP server._ 
 
-goose will recall everything you’ve saved as long as you instruct it to remember. This makes it easier to have consistent results when working with goose.
+mts will recall everything you’ve saved as long as you instruct it to remember. This makes it easier to have consistent results when working with mts.
 
-goose loads all saved memories at the start of a session and includes them in every prompt sent to the LLM. For large or detailed instructions, store them in files and instruct goose to reference those files:
+mts loads all saved memories at the start of a session and includes them in every prompt sent to the LLM. For large or detailed instructions, store them in files and instruct mts to reference those files:
 
 > _Remember that if I ask for help writing JavaScript, I want you to refer to "/path/to/javascript_notes.txt" and follow the instructions in that file._
 
 
 ## Trigger Words and When to Use Them
-goose also recognizes certain trigger words that signal when to store, retrieve, or remove memory.
+mts also recognizes certain trigger words that signal when to store, retrieve, or remove memory.
 
 | **Trigger Words**   | **When to Use** |
 |---------------------|----------------|
@@ -79,33 +79,33 @@ goose also recognizes certain trigger words that signal when to store, retrieve,
 
 ## Example Usage
 
-In this example, I’ll show you how to make goose a knowledgeable development assistant by teaching it about your project’s API standards. With the Memory extension, goose can store structured information and recall it when needed, helping you stay consistent in your work.
+In this example, I’ll show you how to make mts a knowledgeable development assistant by teaching it about your project’s API standards. With the Memory extension, mts can store structured information and recall it when needed, helping you stay consistent in your work.
 
-This means you no longer have to repeat yourself. goose will remember your project’s requirements and automatically apply them to new tasks.
+This means you no longer have to repeat yourself. mts will remember your project’s requirements and automatically apply them to new tasks.
 
 :::tip  
-If you frequently work with API standards or other structured knowledge, goose may automatically suggest saving them to memory for you when it detects a pattern in your workflow.  
+If you frequently work with API standards or other structured knowledge, mts may automatically suggest saving them to memory for you when it detects a pattern in your workflow.  
 :::
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-   1. Open a new session in goose Desktop
+  <TabItem value="ui" label="mts Desktop" default>
+   1. Open a new session in mts Desktop
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
 
-  1. Open a terminal and start a new goose session:
+  1. Open a terminal and start a new mts session:
 
   ```sh
-  goose session
+  mts session
   ```
 
   </TabItem>
 </Tabs>
 
-### Step 1: Teach goose Your API Standards
-    #### goose Prompt #1
+### Step 1: Teach mts Your API Standards
+    #### mts Prompt #1
     ```
-    goose, learn our API development standards:
+    mts, learn our API development standards:
 
     - All endpoints must use TypeScript interfaces
     - Error responses follow RFC 7807 Problem Details spec
@@ -116,7 +116,7 @@ If you frequently work with API standards or other structured knowledge, goose m
     Remember this so you can help me follow these practices.
     ```
 
-    #### goose Output
+    #### mts Output
 
     ```
     I've learned your API standards. I'll help enforce these requirements when working on API endpoints.
@@ -133,12 +133,12 @@ If you frequently work with API standards or other structured knowledge, goose m
         - Documentation requirements
     ```
 ### Step 2: Use Stored Knowledge to Create a New API Endpoint
-    #### goose Prompt # 2
+    #### mts Prompt # 2
 
     ```
     Help me create a new endpoint for user preferences
     ```
-    #### goose Output
+    #### mts Output
     ```
     I see you need a new endpoint. Based on our API development standards that I have stored in memory, I'll ensure it meets all our requirements.
 

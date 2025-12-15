@@ -69,11 +69,11 @@ jobs:
           key: intel
 
 
-      - name: Build goose-server for Intel macOS (x86_64)
+      - name: Build mts-server for Intel macOS (x86_64)
         run: |
           source ./bin/activate-hermit
           rustup target add x86_64-apple-darwin
-          cargo build --release -p goose-server --target x86_64-apple-darwin
+          cargo build --release -p mts-server --target x86_64-apple-darwin
 
 
 
@@ -93,7 +93,7 @@ jobs:
 
       - name: Copy binaries into Electron folder
         run: |
-          cp target/x86_64-apple-darwin/release/goosed ui/desktop/src/bin/goosed
+          cp target/x86_64-apple-darwin/release/mtsd ui/desktop/src/bin/mtsd
 
       - name: Cache npm dependencies
         uses: actions/cache@2f8e54208210a422b2efd51efaa6bd6d7ca8920f # pin@v3
@@ -151,12 +151,12 @@ jobs:
 
           echo "⬆️ uploading unsigned app"
           source_job_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          unsigned_url="s3://block-goose-artifacts-bucket-production/unsigned/goose-${GITHUB_SHA}-${{ github.run_id }}-intel.zip"
+          unsigned_url="s3://block-mts-artifacts-bucket-production/unsigned/mts-${GITHUB_SHA}-${{ github.run_id }}-intel.zip"
 
-          zip -q -u -r out/Goose-darwin-x64/Goose_intel_mac.zip entitlements.plist
+          zip -q -u -r out/MTS-darwin-x64/MTS_intel_mac.zip entitlements.plist
 
-          # upload unsigned goose to transfer bucket so it can be passed to lambda
-          aws s3 cp --quiet out/Goose-darwin-x64/Goose_intel_mac.zip "${unsigned_url}"
+          # upload unsigned mts to transfer bucket so it can be passed to lambda
+          aws s3 cp --quiet out/MTS-darwin-x64/MTS_intel_mac.zip "${unsigned_url}"
 
           # begin signing
           echo "🚀 launching signing process"
@@ -208,7 +208,7 @@ jobs:
 
           # download the signed app from S3
           echo "⬇️ downloading signed app"
-          aws s3 cp --quiet "${signed_url}" out/Goose-darwin-x64/Goose_intel_mac.zip
+          aws s3 cp --quiet "${signed_url}" out/MTS-darwin-x64/MTS_intel_mac.zip
         working-directory: ui/desktop
 
       - name: Final cleanup before artifact upload
@@ -222,26 +222,26 @@ jobs:
       - name: Upload Desktop artifact
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # pin@v4
         with:
-          name: Goose-darwin-x64
-          path: ui/desktop/out/Goose-darwin-x64/Goose_intel_mac.zip
+          name: MTS-darwin-x64
+          path: ui/desktop/out/MTS-darwin-x64/MTS_intel_mac.zip
 
       - name: Quick launch test (macOS)
         if: ${{ inputs.quick_test }}
         run: |
           # Ensure no quarantine attributes (if needed)
-          xattr -cr "ui/desktop/out/Goose-darwin-x64/Goose.app"
-          echo "Opening Goose.app..."
-          open -g "ui/desktop/out/Goose-darwin-x64/Goose.app"
+          xattr -cr "ui/desktop/out/MTS-darwin-x64/MTS.app"
+          echo "Opening MTS.app..."
+          open -g "ui/desktop/out/MTS-darwin-x64/MTS.app"
 
           # Give the app a few seconds to start and write logs
           sleep 5
 
           # Check if it's running
-          if pgrep -f "Goose.app/Contents/MacOS/Goose" > /dev/null; then
+          if pgrep -f "MTS.app/Contents/MacOS/MTS" > /dev/null; then
             echo "App appears to be running."
           else
             echo "App did not stay open. Possible crash or startup error."
             exit 1
           fi
           # Kill the app to clean up
-          pkill -f "Goose.app/Contents/MacOS/Goose"
+          pkill -f "MTS.app/Contents/MacOS/MTS"

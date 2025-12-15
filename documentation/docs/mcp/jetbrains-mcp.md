@@ -1,18 +1,18 @@
 ---
 title: JetBrains Extension
-description: Use JetBrains MCP Server as a goose Extension
+description: Use JetBrains MCP Server as a mts Extension
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import MTSDesktopInstaller from '@site/src/components/MTSDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 import { PanelLeft } from 'lucide-react';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/1fP5elf9qQM" />
 
-This tutorial covers how to add the JetBrains extension to integrate with any JetBrains IDE. While goose can use the [Developer extension](/docs/mcp/developer-mcp) for developer-centric tasks, the JetBrains extension provides a more integrated and project-aware way to work with code.
+This tutorial covers how to add the JetBrains extension to integrate with any JetBrains IDE. While mts can use the [Developer extension](/docs/mcp/developer-mcp) for developer-centric tasks, the JetBrains extension provides a more integrated and project-aware way to work with code.
 
 ## Configuration
 
@@ -27,11 +27,11 @@ This tutorial covers how to add the JetBrains extension to integrate with any Je
 
     :::tip TLDR
     <Tabs groupId="interface">
-      <TabItem value="ui" label="goose Desktop" default>
+      <TabItem value="ui" label="mts Desktop" default>
       Use `Add custom extension` in Settings → Extensions to add a `Server-Sent Events (SSE)` extension type with your IDE-specific SSE config.
       </TabItem>
-      <TabItem value="cli" label="goose CLI">
-      Use `goose configure` to add a `Remote Extension (SSE)` extension type with your IDE-specific SSE config.
+      <TabItem value="cli" label="mts CLI">
+      Use `mts configure` to add a `Remote Extension (SSE)` extension type with your IDE-specific SSE config.
       </TabItem>
     </Tabs>
     :::
@@ -47,9 +47,9 @@ This tutorial covers how to add the JetBrains extension to integrate with any Je
        4. Click `OK` to save your changes and start the server
        5. Copy the `url` value from the config
 
-    2. Add the JetBrains extension to goose, replacing "YOUR_IDE_SPECIFIC_URL" in the instructions with the URL you copied:
+    2. Add the JetBrains extension to mts, replacing "YOUR_IDE_SPECIFIC_URL" in the instructions with the URL you copied:
        <Tabs groupId="interface">
-         <TabItem value="ui" label="goose Desktop" default>
+         <TabItem value="ui" label="mts Desktop" default>
            1. Click the <PanelLeft className="inline" size={16} /> button in the top-left to open the sidebar
            2. Click `Extensions` on the sidebar
            3. Click `Add custom extension`
@@ -60,10 +60,10 @@ This tutorial covers how to add the JetBrains extension to integrate with any Je
            5. Click `Add Extension` to save the extension
            6. Navigate to the chat
          </TabItem>
-         <TabItem value="cli" label="goose CLI">
+         <TabItem value="cli" label="mts CLI">
            <CLIExtensionInstructions            
              name="jetbrains"
-             description="Integrate goose with any JetBrains IDE"
+             description="Integrate mts with any JetBrains IDE"
              type="sse"
              url="YOUR_IDE_SPECIFIC_URL"
              timeout={300}
@@ -77,10 +77,10 @@ This tutorial covers how to add the JetBrains extension to integrate with any Je
 
     :::tip TLDR
     <Tabs groupId="interface">
-      <TabItem value="ui" label="goose Desktop" default>
-      [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40jetbrains%2Fmcp-proxy&id=jetbrains&name=JetBrains&description=Integrate%20goose%20with%20any%20JetBrains%20IDE)
+      <TabItem value="ui" label="mts Desktop" default>
+      [Launch the installer](mts://extension?cmd=npx&arg=-y&arg=%40jetbrains%2Fmcp-proxy&id=jetbrains&name=JetBrains&description=Integrate%20mts%20with%20any%20JetBrains%20IDE)
       </TabItem>
-      <TabItem value="cli" label="goose CLI">
+      <TabItem value="cli" label="mts CLI">
       **Command**
       ```sh
       npx -y @jetbrains/mcp-proxy
@@ -102,23 +102,23 @@ This tutorial covers how to add the JetBrains extension to integrate with any Je
 
     1. Add the [MCP Server plugin](https://plugins.jetbrains.com/plugin/26071-mcp-server) to your IDE.
 
-    2. Add the JetBrains extension to goose:
+    2. Add the JetBrains extension to mts:
 
        <Tabs groupId="interface">
-         <TabItem value="ui" label="goose Desktop" default>
-           <GooseDesktopInstaller
+         <TabItem value="ui" label="mts Desktop" default>
+           <MTSDesktopInstaller
              extensionId="jetbrains"
              extensionName="JetBrains"
-             description="Integrate goose with any JetBrains IDE"
+             description="Integrate mts with any JetBrains IDE"
              command="npx"
              args={["-y", "@jetbrains/mcp-proxy"]}
              timeout={300}
            />
          </TabItem>
-         <TabItem value="cli" label="goose CLI">
+         <TabItem value="cli" label="mts CLI">
              <CLIExtensionInstructions
                name="jetbrains"
-               description="Integrate goose with any JetBrains IDE"
+               description="Integrate mts with any JetBrains IDE"
                command="npx -y @jetbrains/mcp-proxy"
                timeout={300}
              />
@@ -138,38 +138,38 @@ Anthropic's Claude 4 Sonnet was used for this task.
 
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="mts Desktop" default>
    1. Open [IntelliJ](https://www.jetbrains.com/idea/download) (JetBrains' Java and Kotlin IDE)
-   2. Open a new session in goose Desktop
+   2. Open a new session in mts Desktop
    :::note
-   You will interact with two separate apps: the goose Desktop app and the IntelliJ IDE.
+   You will interact with two separate apps: the mts Desktop app and the IntelliJ IDE.
    :::
 
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
 
   1. Open [IntelliJ](https://www.jetbrains.com/idea/download) (JetBrains' Java and Kotlin IDE)
-  2. Open a terminal within your IDE and start a new goose session:
+  2. Open a terminal within your IDE and start a new mts session:
 
   ```sh
-  goose session
+  mts session
   ```
 
   </TabItem>
 </Tabs>
 
 :::tip 
-When using goose to refactor code, it's recommended to commit your code to version control _before_ making changes. This way, you have a clean snapshot to compare against, making it easy to review goose’s modifications, revert if needed, and track improvements.
+When using mts to refactor code, it's recommended to commit your code to version control _before_ making changes. This way, you have a clean snapshot to compare against, making it easy to review mts’s modifications, revert if needed, and track improvements.
 :::
 
-### goose Prompt
+### mts Prompt
 ```
 using the JetBrains IDE tools, upgrade this project to use the latest Java LTS version and refactor the codebase to use newer Java features where beneficial.
 ```
 
-After 2 minutes, goose was done with the upgrade! 🎉
+After 2 minutes, mts was done with the upgrade! 🎉
 
-### goose Output
+### mts Output
 
 ```md
 I'll make several improvements to modernize this codebase to use Java 21 (latest LTS) features. Here are the changes I'll implement:
@@ -249,7 +249,7 @@ The codebase is now using the latest Java LTS version (21) and incorporates many
 
 
 
-Using the JetBrains extension provided several advantages and made it easier for goose to:
+Using the JetBrains extension provided several advantages and made it easier for mts to:
 - navigate through the codebase
 - track changes
 - make consistent modifications across files

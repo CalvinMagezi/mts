@@ -8,14 +8,14 @@ import { client } from './api/client.gen';
 const App = lazy(() => import('./App'));
 
 (async () => {
-  // Check if we're in the launcher view (doesn't need goosed connection)
+  // Check if we're in the launcher view (doesn't need mtsd connection)
   const isLauncher = window.location.hash === '#/launcher';
 
   if (!isLauncher) {
-    console.log('window created, getting goosed connection info');
-    const baseUrl = await window.electron.getGoosedHostPort();
+    console.log('window created, getting mtsd connection info');
+    const baseUrl = await window.electron.getMTSdHostPort();
     if (baseUrl === null) {
-      window.alert('failed to start goose backend process');
+      window.alert('failed to start mts backend process');
       return;
     }
     console.log('connecting at', baseUrl);

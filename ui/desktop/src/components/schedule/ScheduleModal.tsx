@@ -63,7 +63,7 @@ interface CleanRecipe {
 async function parseDeepLink(deepLink: string): Promise<Recipe | null> {
   try {
     const url = new URL(deepLink);
-    if (url.protocol !== 'goose:' || (url.hostname !== 'bot' && url.hostname !== 'recipe')) {
+    if (url.protocol !== 'mts:' || (url.hostname !== 'bot' && url.hostname !== 'recipe')) {
       return null;
     }
 
@@ -233,13 +233,13 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({
         } else {
           setParsedRecipe(null);
           setInternalValidationError(
-            'Invalid deep link format. Please use a goose://bot or goose://recipe link.'
+            'Invalid deep link format. Please use a mts://bot or mts://recipe link.'
           );
         }
       } catch {
         setParsedRecipe(null);
         setInternalValidationError(
-          'Failed to parse deep link. Please ensure using a goose://bot or goose://recipe link and try again.'
+          'Failed to parse deep link. Please ensure using a mts://bot or mts://recipe link and try again.'
         );
       }
     } else {
@@ -443,7 +443,7 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({
                         type="text"
                         value={deepLinkInput}
                         onChange={(e) => handleDeepLinkChange(e.target.value)}
-                        placeholder="Paste goose://bot or goose://recipe link here..."
+                        placeholder="Paste mts://bot or mts://recipe link here..."
                         className="rounded-full"
                       />
                       {parsedRecipe && (

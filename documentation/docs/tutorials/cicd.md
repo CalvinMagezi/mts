@@ -1,12 +1,12 @@
 ---
 title: CI/CD Environments
-description: Set up goose in your CI/CD pipeline to automate tasks
+description: Set up mts in your CI/CD pipeline to automate tasks
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-goose isn’t just useful on your local machine, it can also streamline tasks in CI/CD environments. By integrating goose into your pipeline, you can automate tasks such as:
+mts isn’t just useful on your local machine, it can also streamline tasks in CI/CD environments. By integrating mts into your pipeline, you can automate tasks such as:
 
 - Code reviews
 - Documentation checks
@@ -15,20 +15,20 @@ goose isn’t just useful on your local machine, it can also streamline tasks in
 - Rollbacks and recovery processes
 - Intelligent test execution
 
-This guide walks you through setting up goose in your CI/CD pipeline, with a focus on using GitHub Actions for code reviews.
+This guide walks you through setting up mts in your CI/CD pipeline, with a focus on using GitHub Actions for code reviews.
 
 
-## Using goose with GitHub Actions
-You can run goose directly within GitHub Actions. Follow these steps to set up your workflow.
+## Using mts with GitHub Actions
+You can run mts directly within GitHub Actions. Follow these steps to set up your workflow.
 
 :::info TLDR
 <details>
    <summary>Copy the GitHub Workflow</summary>
    
-   ```yaml title="goose.yml"
+   ```yaml title="mts.yml"
 
 
-name: goose
+name: mts
 
 on:
    pull_request:
@@ -45,8 +45,8 @@ env:
    GH_TOKEN: ${{ github.token }}
 
 jobs:
-   goose-comment:
-      name: goose Comment
+   mts-comment:
+      name: mts Comment
       runs-on: ubuntu-latest
       steps:
          - name: Check out repository
@@ -65,23 +65,23 @@ jobs:
               gh pr diff $PR_NUMBER
               } > changes.txt
 
-         - name: Install goose CLI
+         - name: Install mts CLI
            run: |
               mkdir -p /home/runner/.local/bin
-              curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh \
-              | CONFIGURE=false GOOSE_BIN_DIR=/home/runner/.local/bin bash
+              curl -fsSL https://github.com/block/mts/releases/download/stable/download_cli.sh \
+              | CONFIGURE=false MTS_BIN_DIR=/home/runner/.local/bin bash
               echo "/home/runner/.local/bin" >> $GITHUB_PATH
 
-         - name: Configure goose
+         - name: Configure mts
            run: |
-              mkdir -p ~/.config/goose
-              cat <<EOF > ~/.config/goose/config.yaml
-              GOOSE_PROVIDER: REPLACE_WITH_PROVIDER
-              GOOSE_MODEL: REPLACE_WITH_MODEL
+              mkdir -p ~/.config/mts
+              cat <<EOF > ~/.config/mts/config.yaml
+              MTS_PROVIDER: REPLACE_WITH_PROVIDER
+              MTS_MODEL: REPLACE_WITH_MODEL
               keyring: false
               EOF
 
-         - name: Create instructions for goose
+         - name: Create instructions for mts
            run: |
               cat <<EOF > instructions.txt
               Create a summary of the changes provided. Don't provide any session or logging details.
@@ -96,13 +96,13 @@ jobs:
          - name: Test
            run: cat instructions.txt
 
-         - name: Run goose and filter output
+         - name: Run mts and filter output
            run: |
-              goose run --instructions instructions.txt | \
+              mts run --instructions instructions.txt | \
               # Remove ANSI color codes
               sed -E 's/\x1B\[[0-9;]*[mK]//g' | \
               # Remove session/logging lines
-              grep -v "logging to /home/runner/.config/goose/sessions/" | \
+              grep -v "logging to /home/runner/.config/mts/sessions/" | \
               grep -v "^starting session" | \
               grep -v "^Closing session" | \
               # Trim trailing whitespace
@@ -121,18 +121,18 @@ jobs:
 
 ### 1. Create the Workflow File
 
-Create a new file in your repository at `.github/workflows/goose.yml`. This will contain your GitHub Actions workflow.
+Create a new file in your repository at `.github/workflows/mts.yml`. This will contain your GitHub Actions workflow.
 
 ### 2. Define the Workflow Triggers and Permissions
 
 Configure the action such that it:
 
 - Triggers the workflow when a pull request is opened, updated, reopened, or labeled
-- Grants the necessary permissions for goose to interact with the repository
+- Grants the necessary permissions for mts to interact with the repository
 - Configures environment variables for your chosen LLM provider
 
 ```yaml
-name: goose
+name: mts
 
 on:
     pull_request:
@@ -149,25 +149,25 @@ env:
 ```
 
 
-### 3. Install and Configure goose
+### 3. Install and Configure mts
 
-To install and set up goose in your workflow, add the following steps:
+To install and set up mts in your workflow, add the following steps:
 
 ```yaml
 steps:
-    - name: Install goose CLI
+    - name: Install mts CLI
       run: |
           mkdir -p /home/runner/.local/bin
-          curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh \
-            | CONFIGURE=false GOOSE_BIN_DIR=/home/runner/.local/bin bash
+          curl -fsSL https://github.com/block/mts/releases/download/stable/download_cli.sh \
+            | CONFIGURE=false MTS_BIN_DIR=/home/runner/.local/bin bash
           echo "/home/runner/.local/bin" >> $GITHUB_PATH
 
-    - name: Configure goose
+    - name: Configure mts
       run: |
-          mkdir -p ~/.config/goose
-          cat <<EOF > ~/.config/goose/config.yaml
-          GOOSE_PROVIDER: REPLACE_WITH_PROVIDER
-          GOOSE_MODEL: REPLACE_WITH_MODEL
+          mkdir -p ~/.config/mts
+          cat <<EOF > ~/.config/mts/config.yaml
+          MTS_PROVIDER: REPLACE_WITH_PROVIDER
+          MTS_MODEL: REPLACE_WITH_MODEL
           keyring: false
           EOF
 ```
@@ -178,10 +178,10 @@ Replace `REPLACE_WITH_PROVIDER` and `REPLACE_WITH_MODEL` with your LLM provider 
 
 ### 4. Gather PR Changes and Prepare Instructions
 
-This step extracts pull request details and formats them into structured instructions for goose.
+This step extracts pull request details and formats them into structured instructions for mts.
 
 ```yaml
-    - name: Create instructions for goose
+    - name: Create instructions for mts
       run: |
           cat <<EOF > instructions.txt
           Create a summary of the changes provided. Don't provide any session or logging details.
@@ -194,18 +194,18 @@ This step extracts pull request details and formats them into structured instruc
           EOF
 ```
 
-### 5. Run goose and Clean Output
+### 5. Run mts and Clean Output
 
-Now, run goose with the formatted instructions and clean the output by removing ANSI color codes and unnecessary log messages.
+Now, run mts with the formatted instructions and clean the output by removing ANSI color codes and unnecessary log messages.
 
 ```yaml
-    - name: Run goose and filter output
+    - name: Run mts and filter output
       run: |
-          goose run --instructions instructions.txt | \
+          mts run --instructions instructions.txt | \
             # Remove ANSI color codes
             sed -E 's/\x1B\[[0-9;]*[mK]//g' | \
             # Remove session/logging lines
-            grep -v "logging to /home/runner/.config/goose/sessions/" | \
+            grep -v "logging to /home/runner/.config/mts/sessions/" | \
             grep -v "^starting session" | \
             grep -v "^Closing session" | \
             # Trim trailing whitespace
@@ -215,7 +215,7 @@ Now, run goose with the formatted instructions and clean the output by removing 
 
 ### 6. Post Comment to PR
 
-Finally, post the goose output as a comment on the pull request:
+Finally, post the mts output as a comment on the pull request:
 
 ```yaml
     - name: Post comment to PR
@@ -224,7 +224,7 @@ Finally, post the goose output as a comment on the pull request:
           gh pr comment $PR_NUMBER --body-file pr_comment.txt
 ```
 
-With this workflow, goose will run on pull requests, analyze the changes, and post a summary as a comment on the PR.
+With this workflow, mts will run on pull requests, analyze the changes, and post a summary as a comment on the PR.
 
 This is just one example of what's possible. Feel free to modify your GitHub Action to meet your needs.
 
@@ -232,7 +232,7 @@ This is just one example of what's possible. Feel free to modify your GitHub Act
 
 ## Security Considerations
 
-When running goose in a CI/CD enviroment, keep these security practices in mind:
+When running mts in a CI/CD enviroment, keep these security practices in mind:
 
 1. **Secret Management**
       - Store your sensitive credentials (like API keys) as GitHub Secrets. 
@@ -242,4 +242,4 @@ When running goose in a CI/CD enviroment, keep these security practices in mind:
       - Grant only the necessary permissions in your workflow and regularly audit them.
 
 3. **Input Validation**
-      - Ensure any inputs passed to goose are sanitized and validated to prevent unexpected behavior.
+      - Ensure any inputs passed to mts are sanitized and validated to prevent unexpected behavior.

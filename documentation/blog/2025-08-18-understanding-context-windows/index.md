@@ -1,6 +1,6 @@
 ---
 title: "The AI Skeptic’s Guide to Context Windows"
-description: Why do AI agents forget? Learn how context windows, tokens, and Goose help you manage memory and long conversations.
+description: Why do AI agents forget? Learn how context windows, tokens, and MTS help you manage memory and long conversations.
 authors: 
     - rizel
 ---
@@ -31,9 +31,9 @@ Tokens are how AI models break down text for processing. They're roughly equival
 
 Test it yourself: paste any text into [OpenAI’s tokenizer tool](https://platform.openai.com/tokenizer) and explore how tokens are counted across models.
 
-### How Goose uses tokens
+### How MTS uses tokens
 
-Let's talk about how this works in practice. When you use an AI agent like Goose, you start a session and choose a model like Claude Sonnet 3.7. This model has a context window of 128,000 tokens. This means every session (or conversation) can handle up to 128,000 tokens. If you message "hey" to Goose, you would have used one token. And when Goose responds back, you would have used several more tokens. Now you've used a small portion of your 128,000 tokens, and you have the remainder left.
+Let's talk about how this works in practice. When you use an AI agent like MTS, you start a session and choose a model like Claude Sonnet 3.7. This model has a context window of 128,000 tokens. This means every session (or conversation) can handle up to 128,000 tokens. If you message "hey" to MTS, you would have used one token. And when MTS responds back, you would have used several more tokens. Now you've used a small portion of your 128,000 tokens, and you have the remainder left.
 
 :::note
 Context windows vary per LLM.
@@ -41,47 +41,47 @@ Context windows vary per LLM.
 
 Once the conversation goes past 128,000 tokens or gets close to it, your agent may start to forget key details from earlier in the conversation, and it might prioritize the most recent information.
 
-But your conversation isn't the only thing using your tokens. Here are other things within Goose that consume your token budget:
+But your conversation isn't the only thing using your tokens. Here are other things within MTS that consume your token budget:
 
 * **System prompt:** A built-in prompt that instructs your agent on how to behave and defines its identity  
-  * The system prompt defines Goose’s name, creator (Block), current date/time, task and extension handling, and response format.  
+  * The system prompt defines MTS’s name, creator (Block), current date/time, task and extension handling, and response format.  
 * **Extensions and their tool definitions** - Many extensions have more than one tool built in. For example, a Google Drive extension may include tools like read file, create file, and comment on file. In addition, each tool comes with instructions on how to use it and an explanation of what the tool does.  
 * **Tool response** - The response that the tool returns. For example, the tool could respond with "Here's the entire contents of your 500-line code file."  
-* In addition to your conversation history, Goose keeps metadata about your conversation, such as timestamps.
+* In addition to your conversation history, MTS keeps metadata about your conversation, such as timestamps.
 
 This is a lot of data, and it can easily consume your context window. In addition to impacting performance, token usage affects costs. The more tokens you use, the more money you pay, and you may feel frustrated wasting your tokens on your agent misinterpreting your request.
 
-Luckily, Goose has an intelligent design for helping you save your context window.
+Luckily, MTS has an intelligent design for helping you save your context window.
 
-## How Goose automatically manages your context window
+## How MTS automatically manages your context window
 
-Goose has a method that auto-compacts (or summarizes) your conversation once it reaches a certain threshold. By default, when you reach 80% of your context window, Goose summarizes the conversation, preserving key parts while compressing the rest, reducing context window usage so you can stay in your session without starting a new one.
+MTS has a method that auto-compacts (or summarizes) your conversation once it reaches a certain threshold. By default, when you reach 80% of your context window, MTS summarizes the conversation, preserving key parts while compressing the rest, reducing context window usage so you can stay in your session without starting a new one.
 
-You actually have the ability to customize the threshold. If you think 80% is too little or too much for your workflow, you can set the environment variable `GOOSE_AUTO_COMPACT_THRESHOLD` to your preferred threshold.
+You actually have the ability to customize the threshold. If you think 80% is too little or too much for your workflow, you can set the environment variable `MTS_AUTO_COMPACT_THRESHOLD` to your preferred threshold.
 
 ## How to manage your context window
 
-While Goose is adept at helping you manage your context window, you can proactively manage it, too. Here are some tips for efficiently managing your context window and your wallet.
+While MTS is adept at helping you manage your context window, you can proactively manage it, too. Here are some tips for efficiently managing your context window and your wallet.
 
 **1. Manual summarization**
 
 When your conversation gets too long, you can summarize the key points and start a new session. Copy important decisions, code snippets, or project requirements into the fresh session. This way, you keep the essential context without carrying over the full conversation history.
 
-**2. `.goosehints`**
+**2. `.mtshints`**
 
-Use [.goosehints](https://block.github.io/goose/docs/guides/using-goosehints/) files to avoid repeating the same instructions. Instead of typing out your project context, coding standards, and preferences in every conversation, define them once in a .goosehints file. This prevents wasting tokens on repetitive explanations and helps Goose understand your requirements more quickly.
+Use [.mtshints](https://block.github.io/mts/docs/guides/using-mtshints/) files to avoid repeating the same instructions. Instead of typing out your project context, coding standards, and preferences in every conversation, define them once in a .mtshints file. This prevents wasting tokens on repetitive explanations and helps MTS understand your requirements more quickly.
 
 **3. Memory extension**
 
-The [Memory extension](https://block.github.io/goose/docs/mcp/memory-mcp) stores important information across sessions. Instead of re-explaining your project background, past decisions, or important context every time you start a new conversation, you can reference stored information. This keeps your prompts focused on the current task rather than repeating historical context.
+The [Memory extension](https://block.github.io/mts/docs/mcp/memory-mcp) stores important information across sessions. Instead of re-explaining your project background, past decisions, or important context every time you start a new conversation, you can reference stored information. This keeps your prompts focused on the current task rather than repeating historical context.
 
 **4. Recipes**
 
-[Recipes](https://block.github.io/goose/docs/guides/recipes/) package complete task setups into reusable configurations, eliminating the need to provide lengthy instructions repeatedly. Instead of consuming tokens explaining complex workflows in every session, recipes contain all necessary instructions, extensions, and parameters upfront. This is particularly valuable for repetitive tasks where you'd otherwise spend significant tokens on setup and explanation. And if your recipe starts to feel overly lengthy, you can break the tasks up into [subrecipes](https://block.github.io/goose/docs/guides/recipes/subrecipes).
+[Recipes](https://block.github.io/mts/docs/guides/recipes/) package complete task setups into reusable configurations, eliminating the need to provide lengthy instructions repeatedly. Instead of consuming tokens explaining complex workflows in every session, recipes contain all necessary instructions, extensions, and parameters upfront. This is particularly valuable for repetitive tasks where you'd otherwise spend significant tokens on setup and explanation. And if your recipe starts to feel overly lengthy, you can break the tasks up into [subrecipes](https://block.github.io/mts/docs/guides/recipes/subrecipes).
 
 **5. Subagents**
 
-[Subagents](https://block.github.io/goose/docs/guides/subagents) handle specific tasks in their own isolated sessions. This prevents your main conversation from getting cluttered with implementation details and tool outputs. You delegate work to subagents and only see the final results, keeping your primary context window clean and focused.
+[Subagents](https://block.github.io/mts/docs/guides/subagents) handle specific tasks in their own isolated sessions. This prevents your main conversation from getting cluttered with implementation details and tool outputs. You delegate work to subagents and only see the final results, keeping your primary context window clean and focused.
 
 **6. Short sessions**
 
@@ -89,7 +89,7 @@ Keep individual sessions focused on specific tasks. When you complete a task or 
 
 **7. Lead/worker model**
 
-The [Lead/Worker model](https://block.github.io/goose/docs/tutorials/lead-worker) splits work between two models. The lead model handles high-level planning and decision-making, while the worker model executes the detailed implementation. This optimizes costs by using expensive models for strategic thinking and cheaper models for routine execution tasks.
+The [Lead/Worker model](https://block.github.io/mts/docs/tutorials/lead-worker) splits work between two models. The lead model handles high-level planning and decision-making, while the worker model executes the detailed implementation. This optimizes costs by using expensive models for strategic thinking and cheaper models for routine execution tasks.
 
 ---
 
@@ -99,12 +99,12 @@ The next time your AI agent seems to 'forget' something important or goes off tr
 <head>
   <meta property="og:title" content="The AI Skeptic’s Guide to Context Windows" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://block.github.io/goose/blog/2025/08/18/understanding-context-windows" />
-  <meta property="og:description" content="Why do AI agents forget? Learn how context windows, tokens, and Goose help you manage memory and long conversations." />
-  <meta property="og:image" content="https://block.github.io/goose/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
+  <meta property="og:url" content="https://block.github.io/mts/blog/2025/08/18/understanding-context-windows" />
+  <meta property="og:description" content="Why do AI agents forget? Learn how context windows, tokens, and MTS help you manage memory and long conversations." />
+  <meta property="og:image" content="https://block.github.io/mts/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="block.github.io/goose" />
+  <meta property="twitter:domain" content="block.github.io/mts" />
   <meta name="twitter:title" content="The AI Skeptic’s Guide to Context Windows" />
-  <meta name="twitter:description" content="Why do AI agents forget? Learn how context windows, tokens, and Goose help you manage memory and long conversations." />
-  <meta name="twitter:image" content="https://block.github.io/goose/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
+  <meta name="twitter:description" content="Why do AI agents forget? Learn how context windows, tokens, and MTS help you manage memory and long conversations." />
+  <meta name="twitter:image" content="https://block.github.io/mts/assets/images/contextwindow-fa46f7a54cfb23a538d62f0e4502e19e.png" />
 </head>

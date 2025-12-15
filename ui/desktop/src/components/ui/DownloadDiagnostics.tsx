@@ -58,7 +58,7 @@ export const DiagnosticsModal: React.FC<DiagnosticsModalProps> = ({
             <h3 className="text-lg font-semibold text-textStandard mb-2">Download Diagnostics</h3>
             <p className="text-sm text-textSubtle mb-3">
               Hit the download button to get a zip file containing all the important information to
-              diagnose a problem in goose. You can share this file with the team or if you are a
+              diagnose a problem in mts. You can share this file with the team or if you are a
               developer look at it yourself.
             </p>
             <ul className="text-sm text-textSubtle list-disc list-inside space-y-1 mb-3">

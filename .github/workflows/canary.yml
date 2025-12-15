@@ -60,7 +60,7 @@ jobs:
           path: download_cli.sh
 
   # ------------------------------------------------------------
-  # 4) Bundle Desktop App (macOS only) - builds goosed and Electron app
+  # 4) Bundle Desktop App (macOS only) - builds mtsd and Electron app
   # ------------------------------------------------------------
   bundle-desktop:
     needs: [prepare-version]
@@ -73,7 +73,7 @@ jobs:
       signing: false
 
   # ------------------------------------------------------------
-  # 5) Bundle Desktop App (Linux) - builds goosed and Electron app
+  # 5) Bundle Desktop App (Linux) - builds mtsd and Electron app
   # ------------------------------------------------------------
   bundle-desktop-linux:
     needs: [prepare-version]
@@ -82,7 +82,7 @@ jobs:
       version: ${{ needs.prepare-version.outputs.version }}
 
   # ------------------------------------------------------------
-  # 6) Bundle Desktop App (Windows) - builds goosed and Electron app
+  # 6) Bundle Desktop App (Windows) - builds mtsd and Electron app
   # ------------------------------------------------------------
   bundle-desktop-windows:
     needs: [prepare-version]
@@ -115,8 +115,8 @@ jobs:
           name: Canary
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: |
-            goose-*.tar.bz2
-            Goose*.zip
+            mts-*.tar.bz2
+            MTS*.zip
             *.deb
             *.rpm
             download_cli.sh

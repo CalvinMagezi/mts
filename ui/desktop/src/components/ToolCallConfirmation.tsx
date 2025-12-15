@@ -125,25 +125,25 @@ export default function ToolConfirmation({
   }
 
   return isCancelledMessage ? (
-    <div className="goose-message-content bg-background-muted rounded-2xl px-4 py-2 text-textStandard">
+    <div className="mts-message-content bg-background-muted rounded-2xl px-4 py-2 text-textStandard">
       Tool call confirmation is cancelled.
     </div>
   ) : (
     <>
       {/* Display security message if present */}
       {prompt && (
-        <div className="goose-message-content bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl px-4 py-2 mb-2 text-yellow-800 dark:text-gray-200">
+        <div className="mts-message-content bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl px-4 py-2 mb-2 text-yellow-800 dark:text-gray-200">
           {prompt}
         </div>
       )}
 
-      <div className="goose-message-content bg-background-muted rounded-2xl px-4 py-2 rounded-b-none text-textStandard">
+      <div className="mts-message-content bg-background-muted rounded-2xl px-4 py-2 rounded-b-none text-textStandard">
         {prompt
           ? 'Do you allow this tool call?'
-          : 'Goose would like to call the above tool. Allow?'}
+          : 'MTS would like to call the above tool. Allow?'}
       </div>
       {clicked ? (
-        <div className="goose-message-tool bg-background-default border border-borderSubtle dark:border-gray-700 rounded-b-2xl px-4 pt-2 pb-2 flex items-center justify-between">
+        <div className="mts-message-tool bg-background-default border border-borderSubtle dark:border-gray-700 rounded-b-2xl px-4 pt-2 pb-2 flex items-center justify-between">
           <div className="flex items-center">
             {(status === 'allow_once' || status === 'always_allow') && (
               <svg
@@ -194,7 +194,7 @@ export default function ToolConfirmation({
           </div>
         </div>
       ) : (
-        <div className="goose-message-tool bg-background-default border border-borderSubtle dark:border-gray-700 rounded-b-2xl px-4 pt-2 pb-2 flex gap-2 items-center">
+        <div className="mts-message-tool bg-background-default border border-borderSubtle dark:border-gray-700 rounded-b-2xl px-4 pt-2 pb-2 flex gap-2 items-center">
           <Button
             className="rounded-full"
             variant="secondary"

@@ -92,7 +92,7 @@ jobs:
         with:
           key: linux
 
-      - name: Build goosed binary
+      - name: Build mtsd binary
         env:
           CROSS_NO_WARNINGS: 0
           RUST_LOG: debug
@@ -103,15 +103,15 @@ jobs:
           source ./bin/activate-hermit
           export TARGET="x86_64-unknown-linux-gnu"
           rustup target add "${TARGET}"
-          cross build --release --target ${TARGET} -p goose-server
+          cross build --release --target ${TARGET} -p mts-server
 
       - name: Copy binaries into Electron folder
         run: |
           echo "Copying binaries to ui/desktop/src/bin/"
           export TARGET="x86_64-unknown-linux-gnu"
           mkdir -p ui/desktop/src/bin
-          cp target/$TARGET/release/goosed ui/desktop/src/bin/
-          chmod +x ui/desktop/src/bin/goosed
+          cp target/$TARGET/release/mtsd ui/desktop/src/bin/
+          chmod +x ui/desktop/src/bin/mtsd
           ls -la ui/desktop/src/bin/
 
       - name: Cache npm dependencies
@@ -159,21 +159,21 @@ jobs:
       - name: Upload .deb package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: Goose-linux-x64-deb
+          name: MTS-linux-x64-deb
           path: ui/desktop/out/make/deb/x64/*.deb
           if-no-files-found: error
 
       - name: Upload .rpm package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: Goose-linux-x64-rpm
+          name: MTS-linux-x64-rpm
           path: ui/desktop/out/make/rpm/x64/*.rpm
           if-no-files-found: error
 
       - name: Upload combined Linux packages
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: Goose-linux-x64
+          name: MTS-linux-x64
           path: |
             ui/desktop/out/make/deb/x64/*.deb
             ui/desktop/out/make/rpm/x64/*.rpm

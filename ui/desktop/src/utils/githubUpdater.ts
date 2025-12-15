@@ -28,7 +28,7 @@ interface UpdateCheckResult {
 
 export class GitHubUpdater {
   private readonly owner = 'block';
-  private readonly repo = 'goose';
+  private readonly repo = 'mts';
   private readonly apiUrl = `https://api.github.com/repos/${this.owner}/${this.repo}/releases/latest`;
 
   async checkForUpdates(): Promise<UpdateCheckResult> {
@@ -40,7 +40,7 @@ export class GitHubUpdater {
       const response = await fetch(this.apiUrl, {
         headers: {
           Accept: 'application/vnd.github.v3+json',
-          'User-Agent': `Goose-Desktop/${app.getVersion()}`,
+          'User-Agent': `MTS-Desktop/${app.getVersion()}`,
         },
       });
 
@@ -91,22 +91,22 @@ export class GitHubUpdater {
       if (platform === 'darwin') {
         // macOS
         if (arch === 'arm64') {
-          assetName = 'Goose.zip';
+          assetName = 'MTS.zip';
         } else {
-          assetName = 'Goose_intel_mac.zip';
+          assetName = 'MTS_intel_mac.zip';
         }
       } else if (platform === 'win32') {
         // Windows - for future support
-        assetName = 'Goose-win32-x64.zip';
+        assetName = 'MTS-win32-x64.zip';
       } else {
         // Linux - for future support
-        assetName = `Goose-linux-${arch}.zip`;
+        assetName = `MTS-linux-${arch}.zip`;
       }
 
       log.info(`GitHubUpdater: Looking for asset named: ${assetName}`);
       log.info(`GitHubUpdater: Available assets: ${release.assets.map((a) => a.name).join(', ')}`);
 
-      const asset = release.assets.find((a) => a.name.toLowerCase() === assetName.toLowerCase()); // keeping comparison to lower case becasue Goose vs goose
+      const asset = release.assets.find((a) => a.name.toLowerCase() === assetName.toLowerCase()); // keeping comparison to lower case becasue MTS vs mts
       if (asset) {
         downloadUrl = asset.browser_download_url;
         log.info(`GitHubUpdater: Found matching asset: ${asset.name} (${asset.size} bytes)`);
@@ -197,7 +197,7 @@ export class GitHubUpdater {
 
       // Save to Downloads directory
       const downloadsDir = path.join(os.homedir(), 'Downloads');
-      const fileName = `goose-${latestVersion}.zip`;
+      const fileName = `mts-${latestVersion}.zip`;
       const downloadPath = path.join(downloadsDir, fileName);
 
       await fs.writeFile(downloadPath, buffer);

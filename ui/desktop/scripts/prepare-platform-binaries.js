@@ -10,12 +10,12 @@ const windowsFiles = [
     '*.exe',
     '*.dll',
     '*.cmd',
-    'goose-npm/**/*'
+    'mts-npm/**/*'
 ];
 
 const macosFiles = [
-    'goosed',
-    'goose',
+    'mtsd',
+    'mts',
     'jbang',
     'npx',
     'uvx',

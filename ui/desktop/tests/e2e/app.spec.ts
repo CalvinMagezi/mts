@@ -162,7 +162,7 @@ async function selectProvider(mainWindow: any, provider: Provider) {
   await mainWindow.screenshot({ path: `test-results/chat-interface-${provider.name.toLowerCase()}.png` });
 }
 
-test.describe('Goose App', () => {
+test.describe('MTS App', () => {
   let electronApp;
   let appProcess;
 
@@ -178,7 +178,7 @@ test.describe('Goose App', () => {
         ...process.env,
         ELECTRON_IS_DEV: '1',
         NODE_ENV: 'development',
-        GOOSE_ALLOWLIST_BYPASS: 'true',
+        MTS_ALLOWLIST_BYPASS: 'true',
       }
     });
 
@@ -380,9 +380,9 @@ test.describe('Goose App', () => {
 
           // Wait for loading indicator to appear
           console.log('Waiting for loading indicator...');
-          const loadingGoose = await mainWindow.waitForSelector('[data-testid="loading-indicator"]',
+          const loadingMTS = await mainWindow.waitForSelector('[data-testid="loading-indicator"]',
             { timeout: 2000 });
-          expect(await loadingGoose.isVisible()).toBe(true);
+          expect(await loadingMTS.isVisible()).toBe(true);
 
           // Take screenshot of loading state
           await mainWindow.screenshot({ path: `test-results/${provider.name.toLowerCase()}-loading-state.png` });
@@ -658,7 +658,7 @@ test.describe('Goose App', () => {
           await chatInput.press('Enter');
 
           // Get the latest response
-          const response = await mainWindow.waitForSelector('.goose-message-tool', { timeout: 5000 });
+          const response = await mainWindow.waitForSelector('.mts-message-tool', { timeout: 5000 });
           expect(await response.isVisible()).toBe(true);
 
           // Click the Output dropdown to reveal the actual quote

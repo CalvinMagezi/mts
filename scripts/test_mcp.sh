@@ -4,8 +4,8 @@ if [ -f .env ]; then
 fi
 
 if [ -z "$SKIP_BUILD" ]; then
-  echo "Building goose..."
-  cargo build --release --bin goose
+  echo "Building mts..."
+  cargo build --release --bin mts
   echo ""
 else
   echo "Skipping build (SKIP_BUILD is set)..."
@@ -14,8 +14,8 @@ fi
 
 SCRIPT_DIR=$(pwd)
 
-JUDGE_PROVIDER=${GOOSE_JUDGE_PROVIDER:-openrouter}
-JUDGE_MODEL=${GOOSE_JUDGE_MODEL:-google/gemini-2.5-flash}
+JUDGE_PROVIDER=${MTS_JUDGE_PROVIDER:-openrouter}
+JUDGE_MODEL=${MTS_JUDGE_MODEL:-google/gemini-2.5-flash}
 
 PROVIDERS=(
   #"google:gemini-2.5-pro"
@@ -45,14 +45,14 @@ for provider_config in "${PROVIDERS[@]}"; do
   PROVIDER="${PARTS[0]}"
   for i in $(seq 1 $((${#PARTS[@]} - 1))); do
     MODEL="${PARTS[$i]}"
-    export GOOSE_PROVIDER="$PROVIDER"
-    export GOOSE_MODEL="$MODEL"
+    export MTS_PROVIDER="$PROVIDER"
+    export MTS_MODEL="$MODEL"
     TESTDIR=$(mktemp -d)
     echo "Provider: ${PROVIDER}"
     echo "Model: ${MODEL}"
     echo ""
     TMPFILE=$(mktemp)
-    (cd "$TESTDIR" && "$SCRIPT_DIR/target/release/goose" run --text "Use the sampleLLM tool to ask for a quote from The Great Gatsby" --with-extension "npx -y @modelcontextprotocol/server-everything" 2>&1) | tee "$TMPFILE"
+    (cd "$TESTDIR" && "$SCRIPT_DIR/target/release/mts" run --text "Use the sampleLLM tool to ask for a quote from The Great Gatsby" --with-extension "npx -y @modelcontextprotocol/server-everything" 2>&1) | tee "$TMPFILE"
     echo ""
     if grep -q "sampleLLM | " "$TMPFILE"; then
 
@@ -79,8 +79,8 @@ $(cat "$TMPFILE")
 ----- END TRANSCRIPT -----
 EOF
 )
-      JUDGE_OUT=$(GOOSE_PROVIDER="$JUDGE_PROVIDER" GOOSE_MODEL="$JUDGE_MODEL" \
-        "$SCRIPT_DIR/target/release/goose" run --text "$JUDGE_PROMPT" 2>&1)
+      JUDGE_OUT=$(MTS_PROVIDER="$JUDGE_PROVIDER" MTS_MODEL="$JUDGE_MODEL" \
+        "$SCRIPT_DIR/target/release/mts" run --text "$JUDGE_PROMPT" 2>&1)
 
       if echo "$JUDGE_OUT" | tr -d '\r' | grep -Eq '^[[:space:]]*PASS[[:space:]]*$'; then
         echo "✓ SUCCESS: MCP sampling test passed - confirmed Gatsby related response"

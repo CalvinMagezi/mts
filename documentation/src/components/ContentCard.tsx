@@ -202,8 +202,8 @@ export default function ContentCard({
           ) : (
             <img
               style={styles.placeholderLogo}
-              src="/goose/img/goose.svg"
-              alt="Goose logo placeholder"
+              src="/mts/img/mts.svg"
+              alt="MTS logo placeholder"
             />
           )}
         </div>

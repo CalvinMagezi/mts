@@ -11,11 +11,11 @@ use rmcp::model::Role;
 use serde_json::{self, Value};
 use std::fs;
 
-pub struct GooseWiki {}
+pub struct MTSWiki {}
 
-impl GooseWiki {
+impl MTSWiki {
     pub fn new() -> Self {
-        GooseWiki {}
+        MTSWiki {}
     }
 
     fn check_html_implementation(&self, content: &str) -> bool {
@@ -30,7 +30,7 @@ impl GooseWiki {
         // Check for Wikipedia-style content
         let has_wiki_elements = content.contains("<h1") && // Has headings
                               (content.contains("<h2") || content.contains("<h3")) && // Has subheadings
-                              content.contains("Goose") && // Mentions Goose
+                              content.contains("MTS") && // Mentions MTS
                               content.contains("AI") && // Mentions AI
                               (content.contains("<p>") || content.contains("<div")); // Has paragraphs
 
@@ -39,18 +39,18 @@ impl GooseWiki {
 }
 
 #[async_trait]
-impl Evaluation for GooseWiki {
+impl Evaluation for MTSWiki {
     async fn run(
         &self,
         agent: &mut BenchAgent,
         _run_loc: &mut BenchmarkWorkDir,
     ) -> anyhow::Result<Vec<(String, EvalMetricValue)>> {
-        println!("GooseWiki - run");
+        println!("MTSWiki - run");
 
         // Collect baseline metrics (execution time, token usage, tool calls)
         let (messages, perf_metrics) = collect_baseline_metrics(
             agent,
-            "Create a Wikipedia-style web page about Goose (Block's AI agent) in a new index.html file. The page should be a complete, well-structured HTML document with proper head and body sections. Use heading tags (h1, h2, h3) to organize the content into clear sections. Include comprehensive information about Goose organized in a way similar to how Wikipedia presents technical topics. Remember to use your tools if applicable.".to_string()
+            "Create a Wikipedia-style web page about MTS (Block's AI agent) in a new index.html file. The page should be a complete, well-structured HTML document with proper head and body sections. Use heading tags (h1, h2, h3) to organize the content into clear sections. Include comprehensive information about MTS organized in a way similar to how Wikipedia presents technical topics. Remember to use your tools if applicable.".to_string()
         ).await;
 
         // Convert HashMap to Vec for our metrics
@@ -121,7 +121,7 @@ impl Evaluation for GooseWiki {
     }
 
     fn name(&self) -> &str {
-        "goose_wiki"
+        "mts_wiki"
     }
 
     fn required_extensions(&self) -> ExtensionRequirements {
@@ -133,4 +133,4 @@ impl Evaluation for GooseWiki {
     }
 }
 
-register_evaluation!(GooseWiki);
+register_evaluation!(MTSWiki);

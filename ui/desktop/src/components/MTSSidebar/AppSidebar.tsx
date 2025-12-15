@@ -53,7 +53,7 @@ const menuItems: NavigationEntry[] = [
     path: '/pair',
     label: 'Chat',
     icon: ChatSmart,
-    tooltip: 'Start pairing with Goose',
+    tooltip: 'Start pairing with MTS',
   },
   {
     type: 'item',
@@ -90,7 +90,7 @@ const menuItems: NavigationEntry[] = [
     path: '/settings',
     label: 'Settings',
     icon: Gear,
-    tooltip: 'Configure Goose settings',
+    tooltip: 'Configure MTS settings',
   },
 ];
 
@@ -111,7 +111,7 @@ const AppSidebar: React.FC<SidebarProps> = ({ currentPath }) => {
       (item) => item.type === 'item' && item.path === currentPath
     ) as NavigationItem | undefined;
 
-    const titleBits = ['Goose'];
+    const titleBits = ['MTS'];
 
     if (
       currentPath === '/pair' &&

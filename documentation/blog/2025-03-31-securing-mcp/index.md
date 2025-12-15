@@ -10,7 +10,7 @@ authors:
 > _**Authors:** Alex Rosenzweig, Arihant Virulkar, Andrea Leoszko, Wes Ring, Mike Shema, F G, Alex Klyubin, Michael Rand, Zhen Lian, Angie Jones, Douwe Osinga, Mic Neale, Bradley Axen, Gelareh Taban_
 
 
-At Block, we’ve been working hard to augment the capabilities of AI tooling by building "MCP Servers" which are designed to help make our Artificial Intelligence (AI) Agent codename goose more capable of interacting with the systems and tools we care about.
+At Block, we’ve been working hard to augment the capabilities of AI tooling by building "MCP Servers" which are designed to help make our Artificial Intelligence (AI) Agent codename mts more capable of interacting with the systems and tools we care about.
 
 Block’s Information Security (InfoSec) team has been heavily involved in this work and we wanted to capture our learnings in the space to help others. We expect there to be growing adoption and use cases for this including applying the technology in the security domain.
 
@@ -176,12 +176,12 @@ We’re excited to work on making this protocol more secure for users and develo
 <head>
   <meta property="og:title" content="Securing the Model Context Protocol" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://block.github.io/goose/blog/2025/03/31/securing-mcp" />
+  <meta property="og:url" content="https://block.github.io/mts/blog/2025/03/31/securing-mcp" />
   <meta property="og:description" content="Building secure and capable AI integrations with Model Context Protocol (MCP) at Block." />
-  <meta property="og:image" content="http://block.github.io/goose/assets/images/securing-mcp-5e475e91c0e621afa33e30b3d89ef065.png" />
+  <meta property="og:image" content="http://block.github.io/mts/assets/images/securing-mcp-5e475e91c0e621afa33e30b3d89ef065.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="block.github.io/goose" />
+  <meta property="twitter:domain" content="block.github.io/mts" />
   <meta name="twitter:title" content="Securing the Model Context Protocol" />
   <meta name="twitter:description" content="Building secure and capable AI integrations with Model Context Protocol (MCP) at Block." />
-  <meta name="twitter:image" content="http://block.github.io/goose/assets/images/securing-mcp-5e475e91c0e621afa33e30b3d89ef065.png" />
+  <meta name="twitter:image" content="http://block.github.io/mts/assets/images/securing-mcp-5e475e91c0e621afa33e30b3d89ef065.png" />
 </head>

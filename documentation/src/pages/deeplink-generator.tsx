@@ -40,8 +40,8 @@ export default function DeeplinkGenerator() {
       is_builtin: false,
       id: "example-extension",
       name: "Example Extension",
-      description: "An example Goose extension",
-      command: "npx @gooseai/example-extension",
+      description: "An example MTS extension",
+      command: "npx @mtsai/example-extension",
       environmentVariables: [
         {
           name: "API_KEY",
@@ -59,7 +59,7 @@ export default function DeeplinkGenerator() {
     if (urlParams.toString()) {
       try {
         // Check if this is a built-in extension request
-        if (urlParams.get('cmd') === 'goosed' && urlParams.getAll('arg').includes('mcp')) {
+        if (urlParams.get('cmd') === 'mtsd' && urlParams.getAll('arg').includes('mcp')) {
           const args = urlParams.getAll('arg');
           const extensionId = args[args.indexOf('mcp') + 1];
           if (!extensionId) {
@@ -136,12 +136,12 @@ export default function DeeplinkGenerator() {
   const generateDeeplink = (server: ServerConfig): string => {
     if (server.is_builtin) {
       const queryParams = [
-        'cmd=goosed',
+        'cmd=mtsd',
         'arg=mcp',
         `arg=${encodeURIComponent(server.id)}`,
         `description=${encodeURIComponent(server.id)}`
       ].join('&');
-      return `goose://extension?${queryParams}`;
+      return `mts://extension?${queryParams}`;
     }
 
     // Handle the case where the command is a URL
@@ -158,7 +158,7 @@ export default function DeeplinkGenerator() {
           ),
       ].join("&");
 
-      return `goose://extension?${queryParams}`;
+      return `mts://extension?${queryParams}`;
     }
 
     const parts = server.command.split(" ");
@@ -177,7 +177,7 @@ export default function DeeplinkGenerator() {
         ),
     ].join("&");
 
-    return `goose://extension?${queryParams}`;
+    return `mts://extension?${queryParams}`;
   };
 
   const handleFormSubmit = useCallback((e: React.FormEvent) => {
@@ -240,7 +240,7 @@ export default function DeeplinkGenerator() {
             Deeplink Generator
           </h1>
           <p className="text-textProminent">
-            Generate installation deeplinks for Goose extensions that can be shared with others.
+            Generate installation deeplinks for MTS extensions that can be shared with others.
           </p>
         </div>
 
@@ -336,7 +336,7 @@ export default function DeeplinkGenerator() {
                       onChange={(e) => setCommand(e.target.value)}
                       required
                       className="w-full p-3 border border-borderSubtle rounded-lg bg-bgSubtle text-textStandard"
-                      placeholder="npx @gooseai/example-extension"
+                      placeholder="npx @mtsai/example-extension"
                     />
                   </div>
 
@@ -453,7 +453,7 @@ export default function DeeplinkGenerator() {
               </ul>
             </li>
             <li>Click "Generate Deeplink" to create your installation deeplink.</li>
-            <li>Copy and share the generated deeplink - when users click it, it will open Goose Desktop and prompt them to install your extension.</li>
+            <li>Copy and share the generated deeplink - when users click it, it will open MTS Desktop and prompt them to install your extension.</li>
           </ol>
         </div>
       </div>

@@ -372,7 +372,7 @@ impl ServerHandler for DeveloperServer {
 
         ServerInfo {
             server_info: Implementation {
-                name: "goose-developer".to_string(),
+                name: "mts-developer".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_owned(),
                 title: None,
                 icons: None,
@@ -736,7 +736,7 @@ impl DeveloperServer {
             return Err(ErrorData::new(
                 ErrorCode::INTERNAL_ERROR,
                 format!(
-                    "Access to '{}' is restricted by .gooseignore",
+                    "Access to '{}' is restricted by .mtsignore",
                     path.display()
                 ),
                 None,
@@ -941,7 +941,7 @@ impl DeveloperServer {
                 return Err(ErrorData::new(
                     ErrorCode::INTERNAL_ERROR,
                     format!(
-                        "The command attempts to access '{}' which is restricted by .gooseignore",
+                        "The command attempts to access '{}' which is restricted by .mtsignore",
                         arg
                     ),
                     None,
@@ -1179,7 +1179,7 @@ impl DeveloperServer {
             return Err(ErrorData::new(
                 ErrorCode::INTERNAL_ERROR,
                 format!(
-                    "Access to '{}' is restricted by .gooseignore",
+                    "Access to '{}' is restricted by .mtsignore",
                     path.display()
                 ),
                 None,
@@ -1283,7 +1283,7 @@ impl DeveloperServer {
 
     fn build_ignore_patterns(cwd: &PathBuf) -> Gitignore {
         let mut builder = GitignoreBuilder::new(cwd);
-        let local_ignore_path = cwd.join(".gooseignore");
+        let local_ignore_path = cwd.join(".mtsignore");
         let mut has_ignore_file = false;
 
         if local_ignore_path.is_file() {
@@ -1813,12 +1813,12 @@ mod tests {
 
     #[tokio::test]
     #[serial]
-    async fn test_goose_ignore_basic_patterns() {
+    async fn test_mts_ignore_basic_patterns() {
         let temp_dir = tempfile::tempdir().unwrap();
         std::env::set_current_dir(&temp_dir).unwrap();
 
-        // Create .gooseignore file with patterns
-        fs::write(".gooseignore", "secret.txt\n*.env").unwrap();
+        // Create .mtsignore file with patterns
+        fs::write(".mtsignore", "secret.txt\n*.env").unwrap();
 
         let server = create_test_server();
 
@@ -1857,8 +1857,8 @@ mod tests {
         let temp_dir = tempfile::tempdir().unwrap();
         std::env::set_current_dir(&temp_dir).unwrap();
 
-        // Create .gooseignore file
-        fs::write(".gooseignore", "secret.txt").unwrap();
+        // Create .mtsignore file
+        fs::write(".mtsignore", "secret.txt").unwrap();
 
         let server = create_test_server();
 

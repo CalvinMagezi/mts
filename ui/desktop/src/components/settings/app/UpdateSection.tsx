@@ -291,7 +291,7 @@ export default function UpdateSection() {
             ) : (
               <>
                 <p className="text-xs text-green-600">
-                  ✓ Update is ready! It will be installed when you quit Goose.
+                  ✓ Update is ready! It will be installed when you quit MTS.
                 </p>
                 <p className="text-xs text-text-muted">
                   Or click "Install & Restart" to update now.

@@ -24,7 +24,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawn } from 'child_process';
 import 'dotenv/config';
-import { checkServerStatus, startGoosed } from './mtsd';
+import { checkServerStatus, startMTSd } from './mtsd';
 import { expandTilde } from './utils/pathUtils';
 import log from './utils/logger';
 import { ensureWinShims } from './utils/winShims';
@@ -58,28 +58,28 @@ function shouldSetupUpdater(): boolean {
 }
 
 // Define temp directory for pasted images
-const gooseTempDir = path.join(app.getPath('temp'), 'goose-pasted-images');
+const mtsTempDir = path.join(app.getPath('temp'), 'mts-pasted-images');
 
 // Function to ensure the temporary directory exists
 async function ensureTempDirExists(): Promise<string> {
   try {
     // Check if the path already exists
     try {
-      const stats = await fs.stat(gooseTempDir);
+      const stats = await fs.stat(mtsTempDir);
 
       // If it exists but is not a directory, remove it and recreate
       if (!stats.isDirectory()) {
-        await fs.unlink(gooseTempDir);
-        await fs.mkdir(gooseTempDir, { recursive: true });
+        await fs.unlink(mtsTempDir);
+        await fs.mkdir(mtsTempDir, { recursive: true });
       }
 
       // Startup cleanup: remove old files and any symlinks
-      const files = await fs.readdir(gooseTempDir);
+      const files = await fs.readdir(mtsTempDir);
       const now = Date.now();
       const MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
       for (const file of files) {
-        const filePath = path.join(gooseTempDir, file);
+        const filePath = path.join(mtsTempDir, file);
         try {
           const fileStats = await fs.lstat(filePath);
 
@@ -115,21 +115,21 @@ async function ensureTempDirExists(): Promise<string> {
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
         // Directory doesn't exist, create it
-        await fs.mkdir(gooseTempDir, { recursive: true });
+        await fs.mkdir(mtsTempDir, { recursive: true });
       } else {
         throw error;
       }
     }
 
     // Set proper permissions on the directory (0755 = rwxr-xr-x)
-    await fs.chmod(gooseTempDir, 0o755);
+    await fs.chmod(mtsTempDir, 0o755);
 
-    console.log('[Main] Temporary directory for pasted images ensured:', gooseTempDir);
+    console.log('[Main] Temporary directory for pasted images ensured:', mtsTempDir);
   } catch (error) {
-    console.error('[Main] Failed to create temp directory:', gooseTempDir, error);
+    console.error('[Main] Failed to create temp directory:', mtsTempDir, error);
     throw error; // Propagate error
   }
-  return gooseTempDir;
+  return mtsTempDir;
 }
 
 if (started) app.quit();
@@ -143,13 +143,13 @@ if (process.env.ENABLE_PLAYWRIGHT) {
 // In production, register normally
 if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
   // Development mode - force registration
-  console.log('[Main] Development mode: Forcing protocol registration for goose://');
-  app.setAsDefaultProtocolClient('goose');
+  console.log('[Main] Development mode: Forcing protocol registration for mts://');
+  app.setAsDefaultProtocolClient('mts');
 
   if (process.platform === 'darwin') {
     try {
       // Reset the default handler to ensure dev version takes precedence
-      spawn('open', ['-a', process.execPath, '--args', '--reset-protocol-handler', 'goose'], {
+      spawn('open', ['-a', process.execPath, '--args', '--reset-protocol-handler', 'mts'], {
         detached: true,
         stdio: 'ignore',
       });
@@ -159,7 +159,7 @@ if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
   }
 } else {
   // Production mode - normal registration
-  app.setAsDefaultProtocolClient('goose');
+  app.setAsDefaultProtocolClient('mts');
 }
 
 // Apply single instance lock on Windows and Linux where it's needed for deep links
@@ -172,7 +172,7 @@ if (process.platform !== 'darwin') {
     app.quit();
   } else {
     app.on('second-instance', (_event, commandLine) => {
-      const protocolUrl = commandLine.find((arg) => arg.startsWith('goose://'));
+      const protocolUrl = commandLine.find((arg) => arg.startsWith('mts://'));
       if (protocolUrl) {
         const parsedUrl = new URL(protocolUrl);
         // If it's a bot/recipe URL, handle it directly by creating a new window
@@ -217,7 +217,7 @@ if (process.platform !== 'darwin') {
   }
 
   // Handle protocol URLs on Windows and Linux startup
-  const protocolUrl = process.argv.find((arg) => arg.startsWith('goose://'));
+  const protocolUrl = process.argv.find((arg) => arg.startsWith('mts://'));
   if (protocolUrl) {
     app.whenReady().then(() => {
       handleProtocolUrl(protocolUrl);
@@ -359,7 +359,7 @@ app.on('open-url', async (_event, url) => {
 app.on('will-finish-launching', () => {
   if (process.platform === 'darwin') {
     app.setAboutPanelOptions({
-      applicationName: 'Goose',
+      applicationName: 'MTS',
       applicationVersion: app.getVersion(),
     });
   }
@@ -414,7 +414,7 @@ async function handleFileOpen(filePath: string) {
 
     // Show user-friendly error notification
     new Notification({
-      title: 'Goose',
+      title: 'MTS',
       body: `Could not open directory: ${path.basename(filePath)}`,
     }).show();
   }
@@ -452,7 +452,7 @@ interface BundledConfig {
 
 const getBundledConfig = (): BundledConfig => {
   //{env-macro-start}//
-  //needed when goose is bundled for a specific provider
+  //needed when mts is bundled for a specific provider
   //{env-macro-end}//
   return {
     defaultProvider: process.env.MTS_DEFAULT_PROVIDER,
@@ -482,7 +482,7 @@ let appConfig = {
 };
 
 const windowMap = new Map<number, BrowserWindow>();
-const goosedClients = new Map<number, Client>();
+const mtsdClients = new Map<number, Client>();
 
 // Track power save blockers per window
 const windowPowerSaveBlockers = new Map<number, number>(); // windowId -> blockerId
@@ -506,7 +506,7 @@ const createChat = async (
   const envVars = {
     MTS_PATH_ROOT: process.env.MTS_PATH_ROOT,
   };
-  const [port, workingDir, goosedProcess, errorLog] = await startGoosed(
+  const [port, workingDir, mtsdProcess, errorLog] = await startMTSd(
     app,
     SERVER_SECRET,
     dir || os.homedir(),
@@ -552,7 +552,7 @@ const createChat = async (
           scheduledJobId: scheduledJobId,
         }),
       ],
-      partition: 'persist:goose', // Add this line to ensure persistence
+      partition: 'persist:mts', // Add this line to ensure persistence
     },
   });
 
@@ -565,7 +565,7 @@ const createChat = async (
       .catch((err) => log.info('failed to install react dev tools:', err));
   }
 
-  const goosedClient = createClient(
+  const mtsdClient = createClient(
     createConfig({
       baseUrl: `http://127.0.0.1:${port}`,
       headers: {
@@ -574,13 +574,13 @@ const createChat = async (
       },
     })
   );
-  goosedClients.set(mainWindow.id, goosedClient);
+  mtsdClients.set(mainWindow.id, mtsdClient);
 
-  const serverReady = await checkServerStatus(goosedClient, errorLog);
+  const serverReady = await checkServerStatus(mtsdClient, errorLog);
   if (!serverReady) {
     dialog.showMessageBoxSync({
       type: 'error',
-      title: 'Goose Failed to Start',
+      title: 'MTS Failed to Start',
       message: 'The backend server failed to start.',
       detail: errorLog.join('\n'),
       buttons: ['OK'],
@@ -716,7 +716,7 @@ const createChat = async (
     }
   }
 
-  // Goose's react app uses HashRouter, so the path + search params follow a #/
+  // MTS's react app uses HashRouter, so the path + search params follow a #/
   url.hash = `${appPath}?${searchParams.toString()}`;
   let formattedUrl = formatUrl(url);
   log.info('Opening URL: ', formattedUrl);
@@ -782,8 +782,8 @@ const createChat = async (
       windowPowerSaveBlockers.delete(windowId);
     }
 
-    if (goosedProcess && typeof goosedProcess === 'object' && 'kill' in goosedProcess) {
-      goosedProcess.kill();
+    if (mtsdProcess && typeof mtsdProcess === 'object' && 'kill' in mtsdProcess) {
+      mtsdProcess.kill();
     }
   });
   return mainWindow;
@@ -801,7 +801,7 @@ const createLauncher = () => {
       nodeIntegration: false,
       contextIsolation: true,
       additionalArguments: [JSON.stringify(appConfig)],
-      partition: 'persist:goose',
+      partition: 'persist:mts',
     },
     skipTaskbar: true,
     alwaysOnTop: true,
@@ -1170,12 +1170,12 @@ ipcMain.handle('get-secret-key', () => {
   return SERVER_SECRET;
 });
 
-ipcMain.handle('get-goosed-host-port', async (event) => {
+ipcMain.handle('get-mtsd-host-port', async (event) => {
   const windowId = BrowserWindow.fromWebContents(event.sender)?.id;
   if (!windowId) {
     return null;
   }
-  const client = goosedClients.get(windowId);
+  const client = mtsdClients.get(windowId);
   if (!client) {
     return null;
   }
@@ -1457,7 +1457,7 @@ ipcMain.handle('get-temp-image', async (_event, filePath: string) => {
 
   // Ensure the path is within the designated temp directory
   const resolvedPath = path.resolve(filePath);
-  const resolvedTempDir = path.resolve(gooseTempDir);
+  const resolvedTempDir = path.resolve(mtsTempDir);
 
   if (!resolvedPath.startsWith(resolvedTempDir + path.sep)) {
     console.warn(`[Main] Attempted to access file outside designated temp directory: ${filePath}`);
@@ -1477,7 +1477,7 @@ ipcMain.handle('get-temp-image', async (_event, filePath: string) => {
     let actualPath = filePath;
 
     try {
-      realTempDir = await fs.realpath(gooseTempDir);
+      realTempDir = await fs.realpath(mtsTempDir);
       const realPath = await fs.realpath(filePath);
 
       // Double-check that the real path is still within our real temp directory
@@ -1529,7 +1529,7 @@ ipcMain.on('delete-temp-file', async (_event, filePath: string) => {
 
   // Ensure the path is within the designated temp directory
   const resolvedPath = path.resolve(filePath);
-  const resolvedTempDir = path.resolve(gooseTempDir);
+  const resolvedTempDir = path.resolve(mtsTempDir);
 
   if (!resolvedPath.startsWith(resolvedTempDir + path.sep)) {
     console.warn(`[Main] Attempted to delete file outside designated temp directory: ${filePath}`);
@@ -1548,7 +1548,7 @@ ipcMain.on('delete-temp-file', async (_event, filePath: string) => {
     let actualPath = filePath;
 
     try {
-      const realTempDir = await fs.realpath(gooseTempDir);
+      const realTempDir = await fs.realpath(mtsTempDir);
       const realPath = await fs.realpath(filePath);
 
       // Double-check that the real path is still within our real temp directory
@@ -1857,7 +1857,7 @@ async function appMain() {
   const menu = Menu.getApplicationMenu();
 
   // App menu
-  const appMenu = menu?.items.find((item) => item.label === 'Goose');
+  const appMenu = menu?.items.find((item) => item.label === 'MTS');
   if (appMenu?.submenu) {
     // add Settings to app menu after About
     appMenu.submenu.insert(1, new MenuItem({ type: 'separator' }));
@@ -1954,7 +1954,7 @@ async function appMain() {
       })
     );
 
-    // Open goose to specific dir and set that as its working space
+    // Open mts to specific dir and set that as its working space
     fileMenu.submenu.insert(
       2,
       new MenuItem({
@@ -1983,7 +1983,7 @@ async function appMain() {
     // Add menu item to tell the user about the keyboard shortcut
     fileMenu.submenu.append(
       new MenuItem({
-        label: 'Focus Goose Window',
+        label: 'Focus MTS Window',
         accelerator: 'CmdOrCtrl+Alt+Shift+G',
         click() {
           focusWindow();
@@ -2058,15 +2058,15 @@ async function appMain() {
         helpMenu.submenu.append(new MenuItem({ type: 'separator' }));
       }
 
-      // Create the About Goose menu item with a submenu
-      const aboutGooseMenuItem = new MenuItem({
-        label: 'About Goose',
+      // Create the About MTS menu item with a submenu
+      const aboutMTSMenuItem = new MenuItem({
+        label: 'About MTS',
         submenu: Menu.buildFromTemplate([]), // Start with an empty submenu for About
       });
 
-      // Add the Version menu item (display only) to the About Goose submenu
-      if (aboutGooseMenuItem.submenu) {
-        aboutGooseMenuItem.submenu.append(
+      // Add the Version menu item (display only) to the About MTS submenu
+      if (aboutMTSMenuItem.submenu) {
+        aboutMTSMenuItem.submenu.append(
           new MenuItem({
             label: `Version ${version || app.getVersion()}`,
             enabled: false,
@@ -2074,7 +2074,7 @@ async function appMain() {
         );
       }
 
-      helpMenu.submenu.append(aboutGooseMenuItem);
+      helpMenu.submenu.append(aboutMTSMenuItem);
     }
   }
 
@@ -2222,7 +2222,7 @@ async function appMain() {
 
       const response = await fetch(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; Goose/1.0)',
+          'User-Agent': 'Mozilla/5.0 (compatible; MTS/1.0)',
         },
       });
 
@@ -2300,7 +2300,7 @@ app.whenReady().then(async () => {
   try {
     await appMain();
   } catch (error) {
-    dialog.showErrorBox('Goose Error', `Failed to create main window: ${error}`);
+    dialog.showErrorBox('MTS Error', `Failed to create main window: ${error}`);
     app.quit();
   }
 });
@@ -2355,14 +2355,14 @@ app.on('will-quit', async () => {
   globalShortcut.unregisterAll();
 
   try {
-    await fs.access(gooseTempDir); // Check if directory exists to avoid error on fs.rm if it doesn't
+    await fs.access(mtsTempDir); // Check if directory exists to avoid error on fs.rm if it doesn't
 
     // First, check for any symlinks in the directory and refuse to delete them
     let hasSymlinks = false;
     try {
-      const files = await fs.readdir(gooseTempDir);
+      const files = await fs.readdir(mtsTempDir);
       for (const file of files) {
-        const filePath = path.join(gooseTempDir, file);
+        const filePath = path.join(mtsTempDir, file);
         const stats = await fs.lstat(filePath);
         if (stats.isSymbolicLink()) {
           console.warn(`[Main] Found symlink in temp directory: ${filePath}. Skipping deletion.`);
@@ -2379,7 +2379,7 @@ app.on('will-quit', async () => {
 
       // If no symlinks were found, it's safe to remove the directory
       if (!hasSymlinks) {
-        await fs.rm(gooseTempDir, { recursive: true, force: true });
+        await fs.rm(mtsTempDir, { recursive: true, force: true });
         console.log('[Main] Pasted images temp directory cleaned up successfully.');
       } else {
         console.log(

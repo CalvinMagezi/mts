@@ -270,7 +270,7 @@ data: [DONE]
     fn test_tool_call_streaming() {
         let mut collector = OAIStreamCollector::new();
         for line in TOOL_STREAM.lines() {
-            // --- BEGIN GOOSE DEBUG ---
+            // --- BEGIN MTS DEBUG ---
             let line = line.trim();
             if !line.starts_with("data: ") {
                 continue;

@@ -70,9 +70,9 @@ fn setup_logging_internal(
                 EnvFilter::new("")
                     // Set mcp-client to DEBUG
                     .add_directive("mcp_client=debug".parse().unwrap())
-                    // Set goose module to DEBUG
-                    .add_directive("goose=debug".parse().unwrap())
-                    // Set goose-cli to INFO
+                    // Set mts module to DEBUG
+                    .add_directive("mts=debug".parse().unwrap())
+                    // Set mts-cli to INFO
                     .add_directive("mts_cli=info".parse().unwrap())
                     // Set everything else to WARN
                     .add_directive(LevelFilter::WARN.into())
@@ -171,7 +171,7 @@ mod tests {
 
         // Verify directory structure
         let path_components: Vec<_> = log_dir.components().collect();
-        assert!(path_components.iter().any(|c| c.as_os_str() == "goose"));
+        assert!(path_components.iter().any(|c| c.as_os_str() == "mts"));
         assert!(path_components.iter().any(|c| c.as_os_str() == "logs"));
         assert!(path_components.iter().any(|c| c.as_os_str() == "cli"));
     }

@@ -1,11 +1,11 @@
-# goose Documentation
-# https://block.github.io/goose/
+# mts Documentation
+# https://block.github.io/mts/
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://block.github.io/goose/sitemap.xml
+Sitemap: https://block.github.io/mts/sitemap.xml
 
 # LLM context file available at /llms.txt
 

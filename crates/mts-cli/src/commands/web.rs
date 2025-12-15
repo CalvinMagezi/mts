@@ -14,7 +14,7 @@ use axum::{
 use base64::Engine;
 use futures::{sink::SinkExt, stream::StreamExt};
 use mts::agents::{Agent, AgentEvent};
-use mts::conversation::message::Message as GooseMessage;
+use mts::conversation::message::Message as MTSMessage;
 use mts::session::session_manager::SessionType;
 use mts::session::SessionManager;
 use serde::{Deserialize, Serialize};
@@ -120,7 +120,7 @@ async fn auth_middleware(
     *response.status_mut() = StatusCode::UNAUTHORIZED;
     response.headers_mut().insert(
         "WWW-Authenticate",
-        "Basic realm=\"Goose Web Interface\"".parse().unwrap(),
+        "Basic realm=\"MTS Web Interface\"".parse().unwrap(),
     );
     Ok(response)
 }
@@ -131,14 +131,14 @@ pub async fn handle_web(
     open: bool,
     auth_token: Option<String>,
 ) -> Result<()> {
-    crate::logging::setup_logging(Some("goose-web"), None)?;
+    crate::logging::setup_logging(Some("mts-web"), None)?;
 
     let config = mts::config::Config::global();
 
     let provider_name: String = match config.get_mts_provider() {
         Ok(p) => p,
         Err(_) => {
-            eprintln!("No provider configured. Run 'goose configure' first");
+            eprintln!("No provider configured. Run 'mts configure' first");
             std::process::exit(1);
         }
     };
@@ -146,7 +146,7 @@ pub async fn handle_web(
     let model: String = match config.get_mts_model() {
         Ok(m) => m,
         Err(_) => {
-            eprintln!("No model configured. Run 'goose configure' first");
+            eprintln!("No model configured. Run 'mts configure' first");
             std::process::exit(1);
         }
     };
@@ -218,7 +218,7 @@ pub async fn handle_web(
 
     let addr: SocketAddr = format!("{}:{}", host, port).parse()?;
 
-    println!("\n🪿 Starting goose web server");
+    println!("\n🪿 Starting mts web server");
     println!("   Provider: {} | Model: {}", provider_name, model);
     println!(
         "   Working directory: {}",
@@ -303,7 +303,7 @@ async fn serve_static(axum::extract::Path(path): axum::extract::Path<String>) ->
 async fn health_check() -> Json<serde_json::Value> {
     Json(serde_json::json!({
         "status": "ok",
-        "service": "goose-web"
+        "service": "mts-web"
     }))
 }
 
@@ -485,11 +485,11 @@ async fn process_message_streaming(
     use mts::agents::SessionConfig;
     use mts::conversation::message::MessageContent;
 
-    let user_message = GooseMessage::user().with_text(content.clone());
+    let user_message = MTSMessage::user().with_text(content.clone());
 
     let provider = agent.provider().await;
     if provider.is_err() {
-        let error_msg = "I'm not properly configured yet. Please configure a provider through the CLI first using `goose configure`.".to_string();
+        let error_msg = "I'm not properly configured yet. Please configure a provider through the CLI first using `mts configure`.".to_string();
         let mut sender = sender.lock().await;
         let _ = sender
             .send(Message::Text(

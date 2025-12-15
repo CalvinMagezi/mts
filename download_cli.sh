@@ -2,37 +2,37 @@
 set -eu
 
 ##############################################################################
-# goose CLI Install Script
+# mts CLI Install Script
 #
-# This script downloads the latest stable 'goose' CLI binary from GitHub releases
+# This script downloads the latest stable 'mts' CLI binary from GitHub releases
 # and installs it to your system.
 #
 # Supported OS: macOS (darwin), Linux, Windows (MSYS2/Git Bash/WSL)
 # Supported Architectures: x86_64, arm64
 #
 # Usage:
-#   curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh | bash
+#   curl -fsSL https://github.com/block/mts/releases/download/stable/download_cli.sh | bash
 #
 # Environment variables:
-#   GOOSE_BIN_DIR  - Directory to which goose will be installed (default: $HOME/.local/bin)
-#   GOOSE_VERSION  - Optional: specific version to install (e.g., "v1.0.25"). Overrides CANARY. Can be in the format vX.Y.Z, vX.Y.Z-suffix, or X.Y.Z
-#   GOOSE_PROVIDER - Optional: provider for goose
-#   GOOSE_MODEL    - Optional: model for goose
+#   MTS_BIN_DIR  - Directory to which mts will be installed (default: $HOME/.local/bin)
+#   MTS_VERSION  - Optional: specific version to install (e.g., "v1.0.25"). Overrides CANARY. Can be in the format vX.Y.Z, vX.Y.Z-suffix, or X.Y.Z
+#   MTS_PROVIDER - Optional: provider for mts
+#   MTS_MODEL    - Optional: model for mts
 #   CANARY         - Optional: if set to "true", downloads from canary release instead of stable
-#   CONFIGURE      - Optional: if set to "false", disables running goose configure interactively
+#   CONFIGURE      - Optional: if set to "false", disables running mts configure interactively
 #   ** other provider specific environment variables (eg. DATABRICKS_HOST)
 ##############################################################################
 
 # --- 1) Check for dependencies ---
 # Check for curl
 if ! command -v curl >/dev/null 2>&1; then
-  echo "Error: 'curl' is required to download goose. Please install curl and try again."
+  echo "Error: 'curl' is required to download mts. Please install curl and try again."
   exit 1
 fi
 
 # Check for tar or unzip (depending on OS)
 if ! command -v tar >/dev/null 2>&1 && ! command -v unzip >/dev/null 2>&1; then
-  echo "Error: Either 'tar' or 'unzip' is required to extract goose. Please install one and try again."
+  echo "Error: Either 'tar' or 'unzip' is required to extract mts. Please install one and try again."
   exit 1
 fi
 
@@ -52,13 +52,13 @@ fi
 
 
 # --- 2) Variables ---
-REPO="block/goose"
-OUT_FILE="goose"
+REPO="block/mts"
+OUT_FILE="mts"
 
 # Set default bin directory based on detected OS environment
 if [[ "${WINDIR:-}" ]] || [[ "${windir:-}" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
     # Native Windows environments - use Windows user profile path
-    DEFAULT_BIN_DIR="$USERPROFILE/goose"
+    DEFAULT_BIN_DIR="$USERPROFILE/mts"
 elif [[ -f "/proc/version" ]] && grep -q "Microsoft\|WSL" /proc/version 2>/dev/null; then
     # WSL - use Linux-style path but make sure it exists
     DEFAULT_BIN_DIR="$HOME/.local/bin"
@@ -70,20 +70,20 @@ else
     DEFAULT_BIN_DIR="$HOME/.local/bin"
 fi
 
-GOOSE_BIN_DIR="${GOOSE_BIN_DIR:-$DEFAULT_BIN_DIR}"
+MTS_BIN_DIR="${MTS_BIN_DIR:-$DEFAULT_BIN_DIR}"
 RELEASE="${CANARY:-false}"
 CONFIGURE="${CONFIGURE:-true}"
-if [ -n "${GOOSE_VERSION:-}" ]; then
+if [ -n "${MTS_VERSION:-}" ]; then
   # Validate the version format
-  if [[ ! "$GOOSE_VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
-    echo "[error]: invalid version '$GOOSE_VERSION'."
+  if [[ ! "$MTS_VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+    echo "[error]: invalid version '$MTS_VERSION'."
     echo "  expected: semver format vX.Y.Z, vX.Y.Z-suffix, or X.Y.Z"
     exit 1
   fi
-  GOOSE_VERSION=$(echo "$GOOSE_VERSION" | sed 's/^v\{0,1\}/v/') # Ensure the version string is prefixed with 'v' if not already present
-  RELEASE_TAG="$GOOSE_VERSION"
+  MTS_VERSION=$(echo "$MTS_VERSION" | sed 's/^v\{0,1\}/v/') # Ensure the version string is prefixed with 'v' if not already present
+  RELEASE_TAG="$MTS_VERSION"
 else
-  # If GOOSE_VERSION is not set, fall back to existing behavior for backwards compatibility
+  # If MTS_VERSION is not set, fall back to existing behavior for backwards compatibility
   RELEASE_TAG="$([[ "$RELEASE" == "true" ]] && echo "canary" || echo "stable")"
 fi
 
@@ -145,7 +145,7 @@ case "$OS" in
     OS="windows"
     ;;
   *)
-    echo "Error: Unsupported OS '$OS'. goose currently supports Linux, macOS, and Windows."
+    echo "Error: Unsupported OS '$OS'. mts currently supports Linux, macOS, and Windows."
     exit 1
     ;;
 esac
@@ -176,7 +176,7 @@ echo "Detected OS: $OS with ARCH $ARCH"
 
 # Build the filename and URL for the stable release
 if [ "$OS" = "darwin" ]; then
-  FILE="goose-$ARCH-apple-darwin.tar.bz2"
+  FILE="mts-$ARCH-apple-darwin.tar.bz2"
   EXTRACT_CMD="tar"
 elif [ "$OS" = "windows" ]; then
   # Windows only supports x86_64 currently
@@ -184,17 +184,17 @@ elif [ "$OS" = "windows" ]; then
     echo "Error: Windows currently only supports x86_64 architecture."
     exit 1
   fi
-  FILE="goose-$ARCH-pc-windows-gnu.zip"
+  FILE="mts-$ARCH-pc-windows-gnu.zip"
   EXTRACT_CMD="unzip"
-  OUT_FILE="goose.exe"
+  OUT_FILE="mts.exe"
 else
-  FILE="goose-$ARCH-unknown-linux-gnu.tar.bz2"
+  FILE="mts-$ARCH-unknown-linux-gnu.tar.bz2"
   EXTRACT_CMD="tar"
 fi
 
 DOWNLOAD_URL="https://github.com/$REPO/releases/download/$RELEASE_TAG/$FILE"
 
-# --- 4) Download & extract 'goose' binary ---
+# --- 4) Download & extract 'mts' binary ---
 echo "Downloading $RELEASE_TAG release: $FILE..."
 if ! curl -sLf "$DOWNLOAD_URL" --output "$FILE"; then
   echo "Error: Failed to download $DOWNLOAD_URL"
@@ -202,7 +202,7 @@ if ! curl -sLf "$DOWNLOAD_URL" --output "$FILE"; then
 fi
 
 # Create a temporary directory for extraction
-TMP_DIR="/tmp/goose_install_$RANDOM"
+TMP_DIR="/tmp/mts_install_$RANDOM"
 if ! mkdir -p "$TMP_DIR"; then
   echo "Error: Could not create temporary extraction directory"
   exit 1
@@ -249,31 +249,31 @@ set -e  # Re-enable immediate exit on error
 rm "$FILE" # clean up the downloaded archive
 
 # Determine the extraction directory (handle subdirectory in Windows packages)
-# Windows releases may contain files in a 'goose-package' subdirectory
+# Windows releases may contain files in a 'mts-package' subdirectory
 EXTRACT_DIR="$TMP_DIR"
-if [ "$OS" = "windows" ] && [ -d "$TMP_DIR/goose-package" ]; then
-  echo "Found goose-package subdirectory, using that as extraction directory"
-  EXTRACT_DIR="$TMP_DIR/goose-package"
+if [ "$OS" = "windows" ] && [ -d "$TMP_DIR/mts-package" ]; then
+  echo "Found mts-package subdirectory, using that as extraction directory"
+  EXTRACT_DIR="$TMP_DIR/mts-package"
 fi
 
 # Make binary executable
 if [ "$OS" = "windows" ]; then
-  chmod +x "$EXTRACT_DIR/goose.exe"
+  chmod +x "$EXTRACT_DIR/mts.exe"
 else
-  chmod +x "$EXTRACT_DIR/goose"
+  chmod +x "$EXTRACT_DIR/mts"
 fi
 
-# --- 5) Install to $GOOSE_BIN_DIR ---
-if [ ! -d "$GOOSE_BIN_DIR" ]; then
-  echo "Creating directory: $GOOSE_BIN_DIR"
-  mkdir -p "$GOOSE_BIN_DIR"
+# --- 5) Install to $MTS_BIN_DIR ---
+if [ ! -d "$MTS_BIN_DIR" ]; then
+  echo "Creating directory: $MTS_BIN_DIR"
+  mkdir -p "$MTS_BIN_DIR"
 fi
 
-echo "Moving goose to $GOOSE_BIN_DIR/$OUT_FILE"
+echo "Moving mts to $MTS_BIN_DIR/$OUT_FILE"
 if [ "$OS" = "windows" ]; then
-  mv "$EXTRACT_DIR/goose.exe" "$GOOSE_BIN_DIR/$OUT_FILE"
+  mv "$EXTRACT_DIR/mts.exe" "$MTS_BIN_DIR/$OUT_FILE"
 else
-  mv "$EXTRACT_DIR/goose" "$GOOSE_BIN_DIR/$OUT_FILE"
+  mv "$EXTRACT_DIR/mts" "$MTS_BIN_DIR/$OUT_FILE"
 fi
 
 # Copy Windows runtime DLLs if they exist
@@ -281,31 +281,31 @@ if [ "$OS" = "windows" ]; then
   for dll in "$EXTRACT_DIR"/*.dll; do
     if [ -f "$dll" ]; then
       echo "Moving Windows runtime DLL: $(basename "$dll")"
-      mv "$dll" "$GOOSE_BIN_DIR/"
+      mv "$dll" "$MTS_BIN_DIR/"
     fi
   done
 fi
 
 # skip configuration for non-interactive installs e.g. automation, docker
 if [ "$CONFIGURE" = true ]; then
-  # --- 6) Configure goose (Optional) ---
+  # --- 6) Configure mts (Optional) ---
   echo ""
-  echo "Configuring goose"
+  echo "Configuring mts"
   echo ""
-  "$GOOSE_BIN_DIR/$OUT_FILE" configure
+  "$MTS_BIN_DIR/$OUT_FILE" configure
 else
-  echo "Skipping 'goose configure', you may need to run this manually later"
+  echo "Skipping 'mts configure', you may need to run this manually later"
 fi
 
 
 
 # --- 7) Check PATH and give instructions if needed ---
-if [[ ":$PATH:" != *":$GOOSE_BIN_DIR:"* ]]; then
+if [[ ":$PATH:" != *":$MTS_BIN_DIR:"* ]]; then
   echo ""
-  echo "Warning: goose installed, but $GOOSE_BIN_DIR is not in your PATH."
+  echo "Warning: mts installed, but $MTS_BIN_DIR is not in your PATH."
   
   if [ "$OS" = "windows" ]; then
-    echo "To add goose to your PATH in PowerShell:"
+    echo "To add mts to your PATH in PowerShell:"
     echo ""
     echo "# Add to your PowerShell profile"
     echo '$profilePath = $PROFILE'
@@ -315,13 +315,13 @@ if [[ ":$PATH:" != *":$GOOSE_BIN_DIR:"* ]]; then
     echo '. $PROFILE'
     echo ""
     echo "Alternatively, you can run:"
-    echo "    goose configure"
+    echo "    mts configure"
     echo "or rerun this install script after updating your PATH."
   else
     SHELL_NAME=$(basename "$SHELL")
     
     echo ""
-    echo "The \$GOOSE_BIN_DIR is not in your PATH."
+    echo "The \$MTS_BIN_DIR is not in your PATH."
     echo "What would you like to do?"
     echo "1) Add it for me"
     echo "2) I'll add it myself, show instructions"
@@ -331,18 +331,18 @@ if [[ ":$PATH:" != *":$GOOSE_BIN_DIR:"* ]]; then
     case "$choice" in
       1)
         RC_FILE="$HOME/.${SHELL_NAME}rc"
-        echo "Adding \$GOOSE_BIN_DIR to $RC_FILE..."
-        echo "export PATH=\"$GOOSE_BIN_DIR:\$PATH\"" >> "$RC_FILE"
+        echo "Adding \$MTS_BIN_DIR to $RC_FILE..."
+        echo "export PATH=\"$MTS_BIN_DIR:\$PATH\"" >> "$RC_FILE"
         echo "Done! Reload your shell or run 'source $RC_FILE' to apply changes."
         ;;
       2)
         echo ""
         echo "Add it to your PATH by editing ~/.${SHELL_NAME}rc or similar:"
-        echo "    export PATH=\"$GOOSE_BIN_DIR:\$PATH\""
+        echo "    export PATH=\"$MTS_BIN_DIR:\$PATH\""
         echo "Then reload your shell (e.g. 'source ~/.${SHELL_NAME}rc') to apply changes."
         ;;
       *)
-        echo "Invalid choice. Please add \$GOOSE_BIN_DIR to your PATH manually."
+        echo "Invalid choice. Please add \$MTS_BIN_DIR to your PATH manually."
         ;;
     esac
   fi

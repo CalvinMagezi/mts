@@ -1,32 +1,32 @@
 ---
 title: Known Issues
 sidebar_label: Known Issues
-description: Comprehensive troubleshooting guide for common goose problems with step-by-step solutions.
+description: Comprehensive troubleshooting guide for common mts problems with step-by-step solutions.
 ---
 
-goose, like any system, may run into occasional issues. This guide provides solutions for common problems.
+mts, like any system, may run into occasional issues. This guide provides solutions for common problems.
 
 :::tip Need help with an issue not listed here?
-Our [Discord community](https://discord.gg/goose-oss) is here to help! For the fastest support, consider generating a [diagnostic report](/docs/troubleshooting/diagnostics-and-reporting) - it helps us understand your setup quickly.
+Our [Discord community](https://discord.gg/mts-oss) is here to help! For the fastest support, consider generating a [diagnostic report](/docs/troubleshooting/diagnostics-and-reporting) - it helps us understand your setup quickly.
 :::
 
-### goose Edits Files
-goose can and will edit files as part of its workflow. To avoid losing personal changes, use version control to stage your personal edits. Leave goose edits unstaged until reviewed. Consider separate commits for goose's edits so you can easily revert them if needed.
+### mts Edits Files
+mts can and will edit files as part of its workflow. To avoid losing personal changes, use version control to stage your personal edits. Leave mts edits unstaged until reviewed. Consider separate commits for mts's edits so you can easily revert them if needed.
 
 ---
 
-### Interrupting goose
-If goose is heading in the wrong direction or gets stuck, you can [interrupt it](/docs/guides/sessions/in-session-actions#interrupt-task) to correct its actions or provide additional information.
+### Interrupting mts
+If mts is heading in the wrong direction or gets stuck, you can [interrupt it](/docs/guides/sessions/in-session-actions#interrupt-task) to correct its actions or provide additional information.
 
 ---
 
 ### Stuck in a Loop or Unresponsive
-In rare cases, goose may enter a "doom spiral" or become unresponsive during a long session. This is often resolved by ending the current session, and starting a new session.
+In rare cases, mts may enter a "doom spiral" or become unresponsive during a long session. This is often resolved by ending the current session, and starting a new session.
 
 1. Hold down `Ctrl+C` to cancel
 2. Start a new session:
   ```sh
-  goose session
+  mts session
   ```
 :::tip
 For particularly large or complex tasks, consider breaking them into smaller sessions.
@@ -36,9 +36,9 @@ For particularly large or complex tasks, consider breaking them into smaller ses
 
 ### Preventing Long-Running Commands
 
-If you use goose CLI and work with web development projects, you may encounter commands that cause goose to hang indefinitely. Commands like `npm run dev`, `python -m http.server`, or `webpack serve` start development servers that never exit on their own.
+If you use mts CLI and work with web development projects, you may encounter commands that cause mts to hang indefinitely. Commands like `npm run dev`, `python -m http.server`, or `webpack serve` start development servers that never exit on their own.
 
-You can prevent these issues by customizing your shell to handle these commands differently when goose runs them. See [Customizing Shell Behavior](/docs/guides/environment-variables#customizing-shell-behavior) for details on using the `GOOSE_TERMINAL` environment variable.
+You can prevent these issues by customizing your shell to handle these commands differently when mts runs them. See [Customizing Shell Behavior](/docs/guides/environment-variables#customizing-shell-behavior) for details on using the `MTS_TERMINAL` environment variable.
 
 ---
 
@@ -46,23 +46,23 @@ You can prevent these issues by customizing your shell to handle these commands 
 
 ### Context Length Exceeded Error
 
-This error occurs when the input provided to goose exceeds the maximum token limit of the LLM being used. To resolve this, try breaking down your input into smaller parts. You can also use [`.goosehints`][goosehints] as a way to provide goose with detailed context and use [message queues](/docs/guides/sessions/in-session-actions#queue-messages) in goose Desktop.
+This error occurs when the input provided to mts exceeds the maximum token limit of the LLM being used. To resolve this, try breaking down your input into smaller parts. You can also use [`.mtshints`][mtshints] as a way to provide mts with detailed context and use [message queues](/docs/guides/sessions/in-session-actions#queue-messages) in mts Desktop.
 
 ---
 
 ### Using Ollama Provider
 
-Ollama provides local LLMs, which means you must first [download Ollama and run a model](/docs/getting-started/providers#local-llms) before attempting to use this provider with goose. If you do not have the model downloaded, you'll run into the following error:
+Ollama provides local LLMs, which means you must first [download Ollama and run a model](/docs/getting-started/providers#local-llms) before attempting to use this provider with mts. If you do not have the model downloaded, you'll run into the following error:
 
 > ExecutionError("error sending request for url (http://localhost:11434/v1/chat/completions)")
 
 
-Another thing to note is that the DeepSeek models do not support tool calling, so all goose [extensions must be disabled](/docs/getting-started/using-extensions#enablingdisabling-extensions) to use one of these models. Unfortunately, without the use of tools, there is not much goose will be able to do autonomously if using DeepSeek. However, Ollama's other models such as `qwen2.5` do support tool calling and can be used with goose extensions.
+Another thing to note is that the DeepSeek models do not support tool calling, so all mts [extensions must be disabled](/docs/getting-started/using-extensions#enablingdisabling-extensions) to use one of these models. Unfortunately, without the use of tools, there is not much mts will be able to do autonomously if using DeepSeek. However, Ollama's other models such as `qwen2.5` do support tool calling and can be used with mts extensions.
 
 ---
 
 ### Handling Rate Limit Errors
-goose may encounter a `429 error` (rate limit exceeded) when interacting with LLM providers. The recommended solution is to use a provider that provides built-in rate limiting. See [Handling LLM Rate Limits][handling-rate-limits] for more info.
+mts may encounter a `429 error` (rate limit exceeded) when interacting with LLM providers. The recommended solution is to use a provider that provides built-in rate limiting. See [Handling LLM Rate Limits][handling-rate-limits] for more info.
 
 ---
 
@@ -84,11 +84,11 @@ Users may run into an error like the one below when there are issues with their 
 
 ```sh
 Traceback (most recent call last):
-  File "/Users/admin/.local/pipx/venvs/goose-ai/lib/python3.13/site-packages/exchange/providers/utils.py",
+  File "/Users/admin/.local/pipx/venvs/mts-ai/lib/python3.13/site-packages/exchange/providers/utils.py",
 line 30, in raise_for_status
     response.raise_for_status()
     ~~~~~~~~~~~~~~~~~~~~~~~~~^^
-  File "/Users/admin/.local/pipx/venvs/goose-ai/lib/python3.13/site-packages/httpx/_models.py",
+  File "/Users/admin/.local/pipx/venvs/mts-ai/lib/python3.13/site-packages/httpx/_models.py",
 line 829, in raise_for_status
     raise HTTPStatusError(message, request=request, response=self)
 httpx.HTTPStatusError: Client error '404 Not Found' for url
@@ -104,7 +104,7 @@ This error typically occurs when LLM API credits are exhausted or your API key i
 2. Verify API Key:
     - Run the following command to reconfigure your API key:
     ```sh
-    goose configure
+    mts configure
     ```
 For detailed steps on updating your LLM provider, refer to the [Installation][installation] Guide.
 
@@ -122,30 +122,30 @@ Failed to authenticate: Execution error: OAuth configuration not supported by th
 ``` 
 
 To resolve:
-1. Temporarily comment out or remove lead/worker model variables from the main config file (`~/.config/goose/config.yaml`):
+1. Temporarily comment out or remove lead/worker model variables from the main config file (`~/.config/mts/config.yaml`):
    ```yaml
-   # GOOSE_LEAD_MODEL: your-model
-   # GOOSE_WORKER_MODEL: your-model
+   # MTS_LEAD_MODEL: your-model
+   # MTS_WORKER_MODEL: your-model
    ```
-2. Run `goose configure` again to set up GitHub Copilot
+2. Run `mts configure` again to set up GitHub Copilot
 3. Complete the OAuth authentication flow
 4. Re-enable your lead/worker model settings as needed
 
 #### Container and Keyring Issues
 
-If you're running goose in Docker containers or Linux environments without keyring support, authentication may fail with keyring errors like:
+If you're running mts in Docker containers or Linux environments without keyring support, authentication may fail with keyring errors like:
 ```
 Failed to save token: Failed to access keyring: Platform secure storage failure: DBus error: Using X11 for dbus-daemon autolaunch was disabled at compile time
 ```
 
-goose tries to use the system keyring (which requires DBus and X11) to securely store your GitHub token, but these aren't available in containerized or headless environments.
+mts tries to use the system keyring (which requires DBus and X11) to securely store your GitHub token, but these aren't available in containerized or headless environments.
 
 To resolve:
 
-Use the `GOOSE_DISABLE_KEYRING` environment variable to tell goose to store secrets in files instead. This example sets the variable only while executing the `goose configure` command:
+Use the `MTS_DISABLE_KEYRING` environment variable to tell mts to store secrets in files instead. This example sets the variable only while executing the `mts configure` command:
 
 ```bash
-GOOSE_DISABLE_KEYRING=1 goose configure
+MTS_DISABLE_KEYRING=1 mts configure
 ```
 
 See [Keychain/Keyring Errors](#keychainkeyring-errors) for more details on keyring alternatives.
@@ -154,89 +154,89 @@ See [Keychain/Keyring Errors](#keychainkeyring-errors) for more details on keyri
 
 ### New Recipe Warning
 
-The first time you run a given recipe in goose Desktop, you'll see a `New Recipe Warning` dialog that allows you to review the recipe's title, description, and instructions. If you trust the recipe, click `Trust and Execute` to continue. You won't be prompted again for the same recipe unless it changes.
+The first time you run a given recipe in mts Desktop, you'll see a `New Recipe Warning` dialog that allows you to review the recipe's title, description, and instructions. If you trust the recipe, click `Trust and Execute` to continue. You won't be prompted again for the same recipe unless it changes.
 
 This warning helps protect against inadvertently executing potentially harmful recipe code.
 
 ---
-### Uninstall goose or Remove Cached Data
+### Uninstall mts or Remove Cached Data
 
-You may need to uninstall goose or clear existing data before re-installing. goose stores data in different locations depending on your operating system. Secrets, such as API keys, are stored exclusively in the system keychain/keyring.
+You may need to uninstall mts or clear existing data before re-installing. mts stores data in different locations depending on your operating system. Secrets, such as API keys, are stored exclusively in the system keychain/keyring.
 
 #### macOS
 
 **Data Locations**
 
-- **Logs and Config**: `~/.config/goose`
-- **Application Data**: `~/Library/Application Support/Goose`
-- **Secrets**: macOS Keychain (credential named "goose").
+- **Logs and Config**: `~/.config/mts`
+- **Application Data**: `~/Library/Application Support/MTS`
+- **Secrets**: macOS Keychain (credential named "mts").
 
 #### Removal Steps
 
-1. Stop any copies of goose running (CLI or GUI)
+1. Stop any copies of mts running (CLI or GUI)
 
   - Consider confirming you've stopped them all via Activity Monitor
 
-2. Open Keychain Access and delete the credential called "goose", which contains all secrets stored by goose
+2. Open Keychain Access and delete the credential called "mts", which contains all secrets stored by mts
 3. Remove data directories:
 
 ```
-rm -rf ~/.config/goose
-rm -rf ~/Library/Application\ Support/goose
+rm -rf ~/.config/mts
+rm -rf ~/Library/Application\ Support/mts
 ```
-4. Delete the "goose" app from your Applications folder (if using goose Desktop).
+4. Delete the "mts" app from your Applications folder (if using mts Desktop).
 
 #### Linux
 **Data Locations**
 
-- **Data/Sessions**: `~/.local/share/goose/`
-- **Logs**: `~/.local/state/goose/`
-- **Config**: `~/.config/goose/`
+- **Data/Sessions**: `~/.local/share/mts/`
+- **Logs**: `~/.local/state/mts/`
+- **Config**: `~/.config/mts/`
 - **Secrets**: System keyring (if available)
 
 #### Removal Steps
 
-- Stop any copies of goose running (CLI or GUI)
+- Stop any copies of mts running (CLI or GUI)
 - Clear secrets from your system keyring (if applicable)
 - Remove data directories:
 
 ```
-rm -rf ~/.local/share/goose/
-rm -rf ~/.local/state/goose/
-rm -rf ~/.config/goose/
+rm -rf ~/.local/share/mts/
+rm -rf ~/.local/state/mts/
+rm -rf ~/.config/mts/
 ```
 #### Windows
 
 **Data Locations**
-- **Configuration and Data**: `%APPDATA%\Block\goose\`
-- **Local Application Data**: `%LOCALAPPDATA%\Block\goose\`
+- **Configuration and Data**: `%APPDATA%\Block\mts\`
+- **Local Application Data**: `%LOCALAPPDATA%\Block\mts\`
 - **Secrets**: Windows Credential Manager
 
 #### Removal Steps
 
-1. Stop any copies of goose running (CLI or GUI)
+1. Stop any copies of mts running (CLI or GUI)
 
   - Check Task Manager to confirm all instances are closed
 
-2. Open Windows Credential Manager and delete credentials related to "goose"
+2. Open Windows Credential Manager and delete credentials related to "mts"
 3. Remove data directories:
 ```
-rmdir /s /q "%APPDATA%\Block\goose"
-rmdir /s /q "%LOCALAPPDATA%\Block\goose"
+rmdir /s /q "%APPDATA%\Block\mts"
+rmdir /s /q "%LOCALAPPDATA%\Block\mts"
 ```
-4. Uninstall the goose Desktop app from Settings > Apps (if applicable)
+4. Uninstall the mts Desktop app from Settings > Apps (if applicable)
 
-> After this cleanup, if you are looking to try out a fresh install of goose, you can now start from the usual install instructions.
+> After this cleanup, if you are looking to try out a fresh install of mts, you can now start from the usual install instructions.
 ---
 
 ### Keychain/Keyring Errors
 
-goose tries to use the system keyring to store secrets. In environments where there is no keyring support, you may
+mts tries to use the system keyring to store secrets. In environments where there is no keyring support, you may
 see an error like:
 
 ```bash
 Error Failed to access secure storage (keyring): Platform secure storage failure: DBus error: The name org.freedesktop.secrets was not provided by any .service files
-Please check your system keychain and run 'goose configure' again.
+Please check your system keychain and run 'mts configure' again.
 If your system is unable to use the keyring, please try setting secret key(s) via environment variables.
 ```
 
@@ -249,12 +249,12 @@ You can set them either by doing:
 Then select the `No` option when prompted to save the value to your keyring.
 
 ```bash
-$ goose configure
+$ mts configure
 
-Welcome to goose! Let's get you set up with a provider.
+Welcome to mts! Let's get you set up with a provider.
   you can rerun this command later to update your configuration
 
-┌   goose-configure
+┌   mts-configure
 │
 ◇  Which model provider should we use?
 │  Google Gemini
@@ -268,12 +268,12 @@ Welcome to goose! Let's get you set up with a provider.
 │  gemini-2.0-flash-exp
 ```
 
-You may also use the `GOOSE_DISABLE_KEYRING` environment variable, which disables the system keyring for secret storage. Set to any value (e.g., "1", "true", "yes"), to disable. The actual value doesn't matter, only whether the variable is set.
+You may also use the `MTS_DISABLE_KEYRING` environment variable, which disables the system keyring for secret storage. Set to any value (e.g., "1", "true", "yes"), to disable. The actual value doesn't matter, only whether the variable is set.
 
 When the keyring is disabled, secrets are stored here:
 
-* macOS/Linux: `~/.config/goose/secrets.yaml`
-* Windows: `%APPDATA%\Block\goose\config\secrets.yaml`
+* macOS/Linux: `~/.config/mts/secrets.yaml`
+* Windows: `%APPDATA%\Block\mts\config\secrets.yaml`
 
 ---
 
@@ -294,7 +294,7 @@ An example is the GitHub extension whose command is `npx -y @modelcontextprotoco
 
 ### Node.js Extensions Not Activating on Windows
 
-If you encounter the error `Node.js installer script not found` when trying to activate Node.js-based extensions on Windows, this is likely due to goose not finding Node.js in the expected system path.
+If you encounter the error `Node.js installer script not found` when trying to activate Node.js-based extensions on Windows, this is likely due to mts not finding Node.js in the expected system path.
 
 #### Symptoms:
 - Node.js is installed and working (verified with `node -v` and `npm -v`)
@@ -302,7 +302,7 @@ If you encounter the error `Node.js installer script not found` when trying to a
 - Error occurs specifically when activating Node.js extensions
 
 #### Solution:
-This issue typically occurs when Node.js is installed in a non-standard location. goose expects to find Node.js in `C:\Program Files\nodejs\`, but it may be installed elsewhere (e.g., `D:\Program Files\nodejs\`).
+This issue typically occurs when Node.js is installed in a non-standard location. mts expects to find Node.js in `C:\Program Files\nodejs\`, but it may be installed elsewhere (e.g., `D:\Program Files\nodejs\`).
 
 1. **Check your Node.js installation path:**
    ```powershell
@@ -311,15 +311,15 @@ This issue typically occurs when Node.js is installed in a non-standard location
 
 2. **If Node.js is not in `C:\Program Files\nodejs\`, create a symbolic link:**
    - Open PowerShell as Administrator
-   - Create a symbolic link to redirect goose to your actual Node.js installation:
+   - Create a symbolic link to redirect mts to your actual Node.js installation:
    ```powershell
    mklink /D "C:\Program Files\nodejs" "D:\Program Files\nodejs"
    ```
    (Replace `D:\Program Files\nodejs` with your actual Node.js installation path)
 
-3. **Restart goose** and try activating the extension again.
+3. **Restart mts** and try activating the extension again.
 
-This creates a symbolic link that allows goose to find Node.js in the expected location while keeping your actual installation intact.
+This creates a symbolic link that allows mts to find Node.js in the expected location while keeping your actual installation intact.
 
 ---
 
@@ -334,7 +334,7 @@ Blocked malicious package: package-name@1.0.0 (npm). OSV MAL advisories: MAL-202
 Steps to resolve:
 1. **Find an alternative**: Look for similar extensions in the [extensions directory][extensions-directory] or [PulseMCP](https://www.pulsemcp.com/servers)
 2. **Optional verification**: Verify the source of the blocked extension or the package name/publisher
-3. **Report false positives**: If you believe this is an error, please [open an issue](https://github.com/block/goose/issues)
+3. **Report false positives**: If you believe this is an error, please [open an issue](https://github.com/block/mts/issues)
 
 This security check only applies to locally-executed external extensions that use PyPI (`uvx`) or NPM (`npx`). The check uses real-time data from the OSV database; if the security service is unavailable, extensions will still install normally.
 
@@ -344,7 +344,7 @@ As a best practice, only install extensions from trusted, official sources.
 
 ### macOS Permission Issues
 
-If you encounter an issue where the goose Desktop app shows no window on launch, it may be due to file and folder permissions. This typically happens because goose needs read and write access to the `~/.config` directory to create its log directory and file. 
+If you encounter an issue where the mts Desktop app shows no window on launch, it may be due to file and folder permissions. This typically happens because mts needs read and write access to the `~/.config` directory to create its log directory and file. 
 Similarly, if tools fail to create files or directories during use, it could be caused by the same permission issue.
 
 #### How to Check and Fix Permissions:
@@ -376,24 +376,24 @@ Similarly, if tools fail to create files or directories during use, it could be 
     ls -ld ~/.config
     ```
 
-If you still experience issues after fixing permissions, try launching goose with superuser (admin) privileges:
+If you still experience issues after fixing permissions, try launching mts with superuser (admin) privileges:
 ```sh
-sudo /Applications/Goose.app/Contents/MacOS/Goose
+sudo /Applications/MTS.app/Contents/MacOS/MTS
 ```
 
 :::note
-Running goose with sudo may create files owned by root, which could lead to further permission issues. Use this as a troubleshooting step rather than a permanent fix.
+Running mts with sudo may create files owned by root, which could lead to further permission issues. Use this as a troubleshooting step rather than a permanent fix.
 :::
 
 #### Update permission in System Settings (macOs)
 1. Go to `System Settings` -> `Privacy & Security` -> `Files & Folders`
-2. Grant goose access
+2. Grant mts access
 
 ---
 
 ### Connection Error with Ollama Provider on WSL
 
-If you encounter an error like this when setting up Ollama as the provider in goose:
+If you encounter an error like this when setting up Ollama as the provider in mts:
     ```
     Execution error: error sending request for url (http://localhost:11434/v1/chat/completions)
     ```
@@ -406,7 +406,7 @@ This likely means that the local host address is not accessible from WSL.
     ```
     ip route show | grep -i default | awk '{ print $3 }'
     ```
-2. Once you get the IP address, use it in your goose configuration instead of localhost. For example:
+2. Once you get the IP address, use it in your mts configuration instead of localhost. For example:
     ```
     http://172.24.80.1:11434
     ```
@@ -426,7 +426,7 @@ If you're working in an airgapped, offline, or corporate-restricted environment,
 - Error messages like: `Failed to start extension: Could not run extension command`
 
 #### Solution:
-goose Desktop uses **"shims"** (packaged versions of `npx` and `uvx`) that automatically download runtime environments via Hermit. In restricted networks, these downloads fail.
+mts Desktop uses **"shims"** (packaged versions of `npx` and `uvx`) that automatically download runtime environments via Hermit. In restricted networks, these downloads fail.
 
 **Workaround - Use Custom Command Names:**
 
@@ -453,18 +453,18 @@ goose Desktop uses **"shims"** (packaged versions of `npx` and `uvx`) that autom
    ```yaml
    extensions:
      example:
-       cmd: runuv  # This bypasses goose's shims
+       cmd: runuv  # This bypasses mts's shims
        args: [mcp-server-example]
    ```
 
-3. **Why this works:** goose only replaces known command names (`npx`, `uvx`, `jbang`, etc.) with its packaged shims. Custom names are passed through unchanged to your system's actual executables.
+3. **Why this works:** mts only replaces known command names (`npx`, `uvx`, `jbang`, etc.) with its packaged shims. Custom names are passed through unchanged to your system's actual executables.
 
-4. **Require more changes**: In a corporate proxy environment or airgapped environment where the above doesn't work, it is recommended that you customize and package up goose desktop with shims/config that will work given the network constraints you have (for example, TLS certificate limitations, proxies, inability to download required content etc).
+4. **Require more changes**: In a corporate proxy environment or airgapped environment where the above doesn't work, it is recommended that you customize and package up mts desktop with shims/config that will work given the network constraints you have (for example, TLS certificate limitations, proxies, inability to download required content etc).
 
 ---
 ### Need Further Help? 
 
-Still running into issues? We're here to help! Join our [Discord Community][discord] where the goose team and community members are happy to assist.
+Still running into issues? We're here to help! Join our [Discord Community][discord] where the mts team and community members are happy to assist.
 
 :::tip
 If you can share a [diagnostic report](/docs/troubleshooting/diagnostics-and-reporting#diagnostics-system) along with your question, it helps us understand your setup and provide more targeted solutions.
@@ -472,9 +472,9 @@ If you can share a [diagnostic report](/docs/troubleshooting/diagnostics-and-rep
 
 
 
-[handling-rate-limits]: /docs/guides/handling-llm-rate-limits-with-goose
+[handling-rate-limits]: /docs/guides/handling-llm-rate-limits-with-mts
 [installation]: /docs/getting-started/installation
-[discord]: https://discord.gg/goose-oss
-[goosehints]: /docs/guides/using-goosehints
+[discord]: https://discord.gg/mts-oss
+[mtshints]: /docs/guides/using-mtshints
 [configure-llm-provider]: /docs/getting-started/providers
 [extensions-directory]: /extensions

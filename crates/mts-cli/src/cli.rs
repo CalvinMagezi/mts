@@ -389,8 +389,8 @@ enum RecipeCommand {
         params: Vec<String>,
     },
 
-    /// Open a recipe in Goose Desktop
-    #[command(about = "Open a recipe in Goose Desktop")]
+    /// Open a recipe in MTS Desktop
+    #[command(about = "Open a recipe in MTS Desktop")]
     Open {
         /// Recipe name to get recipe file to open
         #[arg(help = "recipe name or full path to the recipe file")]
@@ -429,12 +429,12 @@ enum RecipeCommand {
 
 #[derive(Subcommand)]
 enum Command {
-    /// Configure goose settings
-    #[command(about = "Configure goose settings")]
+    /// Configure mts settings
+    #[command(about = "Configure mts settings")]
     Configure {},
 
-    /// Display goose configuration information
-    #[command(about = "Display goose information")]
+    /// Display mts configuration information
+    #[command(about = "Display mts information")]
     Info {
         /// Show verbose information including current configuration
         #[arg(short, long, help = "Show verbose information including config.yaml")]
@@ -442,14 +442,14 @@ enum Command {
     },
 
     /// Manage system prompts and behaviors
-    #[command(about = "Run one of the mcp servers bundled with goose")]
+    #[command(about = "Run one of the mcp servers bundled with mts")]
     Mcp {
         #[arg(value_parser = clap::value_parser!(McpCommand))]
         server: McpCommand,
     },
 
-    /// Run goose as an ACP (Agent Client Protocol) agent
-    #[command(about = "Run goose as an ACP agent server on stdio")]
+    /// Run mts as an ACP (Agent Client Protocol) agent
+    #[command(about = "Run mts as an ACP agent server on stdio")]
     Acp {},
 
     /// Start or resume interactive chat sessions
@@ -542,7 +542,7 @@ enum Command {
             long = "with-builtin",
             value_name = "NAME",
             help = "Add builtin extensions by name (e.g., 'developer' or multiple: 'developer,github')",
-            long_help = "Add one or more builtin extensions that are bundled with goose by specifying their names, comma-separated",
+            long_help = "Add one or more builtin extensions that are bundled with mts by specifying their names, comma-separated",
             value_delimiter = ','
         )]
         builtins: Vec<String>,
@@ -575,8 +575,8 @@ enum Command {
             short = 't',
             long = "text",
             value_name = "TEXT",
-            help = "Input text to provide to goose directly",
-            long_help = "Input text containing commands for goose. Use this in lieu of the instructions argument.",
+            help = "Input text to provide to mts directly",
+            long_help = "Input text containing commands for mts. Use this in lieu of the instructions argument.",
             conflicts_with = "instructions",
             conflicts_with = "recipe"
         )]
@@ -607,7 +607,7 @@ enum Command {
         #[arg(
             long,
             value_name = "KEY=VALUE",
-            help = "Dynamic parameters (e.g., --params username=alice --params channel_name=goose-channel)",
+            help = "Dynamic parameters (e.g., --params username=alice --params channel_name=mts-channel)",
             long_help = "Key-value parameters to pass to the recipe file. Can be specified multiple times.",
             action = clap::ArgAction::Append,
             value_parser = parse_key_val,
@@ -720,7 +720,7 @@ enum Command {
             long = "with-builtin",
             value_name = "NAME",
             help = "Add builtin extensions by name (e.g., 'developer' or multiple: 'developer,github')",
-            long_help = "Add one or more builtin extensions that are bundled with goose by specifying their names, comma-separated",
+            long_help = "Add one or more builtin extensions that are bundled with mts by specifying their names, comma-separated",
             value_delimiter = ','
         )]
         builtins: Vec<String>,
@@ -796,20 +796,20 @@ enum Command {
         command: SchedulerCommand,
     },
 
-    /// Update the goose CLI version
-    #[command(about = "Update the goose CLI version")]
+    /// Update the mts CLI version
+    #[command(about = "Update the mts CLI version")]
     Update {
         /// Update to canary version
         #[arg(
             short,
             long,
             help = "Update to canary version",
-            long_help = "Update to the latest canary version of the goose CLI, otherwise updates to the latest stable version."
+            long_help = "Update to the latest canary version of the mts CLI, otherwise updates to the latest stable version."
         )]
         canary: bool,
 
-        /// Enforce to re-configure goose during update
-        #[arg(short, long, help = "Enforce to re-configure goose during update")]
+        /// Enforce to re-configure mts during update
+        #[arg(short, long, help = "Enforce to re-configure mts during update")]
         reconfigure: bool,
     },
 
@@ -851,14 +851,14 @@ enum Command {
 
     /// Terminal-integrated session (one session per terminal)
     #[command(
-        about = "Terminal-integrated goose session",
-        long_about = "Runs a goose session tied to your terminal window.\n\
+        about = "Terminal-integrated mts session",
+        long_about = "Runs a mts session tied to your terminal window.\n\
                       Each terminal maintains its own persistent session that resumes automatically.\n\n\
                       Setup:\n  \
-                        eval \"$(goose term init zsh)\"  # Add to ~/.zshrc\n\n\
+                        eval \"$(mts term init zsh)\"  # Add to ~/.zshrc\n\n\
                       Usage:\n  \
-                        goose term run \"list files in this directory\"\n  \
-                        @goose \"create a python script\"  # using alias\n  \
+                        mts term run \"list files in this directory\"\n  \
+                        @mts \"create a python script\"  # using alias\n  \
                         @g \"quick question\"  # short alias"
     )]
     Term {
@@ -873,12 +873,12 @@ enum TermCommand {
     #[command(
         about = "Print shell initialization script",
         long_about = "Prints shell configuration to set up terminal-integrated sessions.\n\
-                      Each terminal gets a persistent goose session that automatically resumes.\n\n\
+                      Each terminal gets a persistent mts session that automatically resumes.\n\n\
                       Setup:\n  \
-                        echo 'eval \"$(goose term init zsh)\"' >> ~/.zshrc\n  \
+                        echo 'eval \"$(mts term init zsh)\"' >> ~/.zshrc\n  \
                         source ~/.zshrc\n\n\
-                      With --default (anything typed that isn't a command goes to goose):\n  \
-                        echo 'eval \"$(goose term init zsh --default)\"' >> ~/.zshrc"
+                      With --default (anything typed that isn't a command goes to mts):\n  \
+                        echo 'eval \"$(mts term init zsh --default)\"' >> ~/.zshrc"
     )]
     Init {
         /// Shell type (bash, zsh, fish, powershell)
@@ -888,11 +888,11 @@ enum TermCommand {
         #[arg(short, long, help = "Name for the terminal session")]
         name: Option<String>,
 
-        /// Make goose the default handler for unknown commands
+        /// Make mts the default handler for unknown commands
         #[arg(
             long = "default",
-            help = "Make goose the default handler for unknown commands",
-            long_help = "When enabled, anything you type that isn't a valid command will be sent to goose. Only supported for zsh and bash."
+            help = "Make mts the default handler for unknown commands",
+            long_help = "When enabled, anything you type that isn't a valid command will be sent to mts. Only supported for zsh and bash."
         )]
         default: bool,
     },
@@ -909,12 +909,12 @@ enum TermCommand {
         about = "Run a prompt in the terminal session",
         long_about = "Run a prompt in the terminal-integrated session.\n\n\
                       Examples:\n  \
-                        goose term run list files in this directory\n  \
-                        @goose list files  # using alias\n  \
+                        mts term run list files in this directory\n  \
+                        @mts list files  # using alias\n  \
                         @g why did that fail  # short alias"
     )]
     Run {
-        /// The prompt to send to goose (multiple words allowed without quotes)
+        /// The prompt to send to mts (multiple words allowed without quotes)
         #[arg(required = true, num_args = 1..)]
         prompt: Vec<String>,
     },
@@ -976,7 +976,7 @@ pub async fn cli() -> anyhow::Result<()> {
     };
 
     tracing::info!(
-        counter.goose.cli_commands = 1,
+        counter.mts.cli_commands = 1,
         command = command_name,
         "CLI command executed"
     );
@@ -1074,7 +1074,7 @@ pub async fn cli() -> anyhow::Result<()> {
                     let session_type = if resume { "resumed" } else { "new" };
 
                     tracing::info!(
-                        counter.goose.session_starts = 1,
+                        counter.mts.session_starts = 1,
                         session_type,
                         interactive = true,
                         "Session started"
@@ -1137,7 +1137,7 @@ pub async fn cli() -> anyhow::Result<()> {
                         .unwrap_or((0, 0));
 
                     tracing::info!(
-                        counter.goose.session_completions = 1,
+                        counter.mts.session_completions = 1,
                         session_type,
                         exit_type,
                         duration_ms = session_duration.as_millis() as u64,
@@ -1147,14 +1147,14 @@ pub async fn cli() -> anyhow::Result<()> {
                     );
 
                     tracing::info!(
-                        counter.goose.session_duration_ms = session_duration.as_millis() as u64,
+                        counter.mts.session_duration_ms = session_duration.as_millis() as u64,
                         session_type,
                         "Session duration"
                     );
 
                     if total_tokens > 0 {
                         tracing::info!(
-                            counter.goose.session_tokens = total_tokens,
+                            counter.mts.session_tokens = total_tokens,
                             session_type,
                             "Session tokens"
                         );
@@ -1218,7 +1218,7 @@ pub async fn cli() -> anyhow::Result<()> {
                 (Some(file), _, _) => {
                     let contents = std::fs::read_to_string(&file).unwrap_or_else(|err| {
                         eprintln!(
-                            "Instruction file not found — did you mean to use goose run --text?\n{}",
+                            "Instruction file not found — did you mean to use mts run --text?\n{}",
                             err
                         );
                         std::process::exit(1);
@@ -1270,7 +1270,7 @@ pub async fn cli() -> anyhow::Result<()> {
                     }
 
                     tracing::info!(
-                        counter.goose.recipe_runs = 1,
+                        counter.mts.recipe_runs = 1,
                         recipe_name = %recipe_display_name,
                         recipe_version = %recipe_version,
                         session_type = "recipe",
@@ -1346,7 +1346,7 @@ pub async fn cli() -> anyhow::Result<()> {
                 };
 
                 tracing::info!(
-                    counter.goose.session_starts = 1,
+                    counter.mts.session_starts = 1,
                     session_type,
                     interactive = false,
                     "Headless session started"
@@ -1364,7 +1364,7 @@ pub async fn cli() -> anyhow::Result<()> {
                     .unwrap_or((0, 0));
 
                 tracing::info!(
-                    counter.goose.session_completions = 1,
+                    counter.mts.session_completions = 1,
                     session_type,
                     exit_type,
                     duration_ms = session_duration.as_millis() as u64,
@@ -1375,14 +1375,14 @@ pub async fn cli() -> anyhow::Result<()> {
                 );
 
                 tracing::info!(
-                    counter.goose.session_duration_ms = session_duration.as_millis() as u64,
+                    counter.mts.session_duration_ms = session_duration.as_millis() as u64,
                     session_type,
                     "Headless session duration"
                 );
 
                 if total_tokens > 0 {
                     tracing::info!(
-                        counter.goose.session_tokens = total_tokens,
+                        counter.mts.session_tokens = total_tokens,
                         session_type,
                         "Headless session tokens"
                     );

@@ -13,12 +13,12 @@ const CACHE_TTL_DAYS: u64 = 7; // Cache for 7 days
 
 /// Get the cache directory path
 fn get_cache_dir() -> Result<PathBuf> {
-    let cache_dir = if let Ok(goose_dir) = std::env::var("MTS_CACHE_DIR") {
-        PathBuf::from(goose_dir)
+    let cache_dir = if let Ok(mts_dir) = std::env::var("MTS_CACHE_DIR") {
+        PathBuf::from(mts_dir)
     } else {
         dirs::cache_dir()
             .ok_or_else(|| anyhow::anyhow!("Could not determine cache directory"))?
-            .join("goose")
+            .join("mts")
     };
     Ok(cache_dir)
 }

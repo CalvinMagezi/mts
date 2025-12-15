@@ -458,7 +458,7 @@ mod tests {
                 config: ExtensionConfig::Platform {
                     name: "todo".to_string(),
                     description:
-                        "Enable a todo list for Goose so it can keep track of what it is doing"
+                        "Enable a todo list for MTS so it can keep track of what it is doing"
                             .to_string(),
                     bundled: Some(true),
                     available_tools: vec![],

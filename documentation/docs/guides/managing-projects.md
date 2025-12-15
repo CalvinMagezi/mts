@@ -4,19 +4,19 @@ title: Managing Projects
 sidebar_label: Managing Projects
 ---
 
-goose Projects automatically track your working directories and associated sessions, making it easy to resume work across multiple codebases with full context preservation.
+mts Projects automatically track your working directories and associated sessions, making it easy to resume work across multiple codebases with full context preservation.
 
-A **project** in goose is a record of a working directory where you've used goose. Every time you run goose, it automatically tracks the current directory as a project, storing:
+A **project** in mts is a record of a working directory where you've used mts. Every time you run mts, it automatically tracks the current directory as a project, storing:
 
 - **Path**: The absolute path to the project directory
 - **Last accessed**: When you last worked on this project  
-- **Last instruction**: The most recent command you gave to goose
+- **Last instruction**: The most recent command you gave to mts
 - **Session ID**: The associated session for context continuity
 
-Projects are stored in `~/.local/share/goose/projects.json`.
+Projects are stored in `~/.local/share/mts/projects.json`.
 
 :::info CLI Only Feature
-Projects are currently available only through the goose CLI. Desktop support is planned for future releases.
+Projects are currently available only through the mts CLI. Desktop support is planned for future releases.
 :::
 
 ## Basic Usage
@@ -24,19 +24,19 @@ Projects are currently available only through the goose CLI. Desktop support is 
 **Resume your most recent project:**
 
 ```bash
-goose project  
+mts project  
 ```
 
 **Browse all your projects:**
 
 ```bash
-goose projects  
+mts projects  
 ```
 :::tip
 When resuming a project, you can continue the previous session or start fresh in that directory.
 :::
 
-For complete command syntax and options, see the [CLI Commands Guide](/docs/guides/goose-cli-commands#project).
+For complete command syntax and options, see the [CLI Commands Guide](/docs/guides/mts-cli-commands#project).
 
 ## Workflow Example
 
@@ -45,33 +45,33 @@ Let's follow Sarah, a developer working on multiple projects throughout her day:
 ### Morning: API Development
 ```bash
 cd ~/projects/ecommerce-api
-goose session --name "api-auth-work"
+mts session --name "api-auth-work"
 ```
-*Sarah asks goose to help implement JWT token refresh logic*
+*Sarah asks mts to help implement JWT token refresh logic*
 
 ### Mid-Morning: Mobile App Bug Fix  
 ```bash
 cd ~/projects/mobile-app
-goose session
+mts session
 ```
 *Sarah gets help debugging an iOS crash in the login screen*
 
 ### Afternoon: Admin Dashboard
 ```bash
 cd ~/projects/admin-dashboard  
-goose session --name "dashboard-ui"
+mts session --name "dashboard-ui"
 ```
 *Sarah works on creating user management interface components*
 
 ### Next Day: Quick Resume
 ```bash
 # From any directory, quickly resume the most recent project
-goose project
+mts project
 ```
 
-goose shows:
+mts shows:
 ```
-┌ goose Project Manager
+┌ mts Project Manager
 │
 ◆ Choose an option:
 │  ○ Resume project with session: .../admin-dashboard
@@ -85,12 +85,12 @@ goose shows:
 
 ### Later: Browse All Projects
 ```bash
-goose projects
+mts projects
 ```
 
-goose displays:
+mts displays:
 ```
-┌ goose Project Manager
+┌ mts Project Manager
 │
 ◆ Select a project:
 │  ○ 1  .../admin-dashboard (2025-01-07 09:15:30) [create user management interface]

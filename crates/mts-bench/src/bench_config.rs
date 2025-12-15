@@ -42,7 +42,7 @@ impl Default for BenchRunConfig {
             models: vec![
                 BenchModel {
                     provider: "databricks".to_string(),
-                    name: "goose".to_string(),
+                    name: "mts".to_string(),
                     parallel_safe: true,
                     tool_shim: Some(BenchToolShimOpt {
                         use_tool_shim: false,
@@ -51,7 +51,7 @@ impl Default for BenchRunConfig {
                 },
                 BenchModel {
                     provider: "databricks".to_string(),
-                    name: "goose-claude-4-sonnet".to_string(),
+                    name: "mts-claude-4-sonnet".to_string(),
                     parallel_safe: true,
                     tool_shim: None,
                 },

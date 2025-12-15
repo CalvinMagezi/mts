@@ -37,14 +37,14 @@ pub async fn handle_configure() -> anyhow::Result<()> {
         println!();
         println!(
             "{}",
-            style("Welcome to goose! Let's get you set up with a provider.").dim()
+            style("Welcome to mts! Let's get you set up with a provider.").dim()
         );
         println!(
             "{}",
             style("  you can rerun this command later to update your configuration").dim()
         );
         println!();
-        cliclack::intro(style(" goose-configure ").on_cyan().black())?;
+        cliclack::intro(style(" mts-configure ").on_cyan().black())?;
 
         // Check if user wants to use OpenRouter login or manual configuration
         let setup_method = cliclack::select("How would you like to set up your provider?")
@@ -102,7 +102,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                         println!(
                             "\n  {}: Run '{}' again to adjust your config or add extensions",
                             style("Tip").green().italic(),
-                            style("goose configure").cyan()
+                            style("mts configure").cyan()
                         );
                         // Since we are setting up for the first time, we'll also enable the developer system
                         // This operation is best-effort and errors are ignored
@@ -114,9 +114,9 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                     Ok(false) => {
                         let _ = config.clear();
                         println!(
-                            "\n  {}: We did not save your config, inspect your credentials\n   and run '{}' again to ensure goose can connect",
+                            "\n  {}: We did not save your config, inspect your credentials\n   and run '{}' again to ensure mts can connect",
                             style("Warning").yellow().italic(),
-                            style("goose configure").cyan()
+                            style("mts configure").cyan()
                         );
                     }
                     Err(e) => {
@@ -128,7 +128,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                                     "\n  {} Required configuration key '{}' not found \n  Please provide this value and run '{}' again",
                                     style("Error").red().italic(),
                                     key,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
                             }
                             Some(ConfigError::KeyringError(msg)) => {
@@ -137,7 +137,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                                     "\n  {} Failed to access secure storage (keyring): {} \n  Please check your system keychain and run '{}' again. \n  If your system is unable to use the keyring, please try setting secret key(s) via environment variables.",
                                     style("Error").red().italic(),
                                     msg,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
 
                                 #[cfg(target_os = "windows")]
@@ -145,7 +145,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                                     "\n  {} Failed to access Windows Credential Manager: {} \n  Please check Windows Credential Manager and run '{}' again. \n  If your system is unable to use the Credential Manager, please try setting secret key(s) via environment variables.",
                                     style("Error").red().italic(),
                                     msg,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
 
                                 #[cfg(not(any(target_os = "macos", target_os = "windows")))]
@@ -153,7 +153,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                                     "\n  {} Failed to access secure storage: {} \n  Please check your system's secure storage and run '{}' again. \n  If your system is unable to use secure storage, please try setting secret key(s) via environment variables.",
                                     style("Error").red().italic(),
                                     msg,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
                             }
                             Some(ConfigError::DeserializeError(msg)) => {
@@ -161,7 +161,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                                     "\n  {} Invalid configuration value: {} \n  Please check your input and run '{}' again",
                                     style("Error").red().italic(),
                                     msg,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
                             }
                             Some(ConfigError::FileError(e)) => {
@@ -169,7 +169,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                                     "\n  {} Failed to access config file: {} \n  Please check file permissions and run '{}' again",
                                     style("Error").red().italic(),
                                     e,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
                             }
                             Some(ConfigError::DirectoryError(msg)) => {
@@ -177,16 +177,16 @@ pub async fn handle_configure() -> anyhow::Result<()> {
                                     "\n  {} Failed to access config directory: {} \n  Please check directory permissions and run '{}' again",
                                     style("Error").red().italic(),
                                     msg,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
                             }
                             // handle all other nonspecific errors
                             _ => {
                                 println!(
-                                    "\n  {} {} \n  We did not save your config, inspect your credentials\n   and run '{}' again to ensure goose can connect",
+                                    "\n  {} {} \n  We did not save your config, inspect your credentials\n   and run '{}' again to ensure mts can connect",
                                     style("Error").red().italic(),
                                     e,
-                                    style("goose configure").cyan()
+                                    style("mts configure").cyan()
                                 );
                             }
                         }
@@ -211,7 +211,7 @@ pub async fn handle_configure() -> anyhow::Result<()> {
         );
         println!();
 
-        cliclack::intro(style(" goose-configure ").on_cyan().black())?;
+        cliclack::intro(style(" mts-configure ").on_cyan().black())?;
         let action = cliclack::select("What would you like to configure?")
             .item(
                 "providers",
@@ -232,8 +232,8 @@ pub async fn handle_configure() -> anyhow::Result<()> {
             .item("remove", "Remove Extension", "Remove an extension")
             .item(
                 "settings",
-                "goose settings",
-                "Set the goose mode, Tool Output, Tool Permissions, Experiment, goose recipe github repo and more",
+                "mts settings",
+                "Set the mts mode, Tool Output, Tool Permissions, Experiment, mts recipe github repo and more",
             )
             .interact()?;
 
@@ -622,7 +622,7 @@ pub async fn configure_provider_dialog() -> anyhow::Result<bool> {
     }
 }
 
-/// Configure extensions that can be used with goose
+/// Configure extensions that can be used with mts
 /// Dialog for toggling which extensions are enabled/disabled
 pub fn toggle_extensions_dialog() -> anyhow::Result<()> {
     let extensions = get_all_extensions();
@@ -685,7 +685,7 @@ pub fn configure_extensions_dialog() -> anyhow::Result<()> {
         .item(
             "built-in",
             "Built-in Extension",
-            "Use an extension that comes with goose",
+            "Use an extension that comes with mts",
         )
         .item(
             "stdio",
@@ -705,7 +705,7 @@ pub fn configure_extensions_dialog() -> anyhow::Result<()> {
         .interact()?;
 
     match extension_type {
-        // TODO we'll want a place to collect all these options, maybe just an enum in goose-mcp
+        // TODO we'll want a place to collect all these options, maybe just an enum in mts-mcp
         "built-in" => {
             let extensions = vec![
                 (
@@ -1153,9 +1153,9 @@ pub fn remove_extension_dialog() -> anyhow::Result<()> {
 
 pub async fn configure_settings_dialog() -> anyhow::Result<()> {
     let setting_type = cliclack::select("What setting would you like to configure?")
-        .item("mts_mode", "goose mode", "Configure goose mode")
+        .item("mts_mode", "mts mode", "Configure mts mode")
         .item(
-            "goose_router_strategy",
+            "mts_router_strategy",
             "Router Tool Selection Strategy",
             "Experimental: configure a strategy for auto selecting tools to use",
         )
@@ -1186,8 +1186,8 @@ pub async fn configure_settings_dialog() -> anyhow::Result<()> {
         )
         .item(
             "recipe",
-            "goose recipe github repo",
-            "goose will pull recipes from this repo if not found locally.",
+            "mts recipe github repo",
+            "mts will pull recipes from this repo if not found locally.",
         )
         .interact()?;
 
@@ -1197,8 +1197,8 @@ pub async fn configure_settings_dialog() -> anyhow::Result<()> {
         "mts_mode" => {
             configure_mts_mode_dialog()?;
         }
-        "goose_router_strategy" => {
-            configure_goose_router_strategy_dialog()?;
+        "mts_router_strategy" => {
+            configure_mts_router_strategy_dialog()?;
         }
         "tool_permission" => {
             configure_tool_permissions_dialog().await.and(Ok(()))?;
@@ -1237,7 +1237,7 @@ pub fn configure_mts_mode_dialog() -> anyhow::Result<()> {
         let _ = cliclack::log::info("Notice: MTS_MODE environment variable is set and will override the configuration here.");
     }
 
-    let mode = cliclack::select("Which goose mode would you like to configure?")
+    let mode = cliclack::select("Which mts mode would you like to configure?")
         .item(
             MtsMode::Auto,
             "Auto Mode",
@@ -1271,7 +1271,7 @@ pub fn configure_mts_mode_dialog() -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn configure_goose_router_strategy_dialog() -> anyhow::Result<()> {
+pub fn configure_mts_router_strategy_dialog() -> anyhow::Result<()> {
     let config = Config::global();
 
     let enable_router = cliclack::select("Would you like to enable smart tool routing?")
@@ -1345,7 +1345,7 @@ pub fn configure_keyring_dialog() -> anyhow::Result<()> {
     };
 
     let _ = cliclack::log::info(format!("Current secret storage: {}", current_status));
-    let _ = cliclack::log::warning("Note: Disabling the keyring stores secrets in a plain text file (~/.config/goose/secrets.yaml)");
+    let _ = cliclack::log::warning("Note: Disabling the keyring stores secrets in a plain text file (~/.config/mts/secrets.yaml)");
 
     let storage_option = cliclack::select("How would you like to store secrets?")
         .item(
@@ -1366,16 +1366,16 @@ pub fn configure_keyring_dialog() -> anyhow::Result<()> {
             config.set_param("MTS_DISABLE_KEYRING", Value::String("".to_string()))?;
             cliclack::outro("Secret storage set to system keyring (secure)")?;
             let _ =
-                cliclack::log::info("You may need to restart goose for this change to take effect");
+                cliclack::log::info("You may need to restart mts for this change to take effect");
         }
         "file" => {
             // Set the disable flag to use file storage
             config.set_param("MTS_DISABLE_KEYRING", Value::String("true".to_string()))?;
             cliclack::outro(
-                "Secret storage set to file (~/.config/goose/secrets.yaml). Keep this file secure!",
+                "Secret storage set to file (~/.config/mts/secrets.yaml). Keep this file secure!",
             )?;
             let _ =
-                cliclack::log::info("You may need to restart goose for this change to take effect");
+                cliclack::log::info("You may need to restart mts for this change to take effect");
         }
         _ => unreachable!(),
     };
@@ -1383,7 +1383,7 @@ pub fn configure_keyring_dialog() -> anyhow::Result<()> {
     Ok(())
 }
 
-/// Configure experiment features that can be used with goose
+/// Configure experiment features that can be used with mts
 /// Dialog for toggling which experiments are enabled/disabled
 pub fn toggle_experiments_dialog() -> anyhow::Result<()> {
     let experiments = ExperimentManager::get_all()?;
@@ -1590,7 +1590,7 @@ fn configure_recipe_dialog() -> anyhow::Result<()> {
         .ok()
         .or_else(|| config.get_param(key_name).unwrap_or(None));
     let mut recipe_repo_input = cliclack::input(
-        "Enter your goose recipe Github repo (owner/repo): eg: my_org/goose-recipes",
+        "Enter your mts recipe Github repo (owner/repo): eg: my_org/mts-recipes",
     )
     .required(false);
     if let Some(recipe_repo) = default_recipe_repo {
@@ -1630,7 +1630,7 @@ pub fn configure_max_turns_dialog() -> anyhow::Result<()> {
     config.set_param("MTS_MAX_TURNS", max_turns)?;
 
     cliclack::outro(format!(
-        "Set maximum turns to {} - goose will ask for input after {} consecutive actions",
+        "Set maximum turns to {} - mts will ask for input after {} consecutive actions",
         max_turns, max_turns
     ))?;
 
@@ -1675,7 +1675,7 @@ pub async fn handle_openrouter_auth() -> anyhow::Result<()> {
             // Simple test request
             let test_result = provider
                 .complete(
-                    "You are goose, an AI assistant.",
+                    "You are mts, an AI assistant.",
                     &[Message::user().with_text("Say 'Configuration test successful!'")],
                     &[],
                 )
@@ -1706,7 +1706,7 @@ pub async fn handle_openrouter_auth() -> anyhow::Result<()> {
                         println!("✓ Developer extension enabled");
                     }
 
-                    cliclack::outro("OpenRouter setup complete! You can now use goose.")?;
+                    cliclack::outro("OpenRouter setup complete! You can now use mts.")?;
                 }
                 Err(e) => {
                     eprintln!("⚠️  Configuration test failed: {}", e);
@@ -1752,7 +1752,7 @@ pub async fn handle_tetrate_auth() -> anyhow::Result<()> {
         Ok(provider) => {
             let test_result = provider
                 .complete(
-                    "You are goose, an AI assistant.",
+                    "You are mts, an AI assistant.",
                     &[Message::user().with_text("Say 'Configuration test successful!'")],
                     &[],
                 )
@@ -1783,7 +1783,7 @@ pub async fn handle_tetrate_auth() -> anyhow::Result<()> {
                     }
 
                     cliclack::outro(
-                        "Tetrate Agent Router Service setup complete! You can now use goose.",
+                        "Tetrate Agent Router Service setup complete! You can now use mts.",
                     )?;
                 }
                 Err(e) => {

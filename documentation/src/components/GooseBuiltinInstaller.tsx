@@ -1,17 +1,17 @@
 import React from 'react';
 import { PanelLeft } from 'lucide-react';
 
-interface GooseBuiltinInstallerProps {
+interface MTSBuiltinInstallerProps {
   extensionName: string;
   description?: string;
 }
 
-const GooseBuiltinInstaller: React.FC<GooseBuiltinInstallerProps> = ({
+const MTSBuiltinInstaller: React.FC<MTSBuiltinInstallerProps> = ({
   extensionName,
   description
 }) => {
   return (
-    <div className="goose-builtin-installer">
+    <div className="mts-builtin-installer">
       <ol>
         <li>Click the <PanelLeft className="inline" size={16} /> button in the top-left to open the sidebar</li>
         <li>Click <code>Extensions</code> in the sidebar</li>
@@ -21,4 +21,4 @@ const GooseBuiltinInstaller: React.FC<GooseBuiltinInstallerProps> = ({
   );
 };
 
-export default GooseBuiltinInstaller;
+export default MTSBuiltinInstaller;

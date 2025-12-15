@@ -100,12 +100,12 @@ export default function MCPUIResourceRenderer({
 
     const fetchProxyUrl = async () => {
       try {
-        const baseUrl = await window.electron.getGoosedHostPort();
+        const baseUrl = await window.electron.getMTSdHostPort();
         const secretKey = await window.electron.getSecretKey();
         if (baseUrl && secretKey) {
           setProxyUrl(`${baseUrl}/mcp-ui-proxy?secret=${encodeURIComponent(secretKey)}`);
         } else {
-          console.error('Failed to get goosed host/port or secret key');
+          console.error('Failed to get mtsd host/port or secret key');
         }
       } catch (error) {
         console.error('Error fetching MCP-UI Proxy URL:', error);
@@ -323,7 +323,7 @@ export default function MCPUIResourceRenderer({
         <UIResourceRenderer
           resource={content.resource}
           onUIAction={handleUIAction}
-          supportedContentTypes={['rawHtml', 'externalUrl']} // Goose does not support remoteDom content
+          supportedContentTypes={['rawHtml', 'externalUrl']} // MTS does not support remoteDom content
           htmlProps={{
             autoResizeIframe: {
               height: true,
@@ -333,7 +333,7 @@ export default function MCPUIResourceRenderer({
               // iframeRenderData allows us to pass data down to MCP-UIs
               // MCP-UIs might find stuff like host and theme for conditional rendering
               // usage of this is experimental, leaving in place for demos
-              host: 'goose',
+              host: 'mts',
               theme: currentThemeValue,
             },
             proxy: proxyUrl, // refer to https://mcpui.dev/guide/client/using-a-proxy

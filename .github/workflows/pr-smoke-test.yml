@@ -72,8 +72,8 @@ jobs:
       - name: Upload Binary for Smoke Tests
         uses: actions/upload-artifact@v4
         with:
-          name: goose-binary
-          path: target/release/goose
+          name: mts-binary
+          path: target/release/mts
           retention-days: 1
 
   smoke-tests:
@@ -89,11 +89,11 @@ jobs:
       - name: Download Binary
         uses: actions/download-artifact@v4
         with:
-          name: goose-binary
+          name: mts-binary
           path: target/release
 
       - name: Make Binary Executable
-        run: chmod +x target/release/goose
+        run: chmod +x target/release/mts
 
       - name: Run Smoke Tests with Provider Script
         env:
@@ -105,13 +105,13 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           TETRATE_API_KEY: ${{ secrets.TETRATE_API_KEY }}
-          HOME: /tmp/goose-home
-          GOOSE_DISABLE_KEYRING: 1
+          HOME: /tmp/mts-home
+          MTS_DISABLE_KEYRING: 1
           SKIP_BUILD: 1
         run: |
           # Ensure the HOME directory structure exists
-          mkdir -p $HOME/.local/share/goose/sessions
-          mkdir -p $HOME/.config/goose
+          mkdir -p $HOME/.local/share/mts/sessions
+          mkdir -p $HOME/.config/mts
 
           # Run the provider test script (binary already built and downloaded)
           bash scripts/test_providers.sh
@@ -126,8 +126,8 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           TETRATE_API_KEY: ${{ secrets.TETRATE_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
-          HOME: /tmp/goose-home
-          GOOSE_DISABLE_KEYRING: 1
+          HOME: /tmp/mts-home
+          MTS_DISABLE_KEYRING: 1
           SKIP_BUILD: 1
         run: |
           bash scripts/test_mcp.sh
@@ -135,10 +135,10 @@ jobs:
       - name: Run Subrecipe Tests
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GOOSE_PROVIDER: anthropic
-          GOOSE_MODEL: claude-sonnet-4-5-20250929
-          HOME: /tmp/goose-home
-          GOOSE_DISABLE_KEYRING: 1
+          MTS_PROVIDER: anthropic
+          MTS_MODEL: claude-sonnet-4-5-20250929
+          HOME: /tmp/mts-home
+          MTS_DISABLE_KEYRING: 1
           SKIP_BUILD: 1
         run: |
           bash scripts/test_subrecipes.sh
@@ -154,10 +154,10 @@ jobs:
       - name: Run Compaction Tests
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GOOSE_PROVIDER: anthropic
-          GOOSE_MODEL: claude-sonnet-4-5-20250929
-          HOME: /tmp/goose-home
-          GOOSE_DISABLE_KEYRING: 1
+          MTS_PROVIDER: anthropic
+          MTS_MODEL: claude-sonnet-4-5-20250929
+          HOME: /tmp/mts-home
+          MTS_DISABLE_KEYRING: 1
           SKIP_BUILD: 1
         run: |
           bash scripts/test_compaction.sh

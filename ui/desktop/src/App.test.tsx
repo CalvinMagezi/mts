@@ -99,7 +99,7 @@ vi.mock('./components/ProviderGuard', () => ({
     // For this test, we'll simulate that behavior
     const hasProvider = window.electron?.getConfig()?.MTS_DEFAULT_PROVIDER;
     if (!hasProvider) {
-      return <div>Welcome to Goose!</div>;
+      return <div>Welcome to MTS!</div>;
     }
     return <>{children}</>;
   },
@@ -144,8 +144,8 @@ vi.mock('react-toastify', () => ({
   ToastContainer: () => null,
 }));
 
-vi.mock('./components/GoosehintsModal', () => ({
-  GoosehintsModal: () => null,
+vi.mock('./components/MTShintsModal', () => ({
+  MTShintsModal: () => null,
 }));
 
 vi.mock('./components/AnnouncementModal', () => ({

@@ -74,5 +74,5 @@ export async function scanRecipe(recipe: Recipe): Promise<{ has_security_warning
 
 export async function generateDeepLink(recipe: Recipe): Promise<string> {
   const encoded = await encodeRecipe(recipe);
-  return `goose://recipe?config=${encoded}`;
+  return `mts://recipe?config=${encoded}`;
 }

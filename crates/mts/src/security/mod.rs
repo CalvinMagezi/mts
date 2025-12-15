@@ -48,7 +48,7 @@ impl SecurityManager {
     ) -> Result<Vec<SecurityResult>> {
         if !self.is_prompt_injection_detection_enabled() {
             tracing::debug!(
-                counter.goose.prompt_injection_scanner_disabled = 1,
+                counter.mts.prompt_injection_scanner_disabled = 1,
                 "Security scanning disabled"
             );
             return Ok(vec![]);
@@ -56,7 +56,7 @@ impl SecurityManager {
 
         let scanner = self.scanner.get_or_init(|| {
             tracing::info!(
-                counter.goose.prompt_injection_scanner_enabled = 1,
+                counter.mts.prompt_injection_scanner_enabled = 1,
                 "Security scanner initialized and enabled"
             );
             PromptInjectionScanner::new()
@@ -86,7 +86,7 @@ impl SecurityManager {
                     let finding_id = format!("SEC-{}", Uuid::new_v4().simple());
 
                     tracing::warn!(
-                        counter.goose.prompt_injection_finding = 1,
+                        counter.mts.prompt_injection_finding = 1,
                         above_threshold = above_threshold,
                         tool_name = %tool_call.name,
                         tool_request_id = %tool_request.id,
@@ -124,7 +124,7 @@ impl SecurityManager {
         }
 
         tracing::info!(
-            counter.goose.prompt_injection_analysis_performed = 1,
+            counter.mts.prompt_injection_analysis_performed = 1,
             security_issues_found = results.len(),
             "Security analysis complete"
         );

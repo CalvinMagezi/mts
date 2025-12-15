@@ -22,16 +22,16 @@ use tokio_util::sync::CancellationToken;
 use tracing::{error, info, warn};
 use url::Url;
 
-struct GooseAcpSession {
+struct MTSAcpSession {
     messages: Conversation,
     tool_call_ids: HashMap<String, String>, // Maps internal tool IDs to ACP tool call IDs
     tool_requests: HashMap<String, mts::conversation::message::ToolRequest>, // Store tool requests by ID for location extraction
     cancel_token: Option<CancellationToken>, // Active cancellation token for prompt processing
 }
 
-struct GooseAcpAgent {
+struct MTSAcpAgent {
     session_update_tx: mpsc::UnboundedSender<(SessionNotification, oneshot::Sender<()>)>,
-    sessions: Arc<Mutex<HashMap<String, GooseAcpSession>>>,
+    sessions: Arc<Mutex<HashMap<String, MTSAcpSession>>>,
     agent: Agent, // Shared agent instance
 }
 
@@ -205,7 +205,7 @@ fn format_tool_name(tool_name: &str) -> String {
     }
 }
 
-impl GooseAcpAgent {
+impl MTSAcpAgent {
     async fn new(
         session_update_tx: mpsc::UnboundedSender<(acp::SessionNotification, oneshot::Sender<()>)>,
     ) -> Result<Self> {
@@ -297,7 +297,7 @@ impl GooseAcpAgent {
                     user_message = user_message.with_text(&text.text);
                 }
                 acp::ContentBlock::Image(image) => {
-                    // Goose supports images via base64 encoded data
+                    // MTS supports images via base64 encoded data
                     // The ACP ImageContent has data as a String directly
                     user_message = user_message.with_image(&image.data, &image.mime_type);
                 }
@@ -330,7 +330,7 @@ impl GooseAcpAgent {
         &self,
         content_item: &MessageContent,
         session_id: &acp::SessionId,
-        session: &mut GooseAcpSession,
+        session: &mut MTSAcpSession,
     ) -> Result<(), acp::Error> {
         match content_item {
             MessageContent::Text(text) => {
@@ -386,7 +386,7 @@ impl GooseAcpAgent {
         &self,
         tool_request: &mts::conversation::message::ToolRequest,
         session_id: &acp::SessionId,
-        session: &mut GooseAcpSession,
+        session: &mut MTSAcpSession,
     ) -> Result<(), acp::Error> {
         // Generate ACP tool call ID and track mapping
         let acp_tool_id = format!("tool_{}", uuid::Uuid::new_v4());
@@ -437,7 +437,7 @@ impl GooseAcpAgent {
         &self,
         tool_response: &mts::conversation::message::ToolResponse,
         session_id: &acp::SessionId,
-        session: &mut GooseAcpSession,
+        session: &mut MTSAcpSession,
     ) -> Result<(), acp::Error> {
         // Look up the ACP tool call ID
         if let Some(acp_tool_id) = session.tool_call_ids.get(&tool_response.id) {
@@ -562,20 +562,20 @@ fn build_tool_call_content(tool_result: &ToolResult<CallToolResult>) -> Vec<Tool
 }
 
 #[async_trait::async_trait(?Send)]
-impl acp::Agent for GooseAcpAgent {
+impl acp::Agent for MTSAcpAgent {
     async fn initialize(
         &self,
         args: acp::InitializeRequest,
     ) -> Result<acp::InitializeResponse, acp::Error> {
         info!("ACP: Received initialize request {:?}", args);
 
-        // Advertise Goose's capabilities
+        // Advertise MTS's capabilities
         let agent_capabilities = acp::AgentCapabilities {
             load_session: true,
             prompt_capabilities: acp::PromptCapabilities {
-                image: true,            // Goose supports image inputs via providers
+                image: true,            // MTS supports image inputs via providers
                 audio: false,           // TODO: Add audio support when providers support it
-                embedded_context: true, // Goose can handle embedded context resources
+                embedded_context: true, // MTS can handle embedded context resources
                 meta: None,
             },
             mcp_capabilities: acp::McpCapabilities {
@@ -608,14 +608,14 @@ impl acp::Agent for GooseAcpAgent {
     ) -> Result<acp::NewSessionResponse, acp::Error> {
         info!("ACP: Received new session request {:?}", args);
 
-        let goose_session = SessionManager::create_session(
+        let mts_session = SessionManager::create_session(
             std::env::current_dir().unwrap_or_default(),
             "ACP Session".to_string(), // just an initial name - may be replaced by maybe_update_name
             SessionType::User,
         )
         .await?;
 
-        let session = GooseAcpSession {
+        let session = MTSAcpSession {
             messages: Conversation::new_unvalidated(Vec::new()),
             tool_call_ids: HashMap::new(),
             tool_requests: HashMap::new(),
@@ -623,12 +623,12 @@ impl acp::Agent for GooseAcpAgent {
         };
 
         let mut sessions = self.sessions.lock().await;
-        sessions.insert(goose_session.id.clone(), session);
+        sessions.insert(mts_session.id.clone(), session);
 
-        info!("Created new ACP/goose session {}", goose_session.id);
+        info!("Created new ACP/mts session {}", mts_session.id);
 
         Ok(acp::NewSessionResponse {
-            session_id: acp::SessionId(goose_session.id.into()),
+            session_id: acp::SessionId(mts_session.id.into()),
             modes: None,
             meta: None,
         })
@@ -642,14 +642,14 @@ impl acp::Agent for GooseAcpAgent {
 
         let session_id = args.session_id.0.to_string();
 
-        let goose_session = SessionManager::get_session(&session_id, true)
+        let mts_session = SessionManager::get_session(&session_id, true)
             .await
             .map_err(|e| {
                 error!("Failed to load session {}: {}", session_id, e);
                 acp::Error::invalid_params()
             })?;
 
-        let conversation = goose_session.conversation.ok_or_else(|| {
+        let conversation = mts_session.conversation.ok_or_else(|| {
             error!("Session {} has no conversation data", session_id);
             acp::Error::internal_error()
         })?;
@@ -663,7 +663,7 @@ impl acp::Agent for GooseAcpAgent {
                 acp::Error::internal_error()
             })?;
 
-        let mut session = GooseAcpSession {
+        let mut session = MTSAcpSession {
             messages: conversation.clone(),
             tool_call_ids: HashMap::new(),
             tool_requests: HashMap::new(),
@@ -862,8 +862,8 @@ impl acp::Agent for GooseAcpAgent {
 
 /// Run the ACP agent server
 pub async fn run_acp_agent() -> Result<()> {
-    info!("Starting Goose ACP agent server on stdio");
-    eprintln!("Goose ACP agent started. Listening on stdio...");
+    info!("Starting MTS ACP agent server on stdio");
+    eprintln!("MTS ACP agent started. Listening on stdio...");
 
     let outgoing = tokio::io::stdout().compat_write();
     let incoming = tokio::io::stdin().compat();
@@ -876,8 +876,8 @@ pub async fn run_acp_agent() -> Result<()> {
         .run_until(async move {
             let (tx, mut rx) = tokio::sync::mpsc::unbounded_channel();
 
-            // Start up the GooseAcpAgent connected to stdio.
-            let agent = GooseAcpAgent::new(tx)
+            // Start up the MTSAcpAgent connected to stdio.
+            let agent = MTSAcpAgent::new(tx)
                 .await
                 .map_err(|e| anyhow::anyhow!("Failed to create ACP agent: {}", e))?;
             let (conn, handle_io) =

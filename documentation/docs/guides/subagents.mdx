@@ -21,10 +21,10 @@ Subagents are independent instances that execute tasks while keeping your main c
 ## How to Use Subagents
 
 :::tip Autonomous Subagent Creation
-goose can autonomously decide to use subagents when it determines they would be beneficial for your task - you don't always need to explicitly request them. This happens automatically in autonomous [permission mode](/docs/guides/goose-permissions) (the default). Subagents are disabled in manual approval, smart approval, and chat-only modes.
+mts can autonomously decide to use subagents when it determines they would be beneficial for your task - you don't always need to explicitly request them. This happens automatically in autonomous [permission mode](/docs/guides/mts-permissions) (the default). Subagents are disabled in manual approval, smart approval, and chat-only modes.
 :::
 
-To use subagents, ask goose to delegate tasks using natural language. goose automatically decides when to spawn subagents and handles their lifecycle. You can:
+To use subagents, ask mts to delegate tasks using natural language. mts automatically decides when to spawn subagents and handles their lifecycle. You can:
 
 1. **Request specialized help**: "Use a code reviewer to analyze this function for security issues"
 2. **Reference specific recipes**: "Use the 'security-auditor' recipe to scan this endpoint"  
@@ -45,7 +45,7 @@ If a subagent fails or times out (5-minute default), you will receive no output 
 
 ## Internal Subagents
 
-Internal subagents spawn goose instances to handle tasks using your current session's context and extensions. There are two ways to configure and execute internal subagents:
+Internal subagents spawn mts instances to handle tasks using your current session's context and extensions. There are two ways to configure and execute internal subagents:
 
 1. **Direct Prompts** - Quick, one-off tasks using natural language instructions
 2. **Recipes** - Reusable, structured configurations for specialized subagent behavior
@@ -53,7 +53,7 @@ Internal subagents spawn goose instances to handle tasks using your current sess
 ### Direct Prompts
 Direct prompts provided for one-off tasks using natural language prompts. The main agent automatically configures the subagent based on your request.
 
-**goose Prompt:**
+**mts Prompt:**
 ```
 "Use 2 subagents to create hello.html with 'Hello World' content and goodbye.html with 'Goodbye World' content in parallel"
 ```
@@ -121,16 +121,16 @@ prompt: |
   Provide specific, actionable feedback with examples.
 ```
 
-**Place your recipe file where goose can find it**
-- Set [`GOOSE_RECIPE_PATH`](/docs/guides/recipes/recipe-reference#recipe-location) environment variable to your recipe directory
+**Place your recipe file where mts can find it**
+- Set [`MTS_RECIPE_PATH`](/docs/guides/recipes/recipe-reference#recipe-location) environment variable to your recipe directory
 - Or place it in your current working directory
 
-**goose Prompt**
+**mts Prompt**
 ```
 Use the "code-reviewer" recipe to analyze the authentication feature I implemented
 ```
 
-**goose Output**
+**mts Output**
 ```
 I'll use your code-reviewer recipe to create a specialized subagent for this analysis.
 
@@ -153,9 +153,9 @@ I'll use your code-reviewer recipe to create a specialized subagent for this ana
 
 ## External Subagents
 
-External subagents let you bring in AI agents from other providers and platforms, enabling goose to coordinate and integrate your workflow with the broader ecosystem. In the below example, we use Codex as a subagent by running it as an MCP server:
+External subagents let you bring in AI agents from other providers and platforms, enabling mts to coordinate and integrate your workflow with the broader ecosystem. In the below example, we use Codex as a subagent by running it as an MCP server:
 
-**[goose Configuration File](/docs/guides/config-files)** (`.~/.config/goose/config.yaml `):
+**[mts Configuration File](/docs/guides/config-files)** (`.~/.config/mts/config.yaml `):
 ```yaml
 subagent:
   args:
@@ -185,26 +185,26 @@ approval_policy = "never"
 mode = "workspace-write"
 ```
 
-**goose Prompt:**
+**mts Prompt:**
 ```
 "Use the codex subagent to analyze my codebase structure and identify the main components"
 ```
 
-**goose Output:**
+**mts Output:**
 
 ```md
 Based on my analysis of your codebase, here are the main components:
 
-1. **Core Agent System** (`crates/goose/src/agents/`)
+1. **Core Agent System** (`crates/mts/src/agents/`)
    - Agent orchestration and session management
    - Tool execution framework
    - Extension system integration
 
-2. **CLI Interface** (`crates/goose-cli/`)
+2. **CLI Interface** (`crates/mts-cli/`)
    - Command-line interface and session handling
    - Configuration management
 
-3. **Server Components** (`crates/goose-server/`)
+3. **Server Components** (`crates/mts-server/`)
    - HTTP API endpoints
    - WebSocket communication for real-time interaction
 
@@ -243,7 +243,7 @@ Subagents use the following pre-configured settings, but you can override any de
 ### Default Settings
 | Parameter | Default | How to Customize |
 |-----------|---------|------------------|
-| **Max Turns** | 25 | Use natural language or set `GOOSE_SUBAGENT_MAX_TURNS` |
+| **Max Turns** | 25 | Use natural language or set `MTS_SUBAGENT_MAX_TURNS` |
 | **Timeout** | 5 minutes | Request longer timeout in your prompt |
 | **Extensions** | Inherited from parent | Specify which extensions to use in your prompt |
 | **Return Mode** | All subagent information provided in main session | Specify how much detail you want in your prompt |
@@ -261,7 +261,7 @@ You can override any default by including the setting in your natural language r
 "Use a research subagent with 30 turns and 20-minute timeout to investigate quantum computing trends"
 ```
 
-**Environment variable:** Set `GOOSE_SUBAGENT_MAX_TURNS` to change the default max turns for all subagents.
+**Environment variable:** Set `MTS_SUBAGENT_MAX_TURNS` to change the default max turns for all subagents.
 
 ### Extension Control
 
@@ -277,7 +277,7 @@ Control which tools and capabilities subagents can access. By default, subagents
 ```
 
 ### Return Mode Control
-Choose how much information goose provides from its subagents in your main session.
+Choose how much information mts provides from its subagents in your main session.
 
 **Full Details (Default):** See all tool executions and reasoning steps
 ```
@@ -324,7 +324,7 @@ import agentCoordination from '@site/blog/2025-08-14-agent-coordination-patterns
     {
       type: 'video',
       title: 'How I Built an App with 6 Subagents',
-      description: 'Deep dive into goose subagents. Walk through building an app using 6 specialized AI agents for advanced workflow automation and development.',
+      description: 'Deep dive into mts subagents. Walk through building an app using 6 specialized AI agents for advanced workflow automation and development.',
       thumbnailUrl: 'https://img.youtube.com/vi/yIBrD5AxtTc/maxresdefault.jpg',
       linkUrl: 'https://www.youtube.com/watch?v=yIBrD5AxtTc',
       date: '2025-10-01',
@@ -333,7 +333,7 @@ import agentCoordination from '@site/blog/2025-08-14-agent-coordination-patterns
     {
       type: 'video',
       title: 'Flight School - Choosing the Right Tools for AI Work',
-      description: 'Discover the differences between subagents and subrecipes for efficient task execution in goose. Learn which approach is best for your workflow.',
+      description: 'Discover the differences between subagents and subrecipes for efficient task execution in mts. Learn which approach is best for your workflow.',
       thumbnailUrl: 'https://img.youtube.com/vi/joePzlkARjs/maxresdefault.jpg',
       linkUrl: 'https://www.youtube.com/watch?v=joePzlkARjs',
       date: '2025-09-29',
@@ -341,10 +341,10 @@ import agentCoordination from '@site/blog/2025-08-14-agent-coordination-patterns
     },
    {
       type: 'blog',
-      title: 'How to Choose Between Subagents and Subrecipes in goose',
-      description: 'Detailed guide to subagents and subrecipes in goose. Compare reusability, setup complexity, and get practical advice for choosing the right approach.',
+      title: 'How to Choose Between Subagents and Subrecipes in mts',
+      description: 'Detailed guide to subagents and subrecipes in mts. Compare reusability, setup complexity, and get practical advice for choosing the right approach.',
       thumbnailUrl: subagentsVsSubrecipes,
-      linkUrl: '/goose/blog/2025/09/26/subagents-vs-subrecipes',
+      linkUrl: '/mts/blog/2025/09/26/subagents-vs-subrecipes',
       date: '2025-09-26',
       duration: '6 min read'
     },
@@ -353,7 +353,7 @@ import agentCoordination from '@site/blog/2025-08-14-agent-coordination-patterns
       title: 'Agents, Subagents, and Multi Agents: What They Are and When to Use Them',
       description: 'Compare agents, subagents, and multi agents in AI workflows. Learn how they work together and practical scenarios for each approach.',
       thumbnailUrl: agentCoordination,
-      linkUrl: '/goose/blog/2025/08/14/agent-coordination-patterns',
+      linkUrl: '/mts/blog/2025/08/14/agent-coordination-patterns',
       date: '2025-08-14',
       duration: '4 min read'
     }

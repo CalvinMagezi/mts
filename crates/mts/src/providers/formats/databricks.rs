@@ -501,17 +501,17 @@ pub fn create_request(
 ) -> anyhow::Result<Value, Error> {
     if model_config.model_name.starts_with("o1-mini") {
         return Err(anyhow!(
-            "o1-mini model is not currently supported since goose uses tool calling and o1-mini does not support it. Please use o1 or o3 models instead."
+            "o1-mini model is not currently supported since mts uses tool calling and o1-mini does not support it. Please use o1 or o3 models instead."
         ));
     }
 
     let model_name = model_config.model_name.to_string();
-    let is_o1 = model_name.starts_with("o1") || model_name.starts_with("goose-o1");
-    let is_o3 = model_name.starts_with("o3") || model_name.starts_with("goose-o3");
-    let is_gpt_5 = model_name.starts_with("gpt-5") || model_name.starts_with("goose-gpt-5");
+    let is_o1 = model_name.starts_with("o1") || model_name.starts_with("mts-o1");
+    let is_o3 = model_name.starts_with("o3") || model_name.starts_with("mts-o3");
+    let is_gpt_5 = model_name.starts_with("gpt-5") || model_name.starts_with("mts-gpt-5");
     let is_openai_reasoning_model = is_o1 || is_o3 || is_gpt_5;
     let is_claude_sonnet =
-        model_name.contains("claude-3-7-sonnet") || model_name.contains("claude-4-sonnet"); // can be goose- or databricks-
+        model_name.contains("claude-3-7-sonnet") || model_name.contains("claude-4-sonnet"); // can be mts- or databricks-
 
     // Only extract reasoning effort for O1/O3 models
     let (model_name, reasoning_effort) = if is_openai_reasoning_model {

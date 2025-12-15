@@ -49,4 +49,4 @@ export default function MtsLogo({
 }
 
 // Backward compatibility alias
-export const GooseLogo = MtsLogo;
+export const MTSLogo = MtsLogo;

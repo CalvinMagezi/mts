@@ -44,7 +44,7 @@ impl ClaudeCodeProvider {
         })
     }
 
-    /// Convert goose messages to the format expected by claude CLI
+    /// Convert mts messages to the format expected by claude CLI
     fn messages_to_claude_format(&self, _system: &str, messages: &[Message]) -> Result<Value> {
         let mut claude_messages = Vec::new();
 

@@ -149,7 +149,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
                     >
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium text-textStandard">
-                          {message.role === 'user' ? 'You' : 'Goose'}
+                          {message.role === 'user' ? 'You' : 'MTS'}
                         </span>
                         <span className="text-xs text-textSubtle">
                           {formatMessageTimestamp(message.created)}
@@ -181,7 +181,7 @@ export const SessionMessages: React.FC<SessionMessagesProps> = ({
 
                         {/* Tool requests and responses */}
                         {toolRequests.length > 0 && (
-                          <div className="goose-message-tool bg-background-default border border-borderSubtle dark:border-gray-700 rounded-b-2xl px-4 pt-4 pb-2 mt-1">
+                          <div className="mts-message-tool bg-background-default border border-borderSubtle dark:border-gray-700 rounded-b-2xl px-4 pt-4 pb-2 mt-1">
                             {toolRequests.map((toolRequest) => (
                               <ToolCallWithResponse
                                 // In the session history page, if no tool response found for given request, it means the tool call

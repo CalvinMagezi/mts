@@ -257,4 +257,4 @@ const getMtsdBinaryPath = (app: Electron.App): string => {
 };
 
 // Backward compatibility exports
-export const startGoosed = startMtsd;
+export const startMTSd = startMtsd;

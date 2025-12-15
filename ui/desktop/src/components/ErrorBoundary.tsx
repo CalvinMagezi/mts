@@ -27,7 +27,7 @@ export function ErrorUI({ error }: { error: string }) {
 
         {window?.appConfig?.get('MTS_VERSION') !== undefined ? (
           <p className="text-base text-textSubtle dark:text-muted-foreground mb-2">
-            An error occurred in Goose v{window?.appConfig?.get('MTS_VERSION') as string}.
+            An error occurred in MTS v{window?.appConfig?.get('MTS_VERSION') as string}.
           </p>
         ) : (
           <p className="text-base text-textSubtle dark:text-muted-foreground mb-2">

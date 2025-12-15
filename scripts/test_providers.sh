@@ -4,8 +4,8 @@ if [ -f .env ]; then
 fi
 
 if [ -z "$SKIP_BUILD" ]; then
-  echo "Building goose..."
-  cargo build --release --bin goose
+  echo "Building mts..."
+  cargo build --release --bin mts
   echo ""
 else
   echo "Skipping build (SKIP_BUILD is set)..."
@@ -44,15 +44,15 @@ for provider_config in "${PROVIDERS[@]}"; do
   PROVIDER="${PARTS[0]}"
   for i in $(seq 1 $((${#PARTS[@]} - 1))); do
     MODEL="${PARTS[$i]}"
-    export GOOSE_PROVIDER="$PROVIDER"
-    export GOOSE_MODEL="$MODEL"
+    export MTS_PROVIDER="$PROVIDER"
+    export MTS_MODEL="$MODEL"
     TESTDIR=$(mktemp -d)
     echo "hello" > "$TESTDIR/hello.txt"
     echo "Provider: ${PROVIDER}"
     echo "Model: ${MODEL}"
     echo ""
     TMPFILE=$(mktemp)
-    (cd "$TESTDIR" && "$SCRIPT_DIR/target/release/goose" run --text "please list files in the current directory" --with-builtin developer,autovisualiser,computercontroller,tutorial,todo,extensionmanager  2>&1) | tee "$TMPFILE"
+    (cd "$TESTDIR" && "$SCRIPT_DIR/target/release/mts" run --text "please list files in the current directory" --with-builtin developer,autovisualiser,computercontroller,tutorial,todo,extensionmanager  2>&1) | tee "$TMPFILE"
     echo ""
     if grep -q "shell | developer" "$TMPFILE"; then
       echo "✓ SUCCESS: Test passed - developer tool called"

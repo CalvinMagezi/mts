@@ -184,7 +184,7 @@ const SessionHistoryView: React.FC<SessionHistoryViewProps> = ({
         session.total_tokens || 0
       );
 
-      const shareableLink = `goose://sessions/${shareToken}`;
+      const shareableLink = `mts://sessions/${shareToken}`;
       setShareLink(shareableLink);
       setIsShareModalOpen(true);
     } catch (error) {
@@ -319,7 +319,7 @@ const SessionHistoryView: React.FC<SessionHistoryViewProps> = ({
               Share Session (beta)
             </DialogTitle>
             <DialogDescription>
-              Share this session link to give others a read only view of your goose chat.
+              Share this session link to give others a read only view of your mts chat.
             </DialogDescription>
           </DialogHeader>
 

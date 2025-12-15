@@ -260,7 +260,7 @@ impl ProviderTester {
         use mts::conversation::message::Message;
         use std::fs;
 
-        let image_path = "crates/goose/examples/test_assets/test_image.png";
+        let image_path = "crates/mts/examples/test_assets/test_image.png";
         let image_data = match fs::read(image_path) {
             Ok(data) => data,
             Err(_) => {

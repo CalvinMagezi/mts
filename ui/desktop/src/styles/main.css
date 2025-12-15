@@ -24,9 +24,13 @@
   --color-mts-gray: #dfdfdf;
   --color-mts-gray-text: #828282;
 
-  /* Legacy aliases for compatibility */
-  --color-block-teal: #1DE52F;
-  --color-block-orange: #00C6FA;
+  /* Legacy aliases for compatibility - now using MTS brand */
+  --color-block-teal: var(--color-mts-green);
+  --color-block-orange: var(--color-mts-blue);
+
+  /* Neon glow effects */
+  --glow-green: 0 0 10px rgba(29, 229, 47, 0.5), 0 0 20px rgba(29, 229, 47, 0.3), 0 0 30px rgba(29, 229, 47, 0.1);
+  --glow-blue: 0 0 10px rgba(0, 198, 250, 0.5), 0 0 20px rgba(0, 198, 250, 0.3), 0 0 30px rgba(0, 198, 250, 0.1);
 
   --color-neutral-50: #f4f6f7;
   --color-neutral-100: #e3e6ea;
@@ -114,55 +118,55 @@
 }
 
 .dark {
-  /* theming accents */
-  --background-accent: var(--color-white);
-  --border-accent: var(--color-white);
-  --text-accent: var(--color-white);
-  --text-on-accent: var(--color-black);
+  /* theming accents - MTS Neon Green */
+  --background-accent: var(--color-mts-green);
+  --border-accent: var(--color-mts-green);
+  --text-accent: var(--color-mts-green);
+  --text-on-accent: var(--color-mts-black);
 
-  /* semantic */
-  --background-app: var(--color-neutral-950);
-  --background-default: var(--color-neutral-950);
-  --background-card: var(--color-neutral-950);
-  --background-muted: var(--color-neutral-800);
-  --background-medium: var(--color-neutral-700);
-  --background-strong: var(--color-neutral-600);
-  --background-inverse: var(--color-neutral-200);
+  /* semantic - MTS Dark Theme */
+  --background-app: var(--color-mts-black);
+  --background-default: var(--color-mts-black);
+  --background-card: var(--color-mts-bg);
+  --background-muted: var(--color-mts-bg);
+  --background-medium: #1a1d21;
+  --background-strong: #252a2e;
+  --background-inverse: var(--color-mts-gray);
   --background-danger: var(--color-red-100);
-  --background-success: var(--color-green-100);
-  --background-info: var(--color-blue-100);
+  --background-success: var(--color-mts-green);
+  --background-info: var(--color-mts-blue);
   --background-warning: var(--color-yellow-100);
 
-  --border-default: var(--color-neutral-900);
-  --border-input: var(--color-neutral-800);
-  --border-strong: var(--color-neutral-700);
+  --border-default: #1a1d21;
+  --border-input: #252a2e;
+  --border-strong: #2a2f34;
   --border-danger: var(--color-red-100);
-  --border-success: var(--color-green-100);
+  --border-success: var(--color-mts-green);
   --border-warning: var(--color-yellow-100);
-  --border-info: var(--color-blue-100);
+  --border-info: var(--color-mts-blue);
 
   --text-default: var(--color-white);
-  --text-muted: var(--color-neutral-400);
-  --text-inverse: var(--color-black);
+  --text-muted: var(--color-mts-gray-text);
+  --text-inverse: var(--color-mts-black);
   --text-danger: var(--color-red-100);
-  --text-success: var(--color-green-100);
+  --text-success: var(--color-mts-green);
   --text-warning: var(--color-yellow-100);
-  --text-info: var(--color-blue-100);
+  --text-info: var(--color-mts-blue);
 
-  --ring: var(--border-strong);
+  --ring: var(--color-mts-green);
 
-  --sidebar: var(--background-muted);
+  --sidebar: var(--color-mts-bg);
   --sidebar-foreground: var(--text-default);
-  --sidebar-primary: var(--background-accent);
-  --sidebar-primary-foreground: var(--text-inverse);
-  --sidebar-accent: var(--background-muted);
+  --sidebar-primary: var(--color-mts-green);
+  --sidebar-primary-foreground: var(--color-mts-black);
+  --sidebar-accent: #1a1d21;
   --sidebar-accent-foreground: var(--text-default);
-  --sidebar-border: var(--border-default);
-  --sidebar-ring: var(--border-default);
+  --sidebar-border: #1a1d21;
+  --sidebar-ring: var(--color-mts-green);
 
   --shadow-default:
-    0px 12px 32px 0px rgba(0, 0, 0, 0.2), 0px 8px 16px 0px rgba(0, 0, 0, 0.15),
-    0px 2px 4px 0px rgba(0, 0, 0, 0.1), 0px 0px 1px 0px rgba(0, 0, 0, 0.3);
+    0px 12px 32px 0px rgba(29, 229, 47, 0.05), 0px 8px 16px 0px rgba(0, 0, 0, 0.2),
+    0px 2px 4px 0px rgba(0, 0, 0, 0.15), 0px 0px 1px 0px rgba(29, 229, 47, 0.1);
 }
 
 @theme inline {

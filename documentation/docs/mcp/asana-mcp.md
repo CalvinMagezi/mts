@@ -1,25 +1,25 @@
 ---
 title: Asana Extension
-description: Add Asana MCP Server as a goose Extension
+description: Add Asana MCP Server as a mts Extension
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import MTSDesktopInstaller from '@site/src/components/MTSDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 
 <!--<YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/VIDEO_ID" />-->
 
 
-This tutorial covers how to add the [Asana MCP Server](https://github.com/roychri/mcp-server-asana) as a goose extension to enable task automation, project tracking, and team collaboration.
+This tutorial covers how to add the [Asana MCP Server](https://github.com/roychri/mcp-server-asana) as a mts extension to enable task automation, project tracking, and team collaboration.
 
 :::tip TLDR
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40roychri%2Fmcp-server-asana&id=asana&name=Asana&description=enable%20task%20automation%2C%20project%20tracking%2C%20and%20team%20collaboration&env=ASANA_ACCESS_TOKEN%3DAsana%20Access%20Token)
+  <TabItem value="ui" label="mts Desktop" default>
+  [Launch the installer](mts://extension?cmd=npx&arg=-y&arg=%40roychri%2Fmcp-server-asana&id=asana&name=Asana&description=enable%20task%20automation%2C%20project%20tracking%2C%20and%20team%20collaboration&env=ASANA_ACCESS_TOKEN%3DAsana%20Access%20Token)
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
   **Command**
   ```sh
   npx -y @roychri/mcp-server-asana
@@ -40,8 +40,8 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  <GooseDesktopInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+  <MTSDesktopInstaller
     extensionId="asana"
     extensionName="Asana"
     description="Enable task automation, project tracking, and team collaboration"
@@ -57,7 +57,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   See [Asana's developer docs](https://developers.asana.com/docs/personal-access-token) if you need detailed instructions on creating an access token.
   :::
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
     <CLIExtensionInstructions
       name="Asana"
       description="Enable task automation, project tracking, and team collaboration"
@@ -77,15 +77,15 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 ## Example Usage
 
 :::info LLM
-OpenAI's GPT-4o was used for this task. There's an [open bug](https://github.com/block/goose/issues/1804) for Amazon Bedrock models.
+OpenAI's GPT-4o was used for this task. There's an [open bug](https://github.com/block/mts/issues/1804) for Amazon Bedrock models.
 :::
 
-### goose Prompt
+### mts Prompt
 
-> _goose, I have one hour. Look through uncompleted tasks assigned to me in Asana and show me ones that you estimate will take an hour or less. Order them by deadline._
+> _mts, I have one hour. Look through uncompleted tasks assigned to me in Asana and show me ones that you estimate will take an hour or less. Order them by deadline._
 
 
-### goose Output
+### mts Output
 
 Note that IDs have been changed to generic ones
 

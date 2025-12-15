@@ -6,7 +6,7 @@ interface EnvVar {
   label: string;
 }
 
-interface GooseDesktopInstallerProps {
+interface MTSDesktopInstallerProps {
   extensionId: string;
   extensionName: string;
   description: string;
@@ -24,7 +24,7 @@ interface GooseDesktopInstallerProps {
   appendToStep3?: string;
 }
 
-export default function GooseDesktopInstaller({
+export default function MTSDesktopInstaller({
   extensionId,
   extensionName,
   description,
@@ -38,13 +38,13 @@ export default function GooseDesktopInstaller({
   customStep3,
   hasEnvVars,
   appendToStep3
-}: GooseDesktopInstallerProps) {
+}: MTSDesktopInstallerProps) {
   
   // Determine extension type with backward compatibility
   const extensionType = type || (command ? 'stdio' : url ? 'sse' : 'stdio');
   
-  // Build the goose:// URL
-  const buildGooseUrl = () => {
+  // Build the mts:// URL
+  const buildMTSUrl = () => {
     let urlParts = [];
     
     // Only add type parameter for http extensions (mapped to streamable_http)
@@ -75,7 +75,7 @@ export default function GooseDesktopInstaller({
       `${paramName}=${encodeURIComponent(`${envVar.name}=${envVar.label}`)}`
     ));
     
-    return `goose://extension?${urlParts.join('&')}`;
+    return `mts://extension?${urlParts.join('&')}`;
   };
 
   // Generate step 3 content (only if needed)
@@ -122,7 +122,7 @@ export default function GooseDesktopInstaller({
     <div>
       <ol>
         <li>
-          <a href={buildGooseUrl()}>Launch the installer</a>
+          <a href={buildMTSUrl()}>Launch the installer</a>
         </li>
         <li>Click <code>Yes</code> to confirm the installation</li>
         {shouldShowConfigurationSteps && (

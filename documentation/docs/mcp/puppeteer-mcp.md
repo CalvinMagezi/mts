@@ -1,26 +1,26 @@
 ---
 title: Puppeteer Extension
-description: Add Puppeteer MCP Server as a goose Extension
+description: Add Puppeteer MCP Server as a mts Extension
 unlisted: true
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import MTSDesktopInstaller from '@site/src/components/MTSDesktopInstaller';
 
 <YouTubeShortEmbed videoUrl="https://youtube.com/embed/rms0wVGnlXA" />
 
 Server archived
 
-This tutorial covers how to add the [Puppeteer MCP Server](https://www.pulsemcp.com/servers/merajmehrabi-puppeteer) as a goose extension, enabling goose to interact with websites - navigating pages, filling forms, clicking buttons, taking screenshots, and executing JavaScript in a real browser environment.
+This tutorial covers how to add the [Puppeteer MCP Server](https://www.pulsemcp.com/servers/merajmehrabi-puppeteer) as a mts extension, enabling mts to interact with websites - navigating pages, filling forms, clicking buttons, taking screenshots, and executing JavaScript in a real browser environment.
 
 :::tip TLDR
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  [Launch the installer](goose://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-puppeteer&id=puppeteer&name=Puppeteer&description=Headless%20browser%20automation)
+  <TabItem value="ui" label="mts Desktop" default>
+  [Launch the installer](mts://extension?cmd=npx&arg=-y&arg=%40modelcontextprotocol%2Fserver-puppeteer&id=puppeteer&name=Puppeteer&description=Headless%20browser%20automation)
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
   **Command**
   ```sh
   npx -y @modelcontextprotocol/server-puppeteer
@@ -37,8 +37,8 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 :::
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  <GooseDesktopInstaller
+  <TabItem value="ui" label="mts Desktop" default>
+  <MTSDesktopInstaller
     extensionId="puppeteer"
     extensionName="Puppeteer"
     description="Headless browser automation"
@@ -46,15 +46,15 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
     args={["-y", "@modelcontextprotocol/server-puppeteer"]}
   />
 </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
   1. Run the `configure` command:
   ```sh
-  goose configure
+  mts configure
   ```
 
   2. Choose to add a `Command-line Extension`
   ```sh
-    ┌   goose-configure 
+    ┌   mts-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -71,7 +71,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   3. Give your extension a name
   ```sh
-    ┌   goose-configure 
+    ┌   mts-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -88,7 +88,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   4. Enter the command
   ```sh
-    ┌   goose-configure 
+    ┌   mts-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -106,9 +106,9 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
     └ 
   ```  
 
-  5. Enter the number of seconds goose should wait for actions to complete before timing out. Default is 300s
+  5. Enter the number of seconds mts should wait for actions to complete before timing out. Default is 300s
    ```sh
-    ┌   goose-configure 
+    ┌   mts-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -131,7 +131,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
   6. Choose to add a description. If you select "Yes" here, you will be prompted to enter a description for the extension.
    ```sh
-    ┌   goose-configure 
+    ┌   mts-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -158,7 +158,7 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
   7. Choose No when asked to add environment variables
 
    ```sh
-    ┌   goose-configure 
+    ┌   mts-configure 
     │
     ◇  What would you like to configure?
     │  Add Extension (Connect to a new extension) 
@@ -191,25 +191,25 @@ Note that you'll need [Node.js](https://nodejs.org/) installed on your system to
 
 
 ## Example Usage
-In this example, I’ll show you how to use goose with the Puppeteer Extension to perform an accessibility audit on a website. By automating browser interactions, goose can navigate the site, test keyboard navigation, check color contrast, analyze ARIA attributes, and generate a detailed report with recommendations and code fixes.
+In this example, I’ll show you how to use mts with the Puppeteer Extension to perform an accessibility audit on a website. By automating browser interactions, mts can navigate the site, test keyboard navigation, check color contrast, analyze ARIA attributes, and generate a detailed report with recommendations and code fixes.
 
 This allows you to quickly identify and resolve accessibility issues without manually inspecting each page.
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-   1. Open a new session in goose Desktop
+  <TabItem value="ui" label="mts Desktop" default>
+   1. Open a new session in mts Desktop
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
-  1. Open a terminal and start a new goose session:
+  <TabItem value="cli" label="mts CLI">
+  1. Open a terminal and start a new mts session:
 
   ```sh
-  goose session
+  mts session
   ```
 
   </TabItem>
 </Tabs>
 
-### goose Prompt
+### mts Prompt
 ```
 Can you check if my website is accessible? Please conduct a full accessibility audit, focusing on the following:
 
@@ -229,7 +229,7 @@ Here is the website to test: https://broken-workshop.dequelabs.com/. I want to e
 
 ```
 
-### goose Output
+### mts Output
 
 :::note Desktop
 I'll help you conduct a comprehensive accessibility audit of the website. I'll use a combination of automated and manual testing approaches to evaluate different accessibility aspects.
@@ -413,7 +413,7 @@ This audit reveals several critical accessibility issues that should be addresse
 
 ### Further Automation with GitHub Extension
 
-You can take this accessibility audit a step further by combining the [GitHub Extension](/docs/mcp/github-mcp) with the Puppeteer Extension. With this setup, goose doesn’t just find issues and apply fixes, it can also handle the entire Git workflow for you. The GitHub Extension allows goose to commit changes, create a pull request, and even generate a PR description, so all you have to do is review and merge.
+You can take this accessibility audit a step further by combining the [GitHub Extension](/docs/mcp/github-mcp) with the Puppeteer Extension. With this setup, mts doesn’t just find issues and apply fixes, it can also handle the entire Git workflow for you. The GitHub Extension allows mts to commit changes, create a pull request, and even generate a PR description, so all you have to do is review and merge.
 
 1. Enable the GitHub extension by following the steps in the **[GitHub Extension Tutorial](/docs/mcp/github-mcp#configuration)**.
 
@@ -422,18 +422,18 @@ You can take this accessibility audit a step further by combining the [GitHub Ex
 Ensure your GitHub Personal Access Token has the necessary permissions for repository access and pull request creation when using this combined approach. 
 :::
 
-2. Ask goose to:
+2. Ask mts to:
 
    - Create a new branch
    - Commit the accessibility improvements
    - Open a pull request
 
-### goose prompt:
+### mts prompt:
 
 ```
 Can you create a new branch called 'accessibility-improvements', apply the accessibility fixes you suggested, and open a pull request with these changes?
 ```
-goose will then:
+mts will then:
    - ✅ Create a branch: `accessibility-improvements`
    - ✅ Apply the recommended accessibility fixes
    - ✅ Commit the changes with a descriptive message

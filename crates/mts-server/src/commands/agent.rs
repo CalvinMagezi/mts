@@ -28,7 +28,7 @@ async fn shutdown_signal() {
 }
 
 pub async fn run() -> Result<()> {
-    crate::logging::setup_logging(Some("goosed"))?;
+    crate::logging::setup_logging(Some("mtsd"))?;
 
     let settings = configuration::Settings::new()?;
 

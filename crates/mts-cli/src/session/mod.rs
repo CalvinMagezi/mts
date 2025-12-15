@@ -28,7 +28,7 @@ use mts::providers::base::Provider;
 use mts::utils::safe_truncate;
 
 use anyhow::{Context, Result};
-use completion::GooseCompleter;
+use completion::MTSCompleter;
 use mts::agents::extension::{Envs, ExtensionConfig, PLATFORM_EXTENSIONS};
 use mts::agents::types::RetryConfig;
 use mts::agents::{Agent, SessionConfig, MANUAL_COMPACT_TRIGGERS};
@@ -426,12 +426,12 @@ impl CliSession {
         };
         let config = builder.build();
         let mut editor =
-            rustyline::Editor::<GooseCompleter, rustyline::history::DefaultHistory>::with_config(
+            rustyline::Editor::<MTSCompleter, rustyline::history::DefaultHistory>::with_config(
                 config,
             )?;
 
         // Set up the completer with a reference to the completion cache
-        let completer = GooseCompleter::new(self.completion_cache.clone());
+        let completer = MTSCompleter::new(self.completion_cache.clone());
         editor.set_helper(Some(completer));
 
         let history_file = Paths::state_dir().join("history.txt");
@@ -453,7 +453,7 @@ impl CliSession {
         }
 
         let save_history =
-            |editor: &mut rustyline::Editor<GooseCompleter, rustyline::history::DefaultHistory>| {
+            |editor: &mut rustyline::Editor<MTSCompleter, rustyline::history::DefaultHistory>| {
                 if let Err(err) = editor.save_history(&history_file) {
                     eprintln!("Warning: Failed to save command history: {}", err);
                 } else if old_history_file.exists() {
@@ -593,7 +593,7 @@ impl CliSession {
                         }
                     };
                     config.set_mts_mode(mode)?;
-                    output::mts_mode_message(&format!("Goose mode set to '{:?}'", mode));
+                    output::mts_mode_message(&format!("MTS mode set to '{:?}'", mode));
                     continue;
                 }
                 input::InputResult::Plan(options) => {
@@ -762,7 +762,7 @@ impl CliSession {
                 if should_act {
                     output::render_act_on_plan();
                     self.run_mode = RunMode::Normal;
-                    // set goose mode: auto if that isn't already the case
+                    // set mts mode: auto if that isn't already the case
                     let config = Config::global();
                     let curr_mts_mode = config.get_mts_mode().unwrap_or(MtsMode::Auto);
                     if curr_mts_mode != MtsMode::Auto {
@@ -780,7 +780,7 @@ impl CliSession {
                         .await?;
                     output::hide_thinking();
 
-                    // Reset run & goose mode
+                    // Reset run & mts mode
                     if curr_mts_mode != MtsMode::Auto {
                         config.set_mts_mode(curr_mts_mode)?;
                     }
@@ -886,7 +886,7 @@ impl CliSession {
                                     println!("\n{}", security_message);
                                     "Do you allow this tool call?".to_string()
                                 } else {
-                                    "Goose would like to call the above tool, do you allow?".to_string()
+                                    "MTS would like to call the above tool, do you allow?".to_string()
                                 };
 
                                 // Get confirmation from user
@@ -983,7 +983,7 @@ impl CliSession {
                                 for content in &message.content {
                                     if let MessageContent::ToolRequest(tool_request) = content {
                                         if let Ok(tool_call) = &tool_request.tool_call {
-                                            tracing::info!(counter.goose.tool_calls = 1,
+                                            tracing::info!(counter.mts.tool_calls = 1,
                                                 tool_name = %tool_call.name,
                                                 "Tool call started"
                                             );
@@ -1015,7 +1015,7 @@ impl CliSession {
                                         let success = tool_response.tool_result.is_ok();
                                         let result_status = if success { "success" } else { "error" };
                                         tracing::info!(
-                                            counter.goose.tool_completions = 1,
+                                            counter.mts.tool_completions = 1,
                                             tool_name = %tool_name,
                                             result = %result_status,
                                             "Tool call completed"
@@ -1566,7 +1566,7 @@ async fn get_reasoner() -> Result<Arc<dyn Provider>, anyhow::Error> {
         println!("WARNING: MTS_PLANNER_PROVIDER not found. Using default provider...");
         config
             .get_mts_provider()
-            .expect("No provider configured. Run 'goose configure' first")
+            .expect("No provider configured. Run 'mts configure' first")
     };
 
     // Try planner-specific model first, fallback to default model
@@ -1576,7 +1576,7 @@ async fn get_reasoner() -> Result<Arc<dyn Provider>, anyhow::Error> {
         println!("WARNING: MTS_PLANNER_MODEL not found. Using default model...");
         config
             .get_mts_model()
-            .expect("No model configured. Run 'goose configure' first")
+            .expect("No model configured. Run 'mts configure' first")
     };
 
     let model_config =

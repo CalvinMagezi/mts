@@ -47,7 +47,7 @@ pub static PLATFORM_EXTENSIONS: Lazy<HashMap<&'static str, PlatformExtensionDef>
             PlatformExtensionDef {
                 name: todo_extension::EXTENSION_NAME,
                 description:
-                    "Enable a todo list for Goose so it can keep track of what it is doing",
+                    "Enable a todo list for MTS so it can keep track of what it is doing",
                 default_enabled: true,
                 client_factory: |ctx| Box::new(todo_extension::TodoClient::new(ctx).unwrap()),
             },
@@ -81,7 +81,7 @@ pub static PLATFORM_EXTENSIONS: Lazy<HashMap<&'static str, PlatformExtensionDef>
             skills_extension::EXTENSION_NAME,
             PlatformExtensionDef {
                 name: skills_extension::EXTENSION_NAME,
-                description: "Load and use skills from .claude/skills or .goose/skills directories",
+                description: "Load and use skills from .claude/skills or .mts/skills directories",
                 default_enabled: true,
                 client_factory: |ctx| Box::new(skills_extension::SkillsClient::new(ctx).unwrap()),
             },
@@ -265,7 +265,7 @@ pub enum ExtensionConfig {
         #[serde(default)]
         available_tools: Vec<String>,
     },
-    /// Built-in extension that is part of the bundled goose MCP server
+    /// Built-in extension that is part of the bundled mts MCP server
     #[serde(rename = "builtin")]
     Builtin {
         /// The name used to identify this extension

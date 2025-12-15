@@ -67,7 +67,7 @@ use tokio_util::sync::CancellationToken;
 use tracing::{debug, error, info, instrument, warn};
 
 const DEFAULT_MAX_TURNS: u32 = 1000;
-const COMPACTION_THINKING_TEXT: &str = "goose is compacting the conversation...";
+const COMPACTION_THINKING_TEXT: &str = "mts is compacting the conversation...";
 pub const MANUAL_COMPACT_TRIGGERS: &[&str] =
     &["Please compact this conversation", "/compact", "/summarize"];
 
@@ -87,7 +87,7 @@ pub struct ToolCategorizeResult {
     pub filtered_response: Message,
 }
 
-/// The main goose Agent
+/// The main mts Agent
 pub struct Agent {
     pub(super) provider: SharedProvider,
 
@@ -1597,7 +1597,7 @@ impl Agent {
         let config = Config::global();
         let provider_name: String = config
             .get_mts_provider()
-            .expect("No provider configured. Run 'goose configure' first");
+            .expect("No provider configured. Run 'mts configure' first");
 
         let settings = Settings {
             mts_provider: Some(provider_name.clone()),

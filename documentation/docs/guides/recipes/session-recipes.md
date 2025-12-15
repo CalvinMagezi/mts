@@ -1,21 +1,21 @@
 ---
 sidebar_position: 1
 title: Shareable Recipes
-description: "Share a goose session setup (including tools, goals, and instructions) as a reusable recipe that others can launch with a single click"
+description: "Share a mts session setup (including tools, goals, and instructions) as a reusable recipe that others can launch with a single click"
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PanelLeft, Bot, SquarePen, Link, Calendar } from 'lucide-react';
 
-Sometimes you finish a task in goose and realize, "Hey, this setup could be useful again." Maybe you have curated a great combination of tools, defined a clear goal, and want to preserve that flow. Or maybe you're trying to help someone else replicate what you just did without walking them through it step by step. 
+Sometimes you finish a task in mts and realize, "Hey, this setup could be useful again." Maybe you have curated a great combination of tools, defined a clear goal, and want to preserve that flow. Or maybe you're trying to help someone else replicate what you just did without walking them through it step by step. 
 
-You can turn your current goose session into a reusable recipe that includes the tools, goals, and setup you're using right now and package it into a new Agent that others (or future you) can launch with a single click.
+You can turn your current mts session into a reusable recipe that includes the tools, goals, and setup you're using right now and package it into a new Agent that others (or future you) can launch with a single click.
 
 ## Create Recipe
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="mts Desktop" default>
 
   Create a recipe from the current session or from a template.
 
@@ -54,7 +54,7 @@ You can turn your current goose session into a reusable recipe that includes the
 
   </TabItem>
 
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
    Recipe files can be either JSON (.json) or YAML (.yaml) files. While in a [session](/docs/guides/sessions/session-management#start-session), run this command to generate a recipe.yaml file in your current directory:
 
    ```sh
@@ -84,8 +84,8 @@ You can turn your current goose session into a reusable recipe that includes the
    activities:                    # Example prompts to display in the Desktop app
    - $activities
    settings:                      # Additional settings
-     goose_provider: $provider    # Provider to use for this recipe
-     goose_model: $model          # Specific model to use for this recipe
+     mts_provider: $provider    # Provider to use for this recipe
+     mts_model: $model          # Specific model to use for this recipe
      temperature: $temperature    # Model temperature setting for this recipe (0.0 to 1.0)
    retry:                         # Automated retry logic with success validation
      max_retries: $max_retries    # Maximum number of retry attempts
@@ -132,8 +132,8 @@ You can turn your current goose session into a reusable recipe that includes the
    - "Check test coverage against {{ test_coverage }}% requirement"
    - "Verify {{ style_guide }} compliance"
    settings:                     
-     goose_provider: "anthropic"   
-     goose_model: "claude-3-7-sonnet-latest"          
+     mts_provider: "anthropic"   
+     mts_model: "claude-3-7-sonnet-latest"          
      temperature: 0.7 
    parameters:
    - key: project_name
@@ -168,10 +168,10 @@ You can turn your current goose session into a reusable recipe that includes the
 
 
   <TabItem value="generator" label="Recipe Generator">
-    Use the online [Recipe Generator](https://block.github.io/goose/recipe-generator) tool to create a recipe. First choose your preferred format:
+    Use the online [Recipe Generator](https://block.github.io/mts/recipe-generator) tool to create a recipe. First choose your preferred format:
 
-    - **URL Format**: Generates a shareable link that opens a session in goose Desktop
-    - **YAML Format**: Generates YAML content that you can save to file and then run in goose CLI
+    - **URL Format**: Generates a shareable link that opens a session in mts Desktop
+    - **YAML Format**: Generates YAML content that you can save to file and then run in mts CLI
 
     Then fill out the recipe form by providing:
       - A **title** for the recipe
@@ -188,7 +188,7 @@ You can turn your current goose session into a reusable recipe that includes the
 
 ## Edit Recipe
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="mts Desktop" default>
 
    1. Click the <PanelLeft className="inline" size={16} /> button in the top-left to open the sidebar
    2. Click `Recipes`
@@ -212,7 +212,7 @@ You can turn your current goose session into a reusable recipe that includes the
    
   </TabItem>
 
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
   Once the recipe file is created, you can open it with your preferred text editor and modify the value of any field.
 
 </TabItem> 
@@ -221,7 +221,7 @@ You can turn your current goose session into a reusable recipe that includes the
 ## Use Recipe
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="mts Desktop" default>
 
   1. Open the recipe using a direct link or manual URL entry, or from your Recipe library:
 
@@ -232,7 +232,7 @@ You can turn your current goose session into a reusable recipe that includes the
      **Manual URL Entry:**
 
          1. Paste a recipe link into your browser's address bar 
-         2. Press `Enter` and click the `Open Goose.app` prompt
+         2. Press `Enter` and click the `Open MTS.app` prompt
        
      **Recipe Library:**
 
@@ -259,16 +259,16 @@ You can turn your current goose session into a reusable recipe that includes the
   :::
   </TabItem>
 
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
 
-  Using a recipe with the goose CLI might involve the following tasks:
+  Using a recipe with the mts CLI might involve the following tasks:
   - [Configuring your recipe location](#configure-recipe-location)
   - [Running a recipe](#run-a-recipe)
   - [Scheduling a recipe](#schedule-recipe)
 
    #### Configure Recipe Location
 
-  Recipes can be stored locally on your device or in a GitHub repository. Configure your recipe repository using either the `goose configure` command or [config file](/docs/guides/config-files#global-settings).
+  Recipes can be stored locally on your device or in a GitHub repository. Configure your recipe repository using either the `mts configure` command or [config file](/docs/guides/config-files#global-settings).
 
   :::tip Repository Structure
   - Each recipe should be in its own directory
@@ -277,17 +277,17 @@ You can turn your current goose session into a reusable recipe that includes the
   :::
 
    <Tabs>
-     <TabItem value="configure" label="Using goose configure" default>
+     <TabItem value="configure" label="Using mts configure" default>
 
        Run the configure command:
        ```sh
-       goose configure
+       mts configure
        ```
 
        You'll see the following prompts:
 
        ```sh
-       ┌  goose-configure 
+       ┌  mts-configure 
        │
        ◆  What would you like to configure?
        │  ○ Configure Providers 
@@ -295,32 +295,32 @@ You can turn your current goose session into a reusable recipe that includes the
        │  ○ Toggle Extensions 
        │  ○ Remove Extension 
        // highlight-start
-       │  ● goose settings (Set the goose mode, Tool Output, Tool Permissions, Experiment, goose recipe github repo and more)
+       │  ● mts settings (Set the mts mode, Tool Output, Tool Permissions, Experiment, mts recipe github repo and more)
        // highlight-end
        │
        ◇  What would you like to configure?
-       │  goose settings 
+       │  mts settings 
        │
        ◆  What setting would you like to configure?
-       │  ○ goose mode 
+       │  ○ mts mode 
        │  ○ Tool Permission 
        │  ○ Tool Output 
        │  ○ Toggle Experiment 
        // highlight-start
-       │  ● goose recipe github repo (goose will pull recipes from this repo if not found locally.)
+       │  ● mts recipe github repo (mts will pull recipes from this repo if not found locally.)
        // highlight-end
        └  
-       ┌  goose-configure 
+       ┌  mts-configure 
        │
        ◇  What would you like to configure?
-       │  goose settings 
+       │  mts settings 
        │
        ◇  What setting would you like to configure?
-       │  goose recipe github repo 
+       │  mts recipe github repo 
        │
-       ◆  Enter your goose recipe GitHub repo (owner/repo): eg: my_org/goose-recipes
+       ◆  Enter your mts recipe GitHub repo (owner/repo): eg: my_org/mts-recipes
        // highlight-start
-       │  squareup/goose-recipes (default)
+       │  squareup/mts-recipes (default)
        // highlight-end
        └  
        ```
@@ -330,8 +330,8 @@ You can turn your current goose session into a reusable recipe that includes the
      <TabItem value="config" label="Using config file">
 
        Add to your config file:
-       ```yaml title="~/.config/goose/config.yaml"
-       GOOSE_RECIPE_GITHUB_REPO: "owner/repo"
+       ```yaml title="~/.config/mts/config.yaml"
+       MTS_RECIPE_GITHUB_REPO: "owner/repo"
        ```
 
      </TabItem>
@@ -342,20 +342,20 @@ You can turn your current goose session into a reusable recipe that includes the
    <Tabs groupId="interface">
      <TabItem value="local" label="Local Recipe" default>
 
-       **Basic Usage** - Run once and exit (see [run options](/docs/guides/goose-cli-commands#run-options) and [recipe commands](/docs/guides/goose-cli-commands#recipe) for more):
+       **Basic Usage** - Run once and exit (see [run options](/docs/guides/mts-cli-commands#run-options) and [recipe commands](/docs/guides/mts-cli-commands#recipe) for more):
        ```sh
-       # Using recipe file in current directory or [`GOOSE_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) directories
-       goose run --recipe recipe.yaml
+       # Using recipe file in current directory or [`MTS_RECIPE_PATH`](/docs/guides/environment-variables#recipe-configuration) directories
+       mts run --recipe recipe.yaml
 
        # Using full path
-       goose run --recipe ./recipes/my-recipe.yaml
+       mts run --recipe ./recipes/my-recipe.yaml
        ```
 
-       **Preview Recipe** - Use the [`explain`](/docs/guides/goose-cli-commands#run-options) command to view details before running:
+       **Preview Recipe** - Use the [`explain`](/docs/guides/mts-cli-commands#run-options) command to view details before running:
  
        **Interactive Mode** - Start an interactive session:
        ```sh
-       goose run --recipe recipe.yaml --interactive
+       mts run --recipe recipe.yaml --interactive
        ```
        The interactive mode will prompt for required values:
        ```sh
@@ -366,11 +366,11 @@ You can turn your current goose session into a reusable recipe that includes the
        │ PEP8
        ```
 
-       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/goose-cli-commands#run-options) for detailed examples and options.
+       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/mts-cli-commands#run-options) for detailed examples and options.
 
        Basic example:
        ```sh
-       goose run --recipe recipe.yaml --params language=Python
+       mts run --recipe recipe.yaml --params language=Python
        ```
 
      </TabItem>
@@ -379,10 +379,10 @@ You can turn your current goose session into a reusable recipe that includes the
 
        Once you've configured your GitHub repository, you can run recipes by name:
 
-       **Basic Usage** - Run recipes from your configured repo using the recipe name that matches its directory (see [run options](/docs/guides/goose-cli-commands#run-options) and [recipe commands](/docs/guides/goose-cli-commands#recipe) for more):
+       **Basic Usage** - Run recipes from your configured repo using the recipe name that matches its directory (see [run options](/docs/guides/mts-cli-commands#run-options) and [recipe commands](/docs/guides/mts-cli-commands#recipe) for more):
 
        ```sh
-       goose run --recipe recipe-name
+       mts run --recipe recipe-name
        ```
 
        For example, if your repository structure is:
@@ -396,14 +396,14 @@ You can turn your current goose session into a reusable recipe that includes the
        
        You would run the following command to run the code review recipe:
        ```sh
-       goose run --recipe code-review
+       mts run --recipe code-review
        ```
 
-      **Preview Recipe** - Use the [`explain`](/docs/guides/goose-cli-commands#run-options) command to view details before running:
+      **Preview Recipe** - Use the [`explain`](/docs/guides/mts-cli-commands#run-options) command to view details before running:
 
        **Interactive Mode** - With parameter prompts:
        ```sh
-       goose run --recipe code-review --interactive
+       mts run --recipe code-review --interactive
        ```
        The interactive mode will prompt for required values:
        ```sh
@@ -414,7 +414,7 @@ You can turn your current goose session into a reusable recipe that includes the
        │ Python
        ```
 
-       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/goose-cli-commands#run-options) for detailed examples and options.
+       **With Parameters** - Supply parameter values when running recipes. See the [`run` command documentation](/docs/guides/mts-cli-commands#run-options) for detailed examples and options.
 
      </TabItem>
    </Tabs>
@@ -431,10 +431,10 @@ You can turn your current goose session into a reusable recipe that includes the
 ## Validate Recipe
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="mts Desktop" default>
     Recipe validation is only available through the CLI.
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
     Validate your recipe file to ensure it's properly configured. Validation verifies that:
     - All required fields are present
     - Parameters are properly formatted
@@ -442,11 +442,11 @@ You can turn your current goose session into a reusable recipe that includes the
     - The YAML/JSON syntax is correct
 
    ```sh
-   goose recipe validate recipe.yaml
+   mts recipe validate recipe.yaml
    ```
 
    :::info
-   If you want to validate a recipe you just created, you need to [exit the session](/docs/guides/sessions/session-management#exit-session) before running the [`validate` subcommand](/docs/guides/goose-cli-commands#recipe).
+   If you want to validate a recipe you just created, you need to [exit the session](/docs/guides/sessions/session-management#exit-session) before running the [`validate` subcommand](/docs/guides/mts-cli-commands#recipe).
    :::
 
    Recipe validation can be useful for:
@@ -458,7 +458,7 @@ You can turn your current goose session into a reusable recipe that includes the
 </Tabs>
 
 ## Share Recipe
-Share your recipe with goose users using a recipe link or recipe file.
+Share your recipe with mts users using a recipe link or recipe file.
 
 :::info Privacy & Isolation
 Each recipient gets their own private session when using your shared recipe. No data is shared between users, and your original session and recipe remain unaffected.
@@ -468,37 +468,37 @@ Each recipient gets their own private session when using your shared recipe. No 
 You can share a recipe with Desktop users via a recipe link.
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="mts Desktop" default>
     Copy the deeplink from your Recipe Library to share with others:
     1. Click the <PanelLeft className="inline" size={16} /> button in the top-left to open the sidebar
     2. Click `Recipes` in the sidebar
     3. Find the recipe you want to share and click the <Link className="inline" size={16} /> button to copy the link
 
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="mts CLI">
     Generate a deeplink from your recipe file to share with others:
     ```sh
-    goose recipe deeplink <FILE>
+    mts recipe deeplink <FILE>
     ```
   </TabItem>
 </Tabs>
 
-When someone clicks the link, it will open goose Desktop with your recipe configuration. They can also use your recipe link to [import a recipe](/docs/guides/recipes/storing-recipes#importing-recipes) for future use.
+When someone clicks the link, it will open mts Desktop with your recipe configuration. They can also use your recipe link to [import a recipe](/docs/guides/recipes/storing-recipes#importing-recipes) for future use.
 
 ### Share via Recipe File
 You can share a recipe with Desktop or CLI users by sending the recipe file directly.
 
 - Desktop users can [import the recipe](/docs/guides/recipes/storing-recipes#importing-recipes) (YAML only).
-- CLI users can run a YAML or JSON recipe using `goose run --recipe <FILE>` or open it directly in goose desktop with `goose recipe open <FILE>`. See the [CLI Commands guide](/docs/guides/goose-cli-commands#recipe) for details.
+- CLI users can run a YAML or JSON recipe using `mts run --recipe <FILE>` or open it directly in mts desktop with `mts recipe open <FILE>`. See the [CLI Commands guide](/docs/guides/mts-cli-commands#recipe) for details.
 
 ## Schedule Recipe
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-Automate goose recipes by running them on a schedule. When creating a schedule, you'll configure:
+  <TabItem value="ui" label="mts Desktop" default>
+Automate mts recipes by running them on a schedule. When creating a schedule, you'll configure:
 - **Name**: A descriptive name for the schedule
 - **Source**: The recipe to run
-- **Execution mode**: Whether the recipe runs in the background (no window, results saved) or foreground (opens window if goose Desktop is running, otherwise runs in background)
-- **Frequency and time**: When to run the recipe (e.g. every 20 minutes, weekly at 10 AM on Friday). Your selection is converted into a [cron expression](https://en.wikipedia.org/wiki/Cron#Cron_expression) used by goose.
+- **Execution mode**: Whether the recipe runs in the background (no window, results saved) or foreground (opens window if mts Desktop is running, otherwise runs in background)
+- **Frequency and time**: When to run the recipe (e.g. every 20 minutes, weekly at 10 AM on Friday). Your selection is converted into a [cron expression](https://en.wikipedia.org/wiki/Cron#Cron_expression) used by mts.
 
 **Schedule from Recipe Library:**
 
@@ -528,16 +528,16 @@ Click on a schedule to view details, see when it was last run, and perform actio
 At the bottom of the `Schedule Details` page you can view the list of sessions created by the scheduled recipe and open or restore each session.
 
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
-  Automate goose recipes by scheduling them to run with a [cron expression](https://en.wikipedia.org/wiki/Cron#Cron_expression).
+  <TabItem value="cli" label="mts CLI">
+  Automate mts recipes by scheduling them to run with a [cron expression](https://en.wikipedia.org/wiki/Cron#Cron_expression).
 
   ```bash
   # Add a new scheduled recipe which runs every day at 9 AM
-  goose schedule add --schedule-id daily-report --cron "0 0 9 * * *" --recipe-source ./recipes/daily-report.yaml
+  mts schedule add --schedule-id daily-report --cron "0 0 9 * * *" --recipe-source ./recipes/daily-report.yaml
   ```
   You can use either a 5, 6, or 7-digit cron expression for full scheduling precision, following the format "seconds minutes hours day-of-month month day-of-week year".
 
-  See the [`schedule` command documentation](/docs/guides/goose-cli-commands.md#schedule) for detailed examples and options.
+  See the [`schedule` command documentation](/docs/guides/mts-cli-commands.md#schedule) for detailed examples and options.
 </TabItem>
 </Tabs>
 
@@ -636,22 +636,22 @@ response:
 
 **How it works:**
 1. Recipe runs normally with provided instructions
-2. goose calls a `final_output` tool with JSON matching your schema
+2. mts calls a `final_output` tool with JSON matching your schema
 3. Output is validated against the JSON schema
-4. If validation fails, goose receives error details and must correct the output
+4. If validation fails, mts receives error details and must correct the output
 5. Final validated JSON appears as the last line of output for easy extraction
 
 **Example automation usage:**
 ```bash
 # Run recipe and extract JSON output
-goose run --recipe analysis.yaml --params project_path=./src > output.log
+mts run --recipe analysis.yaml --params project_path=./src > output.log
 RESULT=$(tail -n 1 output.log)
 echo "Analysis Status: $(echo $RESULT | jq -r '.build_status')"
 echo "Issues Found: $(echo $RESULT | jq -r '.tests_failed')"
 ```
 
 :::info
-Structured output is supported in recipes run in both the goose CLI and goose Desktop. However, creating and editing the `json_schema` configuration must be done manually in the recipe file.
+Structured output is supported in recipes run in both the mts CLI and mts Desktop. However, creating and editing the `json_schema` configuration must be done manually in the recipe file.
 :::
 
 ## What's Included
@@ -667,14 +667,14 @@ A recipe captures:
 - Retry logic and success validation configuration (if configured)
 
 
-To protect your privacy and system integrity, goose excludes:
+To protect your privacy and system integrity, mts excludes:
 
 - Global and local memory  
 - API keys and personal credentials  
-- System-level goose settings  
+- System-level mts settings  
 
 
 This means others may need to supply their own credentials or memory context if the recipe depends on those elements.
 
 ## Learn More
-Check out the [Recipes](/docs/guides/recipes) guide for more docs, tools, and resources to help you master goose recipes.
+Check out the [Recipes](/docs/guides/recipes) guide for more docs, tools, and resources to help you master mts recipes.

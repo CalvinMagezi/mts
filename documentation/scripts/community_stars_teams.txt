@@ -1,12 +1,12 @@
 # Community Stars Team Lists
-# This file categorizes contributors for the block/goose Community Stars program
+# This file categorizes contributors for the block/mts Community Stars program
 # Format: One username per line under each category header
 #
 # Note: External contributors (eligible for Community All-Stars) are automatically
 # detected - they don't need to be listed here. Anyone not in the lists below
 # defaults to "external" unless they have public Block org membership.
 
-# Goose Maintainers (excluded from rankings)
+# MTS Maintainers (excluded from rankings)
 angiejones
 zanesq
 michaelneale
@@ -38,7 +38,7 @@ aharvard
 dhanji
 baxen
 
-# Block, non-goose (eligible for Team Stars)
+# Block, non-mts (eligible for Team Stars)
 wendytang
 kalvinnchau
 lifeizhou-ap
@@ -65,7 +65,7 @@ simonsickle
 taylorkmho
 chaitanyarahalkar
 
-# External, goose (excluded from rankings)
+# External, mts (excluded from rankings)
 The-Best-Codes
 Abhijay007
 

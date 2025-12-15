@@ -1,6 +1,6 @@
 use tokio::task_local;
 
-pub const SESSION_ID_HEADER: &str = "goose-session-id";
+pub const SESSION_ID_HEADER: &str = "mts-session-id";
 
 task_local! {
     pub static SESSION_ID: Option<String>;

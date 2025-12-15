@@ -1,6 +1,6 @@
 import type { MCPServer } from "../types/server";
 
-const SERVERS_URL = "/goose/servers.json";
+const SERVERS_URL = "/mts/servers.json";
 
 export async function fetchMCPServers(): Promise<MCPServer[]> {
   try {

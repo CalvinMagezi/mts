@@ -1,13 +1,13 @@
 ---
 title: "LLM Tag Team: Who Plans, Who Executes?"
-description: Dive into Goose's Lead/Worker model where one LLM plans while another executes - a game-changing approach to AI collaboration that can save costs and boost efficiency.
+description: Dive into MTS's Lead/Worker model where one LLM plans while another executes - a game-changing approach to AI collaboration that can save costs and boost efficiency.
 authors: 
     - ebony
 ---
 
 ![blog cover](header-image.png)
 
-Ever wondered what happens when you let two AI models work together like a tag team? That’s exactly what we tested in our latest livestream—putting Goose’s Lead/Worker model to work on a real project. Spoiler: it’s actually pretty great.
+Ever wondered what happens when you let two AI models work together like a tag team? That’s exactly what we tested in our latest livestream—putting MTS’s Lead/Worker model to work on a real project. Spoiler: it’s actually pretty great.
 
 The Lead/Worker model is one of those features that sounds simple on paper but delivers some amazing benefits in practice. Think of it like having a project manager and a developer working in perfect harmony - one does the strategic thinking, the other gets their hands dirty with the actual implementation.
 
@@ -39,7 +39,7 @@ Perfect for those marathon coding sessions where you need sustained performance 
 
 ## [Setting It Up](/docs/tutorials/lead-worker#configuration)
 
-Getting started with the Lead/Worker model is surprisingly straightforward. In the Goose desktop app, you just need to:
+Getting started with the Lead/Worker model is surprisingly straightforward. In the MTS desktop app, you just need to:
 
 1. **Enable the feature** - Look for the enable button in your settings
 2. **Choose your lead model** - Pick something powerful for planning (like GPT-4)
@@ -75,8 +75,8 @@ The lead model acts as your strategic partner, while the worker model becomes yo
 
 ## Pro Tips from Our Session
 
-### Start with Good Goose Hints
-We always recommend setting up your [goosehints](/docs/guides/using-goosehints) to give context about your project. It saves you from re-explaining the same things over and over.
+### Start with Good MTS Hints
+We always recommend setting up your [mtshints](/docs/guides/using-mtshints) to give context about your project. It saves you from re-explaining the same things over and over.
 
 ### Don't Micromanage
 Let the lead model do its planning thing. Sometimes the best results come from giving high-level direction and letting the system figure out the details.
@@ -99,24 +99,24 @@ The best part? The models made smart decisions we hadn't even thought of, like a
 
 ## Ready to Try It Yourself?
 
-The [Lead/Worker model](/docs/tutorials/lead-worker) is available now in Goose. Whether you're working on documentation, building features, or tackling complex refactoring, having two specialized models working together can be a game changer.
+The [Lead/Worker model](/docs/tutorials/lead-worker) is available now in MTS. Whether you're working on documentation, building features, or tackling complex refactoring, having two specialized models working together can be a game changer.
 
 Want to see it in action? Check out the full stream where we built this feature live:
 
 <iframe class="aspect-ratio" width="560" height="315" src="https://www.youtube.com/embed/IbBDBv9Chvg" title="LLM Tag Team: Who Plans, Who Executes?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-Got questions or want to share your own Lead/Worker success stories? Join us in our [Discord community](https://discord.gg/goose-oss) - we'd love to hear what you're building!
+Got questions or want to share your own Lead/Worker success stories? Join us in our [Discord community](https://discord.gg/mts-oss) - we'd love to hear what you're building!
 
 
 <head>
   <meta property="og:title" content="LLM Tag Team: Who Plans, Who Executes?" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://block.github.io/goose/blog/2025/08/11/llm-tag-team-lead-worker-model" />
-  <meta property="og:description" content="Dive into Goose's Lead/Worker model where one LLM plans while another executes - a game-changing approach to AI collaboration that can save costs and boost efficiency." />
-  <meta property="og:image" content="https://block.github.io/goose/assets/images/header-image-bed3ed59a52ea231c1da0707b9b6d287.png" />
+  <meta property="og:url" content="https://block.github.io/mts/blog/2025/08/11/llm-tag-team-lead-worker-model" />
+  <meta property="og:description" content="Dive into MTS's Lead/Worker model where one LLM plans while another executes - a game-changing approach to AI collaboration that can save costs and boost efficiency." />
+  <meta property="og:image" content="https://block.github.io/mts/assets/images/header-image-bed3ed59a52ea231c1da0707b9b6d287.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="block.github.io/goose" />
+  <meta property="twitter:domain" content="block.github.io/mts" />
   <meta name="twitter:title" content="LLM Tag Team: Who Plans, Who Executes?" />
-  <meta name="twitter:description" content="Dive into Goose's Lead/Worker model where one LLM plans while another executes - a game-changing approach to AI collaboration that can save costs and boost efficiency." />
-  <meta name="twitter:image" content="https://block.github.io/goose/assets/images/header-image-bed3ed59a52ea231c1da0707b9b6d287.png" />
+  <meta name="twitter:description" content="Dive into MTS's Lead/Worker model where one LLM plans while another executes - a game-changing approach to AI collaboration that can save costs and boost efficiency." />
+  <meta name="twitter:image" content="https://block.github.io/mts/assets/images/header-image-bed3ed59a52ea231c1da0707b9b6d287.png" />
 </head>

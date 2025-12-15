@@ -15,7 +15,7 @@ The Ollama tool shim is an experimental feature that enables tool calling capabi
    ```bash
    ollama pull mistral-nemo
    ```
-3. If you want to use a different model, make sure to pull it first from the Ollama server. Then override the default interpreter model using the `GOOSE_TOOLSHIM_OLLAMA_MODEL` environment variable. For example, to use the `llama3.2` model, run:
+3. If you want to use a different model, make sure to pull it first from the Ollama server. Then override the default interpreter model using the `MTS_TOOLSHIM_OLLAMA_MODEL` environment variable. For example, to use the `llama3.2` model, run:
 
    ```bash
    ollama pull llama3.2
@@ -23,7 +23,7 @@ The Ollama tool shim is an experimental feature that enables tool calling capabi
    Then,
 
    ```bash
-   GOOSE_TOOLSHIM_OLLAMA_MODEL=llama3.2 
+   MTS_TOOLSHIM_OLLAMA_MODEL=llama3.2 
    ```
 
 4. For optimal performance, run the Ollama server with an increased context length:
@@ -31,14 +31,14 @@ The Ollama tool shim is an experimental feature that enables tool calling capabi
    OLLAMA_CONTEXT_LENGTH=32768 ollama serve
    ```
 
-5. Enable the tool shim by setting the `GOOSE_TOOLSHIM` environment variable:
+5. Enable the tool shim by setting the `MTS_TOOLSHIM` environment variable:
 
    ```bash
-   GOOSE_TOOLSHIM=1 
+   MTS_TOOLSHIM=1 
    ```
 
-Start a new goose session with your tool shim preferences:
+Start a new mts session with your tool shim preferences:
 
   ```bash
-  GOOSE_TOOLSHIM=1 GOOSE_TOOLSHIM_OLLAMA_MODEL=llama3.2 cargo run --bin goose session
+  MTS_TOOLSHIM=1 MTS_TOOLSHIM_OLLAMA_MODEL=llama3.2 cargo run --bin mts session
   ```

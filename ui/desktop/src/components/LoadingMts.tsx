@@ -48,4 +48,4 @@ const LoadingMts = ({ message, chatState = ChatState.Idle }: LoadingMtsProps) =>
 export default LoadingMts;
 
 // Backward compatibility alias
-export const LoadingGoose = LoadingMts;
+export const LoadingMTS = LoadingMts;

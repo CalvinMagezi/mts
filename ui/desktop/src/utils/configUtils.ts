@@ -1,5 +1,5 @@
 export const configLabels: Record<string, string> = {
-  // goose settings
+  // mts settings
   MTS_PROVIDER: 'Provider',
   MTS_MODEL: 'Model',
   MTS_TEMPERATURE: 'Temperature',

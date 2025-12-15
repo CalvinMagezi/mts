@@ -56,8 +56,8 @@ impl OpenRouterProvider {
 
         let auth = AuthMethod::BearerToken(api_key);
         let api_client = ApiClient::new(host, auth)?
-            .with_header("HTTP-Referer", "https://block.github.io/goose")?
-            .with_header("X-Title", "goose")?;
+            .with_header("HTTP-Referer", "https://block.github.io/mts")?
+            .with_header("X-Title", "mts")?;
 
         Ok(Self {
             api_client,

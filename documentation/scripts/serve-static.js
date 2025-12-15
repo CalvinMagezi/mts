@@ -23,29 +23,29 @@ const serve = serveStatic(buildDir, {
 });
 
 const server = http.createServer((req, res) => {
-  // Handle requests to /goose/ by serving from the build directory
-  if (req.url.startsWith('/goose/')) {
-    // Strip /goose/ prefix and serve the file
-    req.url = req.url.substring(6); // Remove '/goose'
+  // Handle requests to /mts/ by serving from the build directory
+  if (req.url.startsWith('/mts/')) {
+    // Strip /mts/ prefix and serve the file
+    req.url = req.url.substring(6); // Remove '/mts'
     serve(req, res, () => {
       res.statusCode = 404;
       res.end('Not found');
     });
   } else if (req.url === '/') {
-    // Redirect root to /goose/
-    res.writeHead(302, { Location: '/goose/' });
+    // Redirect root to /mts/
+    res.writeHead(302, { Location: '/mts/' });
     res.end();
   } else {
     // For any other path, return 404
     res.statusCode = 404;
-    res.end('Not found - try /goose/');
+    res.end('Not found - try /mts/');
   }
 });
 
 server.listen(port, () => {
   console.log(`\n🚀 Static file server running at http://localhost:${port}`);
-  console.log(`\n🏠 Homepage: http://localhost:${port}/goose/`);
+  console.log(`\n🏠 Homepage: http://localhost:${port}/mts/`);
   console.log(`\n📝 Test markdown exports:`);
-  console.log(`   http://localhost:${port}/goose/docs/quickstart.md`);
-  console.log(`   http://localhost:${port}/goose/docs/getting-started/installation.md\n`);
+  console.log(`   http://localhost:${port}/mts/docs/quickstart.md`);
+  console.log(`   http://localhost:${port}/mts/docs/getting-started/installation.md\n`);
 });

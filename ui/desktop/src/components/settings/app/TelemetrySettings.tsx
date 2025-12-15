@@ -64,7 +64,7 @@ export default function TelemetrySettings({ isWelcome = false }: TelemetrySettin
   const title = 'Privacy';
   const description = 'Control how your data is used';
   const toggleLabel = 'Anonymous usage data';
-  const toggleDescription = 'Help improve goose by sharing anonymous usage statistics.';
+  const toggleDescription = 'Help improve mts by sharing anonymous usage statistics.';
 
   const learnMoreLink = (
     <button

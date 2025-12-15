@@ -89,7 +89,7 @@ impl SkillsClient {
 
         if let Ok(working_dir) = std::env::current_dir() {
             dirs.push(working_dir.join(".claude/skills"));
-            dirs.push(working_dir.join(".goose/skills"));
+            dirs.push(working_dir.join(".mts/skills"));
         }
 
         dirs
@@ -793,18 +793,18 @@ Global claude content
         )
         .unwrap();
 
-        // Simulate ~/.config/goose/skills (global, medium priority)
-        let global_goose = temp_dir.path().join("global-goose");
-        fs::create_dir(&global_goose).unwrap();
-        let skill_global_goose = global_goose.join("my-skill");
-        fs::create_dir(&skill_global_goose).unwrap();
+        // Simulate ~/.config/mts/skills (global, medium priority)
+        let global_mts = temp_dir.path().join("global-mts");
+        fs::create_dir(&global_mts).unwrap();
+        let skill_global_mts = global_mts.join("my-skill");
+        fs::create_dir(&skill_global_mts).unwrap();
         fs::write(
-            skill_global_goose.join("SKILL.md"),
+            skill_global_mts.join("SKILL.md"),
             r#"---
 name: my-skill
-description: From global goose config
+description: From global mts config
 ---
-Global goose config content
+Global mts config content
 "#,
         )
         .unwrap();
@@ -825,41 +825,41 @@ Working dir claude content
         )
         .unwrap();
 
-        // Simulate $PWD/.goose/skills (working dir, highest priority)
-        let working_goose = temp_dir.path().join("working-goose");
-        fs::create_dir(&working_goose).unwrap();
-        let skill_working_goose = working_goose.join("my-skill");
-        fs::create_dir(&skill_working_goose).unwrap();
+        // Simulate $PWD/.mts/skills (working dir, highest priority)
+        let working_mts = temp_dir.path().join("working-mts");
+        fs::create_dir(&working_mts).unwrap();
+        let skill_working_mts = working_mts.join("my-skill");
+        fs::create_dir(&skill_working_mts).unwrap();
         fs::write(
-            skill_working_goose.join("SKILL.md"),
+            skill_working_mts.join("SKILL.md"),
             r#"---
 name: my-skill
-description: From working dir goose
+description: From working dir mts
 ---
-Working dir goose content
+Working dir mts content
 "#,
         )
         .unwrap();
 
-        // Test priority order: global_claude < global_goose < working_claude < working_goose
+        // Test priority order: global_claude < global_mts < working_claude < working_mts
         let skills = SkillsClient::discover_skills_in_directories(&[
             global_claude,
-            global_goose,
+            global_mts,
             working_claude,
-            working_goose,
+            working_mts,
         ]);
 
         assert_eq!(skills.len(), 1);
         assert!(skills.contains_key("my-skill"));
-        // The last directory (working_goose) should win
+        // The last directory (working_mts) should win
         assert_eq!(
             skills.get("my-skill").unwrap().metadata.description,
-            "From working dir goose"
+            "From working dir mts"
         );
         assert!(skills
             .get("my-skill")
             .unwrap()
             .body
-            .contains("Working dir goose content"));
+            .contains("Working dir mts content"));
     }
 }

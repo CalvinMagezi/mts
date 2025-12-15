@@ -2995,63 +2995,63 @@
     },
     {
       "provider": "databricks",
-      "model": "goose"
+      "model": "mts"
     },
     {
       "provider": "databricks",
-      "model": "goose-claude-3-5-sonnet"
+      "model": "mts-claude-3-5-sonnet"
     },
     {
       "provider": "databricks",
-      "model": "goose-claude-3-7-sonnet"
+      "model": "mts-claude-3-7-sonnet"
     },
     {
       "provider": "databricks",
-      "model": "goose-claude-4-5-sonnet"
+      "model": "mts-claude-4-5-sonnet"
     },
     {
       "provider": "databricks",
-      "model": "goose-claude-4-opus"
+      "model": "mts-claude-4-opus"
     },
     {
       "provider": "databricks",
-      "model": "goose-claude-4-sonnet"
+      "model": "mts-claude-4-sonnet"
     },
     {
       "provider": "databricks",
-      "model": "goose-claude-4-sonnet-bedrock"
+      "model": "mts-claude-4-sonnet-bedrock"
     },
     {
       "provider": "databricks",
-      "model": "goose-gemini-2-5-pro"
+      "model": "mts-gemini-2-5-pro"
     },
     {
       "provider": "databricks",
-      "model": "goose-gpt-4-1"
+      "model": "mts-gpt-4-1"
     },
     {
       "provider": "databricks",
-      "model": "goose-gpt-4o"
+      "model": "mts-gpt-4o"
     },
     {
       "provider": "databricks",
-      "model": "goose-gpt-5"
+      "model": "mts-gpt-5"
     },
     {
       "provider": "databricks",
-      "model": "goose-gpt-oss"
+      "model": "mts-gpt-oss"
     },
     {
       "provider": "databricks",
-      "model": "goose-o1"
+      "model": "mts-o1"
     },
     {
       "provider": "databricks",
-      "model": "goose-o3"
+      "model": "mts-o3"
     },
     {
       "provider": "databricks",
-      "model": "goose-o4-mini"
+      "model": "mts-o4-mini"
     },
     {
       "provider": "databricks",
@@ -3143,15 +3143,15 @@
     },
     {
       "provider": "databricks",
-      "model": "headless-goose"
+      "model": "headless-mts"
     },
     {
       "provider": "databricks",
-      "model": "headless-goose-claude-4-sonnet"
+      "model": "headless-mts-claude-4-sonnet"
     },
     {
       "provider": "databricks",
-      "model": "headless-goose-o3-mini"
+      "model": "headless-mts-o3-mini"
     },
     {
       "provider": "databricks",
@@ -3167,63 +3167,63 @@
     },
     {
       "provider": "databricks",
-      "model": "kgoose-cashapp-claude-4-sonnet"
+      "model": "kmts-cashapp-claude-4-sonnet"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-cashapp-claude-sonnet-4-5"
+      "model": "kmts-cashapp-claude-sonnet-4-5"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-claude-4-sonnet"
+      "model": "kmts-claude-4-sonnet"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-claude-haiku-4-5"
+      "model": "kmts-claude-haiku-4-5"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-claude-sonnet-4-5"
+      "model": "kmts-claude-sonnet-4-5"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gemini-2-5-flash"
+      "model": "kmts-gemini-2-5-flash"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gpt-4-1"
+      "model": "kmts-gpt-4-1"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gpt-4-1-mini"
+      "model": "kmts-gpt-4-1-mini"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gpt-4-1-nano"
+      "model": "kmts-gpt-4-1-nano"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gpt-4o"
+      "model": "kmts-gpt-4o"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gpt-5"
+      "model": "kmts-gpt-5"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gpt-5-mini"
+      "model": "kmts-gpt-5-mini"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-gpt-5-nano"
+      "model": "kmts-gpt-5-nano"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-o3"
+      "model": "kmts-o3"
     },
     {
       "provider": "databricks",
-      "model": "kgoose-o4-mini"
+      "model": "kmts-o4-mini"
     },
     {
       "provider": "databricks",

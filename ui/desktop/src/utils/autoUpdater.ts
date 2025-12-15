@@ -219,7 +219,7 @@ export function registerUpdateIpcHandlers() {
           type: 'info',
           title: 'Update Ready to Install',
           message: `Version ${githubUpdateInfo.latestVersion} is ready to install.`,
-          detail: `The update has been downloaded and extracted. To complete the installation:\n\n1. Click "Open Folder" to view the new Goose.app\n2. Quit Goose (this app will close)\n3. Drag the new Goose.app to your Applications folder\n4. Replace the existing app when prompted\n\nThe update will be available the next time you launch Goose.`,
+          detail: `The update has been downloaded and extracted. To complete the installation:\n\n1. Click "Open Folder" to view the new MTS.app\n2. Quit MTS (this app will close)\n3. Drag the new MTS.app to your Applications folder\n4. Replace the existing app when prompted\n\nThe update will be available the next time you launch MTS.`,
           buttons: ['Open Folder & Quit', 'Open Folder Only', 'Cancel'],
           defaultId: 0,
           cancelId: 2,
@@ -276,7 +276,7 @@ export function setupAutoUpdater(tray?: Tray) {
   const feedConfig = {
     provider: 'github' as const,
     owner: 'block',
-    repo: 'goose',
+    repo: 'mts',
     releaseType: 'release' as const,
   };
 
@@ -492,7 +492,7 @@ export function setupAutoUpdater(tray?: Tray) {
     // Show native notification
     const notification = new Notification({
       title: 'Update Ready',
-      body: `Version ${info.version} will be installed when you quit Goose. Click to install now.`,
+      body: `Version ${info.version} will be installed when you quit MTS. Click to install now.`,
     });
     notification.show();
 
@@ -572,7 +572,7 @@ function updateTrayIcon(hasUpdate: boolean) {
     } else {
       iconPath = path.join(process.resourcesPath, 'images', 'iconTemplateUpdate.png');
     }
-    trayRef.setToolTip('Goose - Update Available');
+    trayRef.setToolTip('MTS - Update Available');
   } else {
     // Use normal icon
     if (isDev) {
@@ -580,7 +580,7 @@ function updateTrayIcon(hasUpdate: boolean) {
     } else {
       iconPath = path.join(process.resourcesPath, 'images', 'iconTemplate.png');
     }
-    trayRef.setToolTip('Goose');
+    trayRef.setToolTip('MTS');
   }
 
   const icon = nativeImage.createFromPath(iconPath);

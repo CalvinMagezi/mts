@@ -36,25 +36,25 @@ impl Shell {
 
 static BASH_CONFIG: ShellConfig = ShellConfig {
     script_template: r#"export MTS_SESSION_ID="{session_id}"
-alias @goose='{goose_bin} term run'
-alias @g='{goose_bin} term run'
+alias @mts='{mts_bin} term run'
+alias @g='{mts_bin} term run'
 
-goose_preexec() {{
-    [[ "$1" =~ ^goose\ term ]] && return
-    [[ "$1" =~ ^(@goose|@g)($|[[:space:]]) ]] && return
-    ('{goose_bin}' term log "$1" &) 2>/dev/null
+mts_preexec() {{
+    [[ "$1" =~ ^mts\ term ]] && return
+    [[ "$1" =~ ^(@mts|@g)($|[[:space:]]) ]] && return
+    ('{mts_bin}' term log "$1" &) 2>/dev/null
 }}
 
-if [[ -z "$goose_preexec_installed" ]]; then
-    goose_preexec_installed=1
-    trap 'goose_preexec "$BASH_COMMAND"' DEBUG
+if [[ -z "$mts_preexec_installed" ]]; then
+    mts_preexec_installed=1
+    trap 'mts_preexec "$BASH_COMMAND"' DEBUG
 fi{command_not_found_handler}"#,
     command_not_found: Some(
         r#"
 
 command_not_found_handle() {{
-    echo "🪿 Command '$1' not found. Asking goose..."
-    '{goose_bin}' term run "$@"
+    echo "🪿 Command '$1' not found. Asking mts..."
+    '{mts_bin}' term run "$@"
     return 0
 }}"#,
     ),
@@ -62,23 +62,23 @@ command_not_found_handle() {{
 
 static ZSH_CONFIG: ShellConfig = ShellConfig {
     script_template: r#"export MTS_SESSION_ID="{session_id}"
-alias @goose='{goose_bin} term run'
-alias @g='{goose_bin} term run'
+alias @mts='{mts_bin} term run'
+alias @g='{mts_bin} term run'
 
-goose_preexec() {{
-    [[ "$1" =~ ^goose\ term ]] && return
-    [[ "$1" =~ ^(@goose|@g)($|[[:space:]]) ]] && return
-    ('{goose_bin}' term log "$1" &) 2>/dev/null
+mts_preexec() {{
+    [[ "$1" =~ ^mts\ term ]] && return
+    [[ "$1" =~ ^(@mts|@g)($|[[:space:]]) ]] && return
+    ('{mts_bin}' term log "$1" &) 2>/dev/null
 }}
 
 autoload -Uz add-zsh-hook
-add-zsh-hook preexec goose_preexec{command_not_found_handler}"#,
+add-zsh-hook preexec mts_preexec{command_not_found_handler}"#,
     command_not_found: Some(
         r#"
 
 command_not_found_handler() {{
-    echo "🪿 Command '$1' not found. Asking goose..."
-    '{goose_bin}' term run "$@"
+    echo "🪿 Command '$1' not found. Asking mts..."
+    '{mts_bin}' term run "$@"
     return 0
 }}"#,
     ),
@@ -86,27 +86,27 @@ command_not_found_handler() {{
 
 static FISH_CONFIG: ShellConfig = ShellConfig {
     script_template: r#"set -gx MTS_SESSION_ID "{session_id}"
-function @goose; {goose_bin} term run $argv; end
-function @g; {goose_bin} term run $argv; end
+function @mts; {mts_bin} term run $argv; end
+function @g; {mts_bin} term run $argv; end
 
-function goose_preexec --on-event fish_preexec
-    string match -q -r '^goose term' -- $argv[1]; and return
-    string match -q -r '^(@goose|@g)($|\s)' -- $argv[1]; and return
-    {goose_bin} term log "$argv[1]" 2>/dev/null &
+function mts_preexec --on-event fish_preexec
+    string match -q -r '^mts term' -- $argv[1]; and return
+    string match -q -r '^(@mts|@g)($|\s)' -- $argv[1]; and return
+    {mts_bin} term log "$argv[1]" 2>/dev/null &
 end"#,
     command_not_found: None,
 };
 
 static POWERSHELL_CONFIG: ShellConfig = ShellConfig {
     script_template: r#"$env:MTS_SESSION_ID = "{session_id}"
-function @goose {{ & '{goose_bin}' term run @args }}
-function @g {{ & '{goose_bin}' term run @args }}
+function @mts {{ & '{mts_bin}' term run @args }}
+function @g {{ & '{mts_bin}' term run @args }}
 
 Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {{
     $line = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$null)
-    if ($line -notmatch '^goose term' -and $line -notmatch '^(@goose|@g)($|\s)') {{
-        Start-Job -ScriptBlock {{ & '{goose_bin}' term log $using:line }} | Out-Null
+    if ($line -notmatch '^mts term' -and $line -notmatch '^(@mts|@g)($|\s)') {{
+        Start-Job -ScriptBlock {{ & '{mts_bin}' term log $using:line }} | Out-Null
     }}
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
 }}"#,
@@ -133,7 +133,7 @@ pub async fn handle_term_init(
         None => {
             let session = SessionManager::create_session(
                 working_dir,
-                "Goose Term Session".to_string(),
+                "MTS Term Session".to_string(),
                 SessionType::Terminal,
             )
             .await?;
@@ -149,14 +149,14 @@ pub async fn handle_term_init(
         }
     };
 
-    let goose_bin = std::env::current_exe()
+    let mts_bin = std::env::current_exe()
         .map(|p| p.to_string_lossy().into_owned())
-        .unwrap_or_else(|_| "goose".to_string());
+        .unwrap_or_else(|_| "mts".to_string());
 
     let command_not_found_handler = if with_command_not_found {
         config
             .command_not_found
-            .map(|s| s.replace("{goose_bin}", &goose_bin))
+            .map(|s| s.replace("{mts_bin}", &mts_bin))
             .unwrap_or_default()
     } else {
         String::new()
@@ -165,7 +165,7 @@ pub async fn handle_term_init(
     let script = config
         .script_template
         .replace("{session_id}", &session.id)
-        .replace("{goose_bin}", &goose_bin)
+        .replace("{mts_bin}", &mts_bin)
         .replace("{command_not_found_handler}", &command_not_found_handler);
 
     println!("{}", script);
@@ -174,7 +174,7 @@ pub async fn handle_term_init(
 
 pub async fn handle_term_log(command: String) -> Result<()> {
     let session_id = std::env::var("MTS_SESSION_ID").map_err(|_| {
-        anyhow!("MTS_SESSION_ID not set. Run 'eval \"$(goose term init <shell>)\"' first.")
+        anyhow!("MTS_SESSION_ID not set. Run 'eval \"$(mts term init <shell>)\"' first.")
     })?;
 
     let message = Message::new(
@@ -195,7 +195,7 @@ pub async fn handle_term_run(prompt: Vec<String>) -> Result<()> {
         anyhow!(
             "MTS_SESSION_ID not set.\n\n\
              Add to your shell config (~/.zshrc or ~/.bashrc):\n    \
-             eval \"$(goose term init zsh)\"\n\n\
+             eval \"$(mts term init zsh)\"\n\n\
              Then restart your terminal or run: source ~/.zshrc"
         )
     })?;
@@ -253,7 +253,7 @@ pub async fn handle_term_run(prompt: Vec<String>) -> Result<()> {
     Ok(())
 }
 
-/// Handle `goose term info` - print compact session info for prompt integration
+/// Handle `mts term info` - print compact session info for prompt integration
 pub async fn handle_term_info() -> Result<()> {
     let session_id = match std::env::var("MTS_SESSION_ID") {
         Ok(id) => id,
@@ -269,7 +269,7 @@ pub async fn handle_term_info() -> Result<()> {
         .ok()
         .map(|name| {
             let short = name.rsplit('/').next().unwrap_or(&name);
-            if let Some(stripped) = short.strip_prefix("goose-") {
+            if let Some(stripped) = short.strip_prefix("mts-") {
                 stripped.to_string()
             } else {
                 short.to_string()

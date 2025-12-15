@@ -2,10 +2,10 @@
 
 ## Brand Guidelines
 
-**IMPORTANT**: The product name "goose" should ALWAYS be written in lowercase "g" in all documentation, blog posts, and any content within this documentation directory.
+**IMPORTANT**: The product name "mts" should ALWAYS be written in lowercase "g" in all documentation, blog posts, and any content within this documentation directory.
 
-- ✅ Correct: "goose", "using goose", "goose provides"
-- ❌ Incorrect: "Goose", "using Goose", "Goose provides"
+- ✅ Correct: "mts", "using mts", "mts provides"
+- ❌ Incorrect: "MTS", "using MTS", "MTS provides"
 
 This is a brand guideline that must be strictly followed.
 
@@ -18,4 +18,4 @@ This rule applies to:
 - Configuration files with user-facing text
 - Any other documentation content
 
-When editing or creating content in this documentation directory, always ensure "goose" uses a lowercase "g".
+When editing or creating content in this documentation directory, always ensure "mts" uses a lowercase "g".

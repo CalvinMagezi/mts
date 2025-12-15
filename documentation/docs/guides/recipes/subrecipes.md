@@ -21,7 +21,7 @@ The "main recipe" registers its subrecipes in the `sub_recipes` field, which con
 - `path`: File path to the subrecipe file (relative or absolute)
 - `values`: (Optional) Pre-configured parameter values that are always passed to the subrecipe
 
-When the main recipe is run, goose generates a tool for each subrecipe that:
+When the main recipe is run, mts generates a tool for each subrecipe that:
 - Accepts parameters defined by the subrecipe
 - Executes the subrecipe in a separate session with its own context
 - Returns output to the main recipe
@@ -49,7 +49,7 @@ This Code Review Pipeline example shows a main recipe that uses two subrecipes t
 
 **Usage:**
 ```bash
-goose run --recipe code-review-pipeline.yaml --params repository_path=/path/to/repo
+mts run --recipe code-review-pipeline.yaml --params repository_path=/path/to/repo
 ```
 
 **Main Recipe:**
@@ -165,7 +165,7 @@ This Smart Project Analyzer example shows conditional logic that chooses between
 
 **Usage:**
 ```bash
-goose run --recipe smart-analyzer.yaml --params repository_path=/path/to/project
+mts run --recipe smart-analyzer.yaml --params repository_path=/path/to/project
 ```
 
 **Main Recipe:**
@@ -298,7 +298,7 @@ This Travel Planner example shows how subrecipes can receive parameters from con
 
 **Usage:**
 ```bash
-goose run --recipe travel-planner.yaml
+mts run --recipe travel-planner.yaml
 ```
 
 **Main Recipe:**
@@ -410,4 +410,4 @@ In this example:
 - **Test independently**: Verify subrecipes work alone before combining
 
 ## Learn More
-Check out the [Recipes](/docs/guides/recipes) guide for more docs, tools, and resources to help you master goose recipes.
+Check out the [Recipes](/docs/guides/recipes) guide for more docs, tools, and resources to help you master mts recipes.

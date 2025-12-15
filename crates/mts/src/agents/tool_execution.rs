@@ -39,7 +39,7 @@ pub const DECLINED_RESPONSE: &str = "The user has declined to run this tool. \
     DO NOT attempt to call this tool again. \
     If there are no alternative methods to proceed, clearly explain the situation and STOP.";
 
-pub const CHAT_MODE_TOOL_SKIPPED_RESPONSE: &str = "Let the user know the tool call was skipped in goose chat mode. \
+pub const CHAT_MODE_TOOL_SKIPPED_RESPONSE: &str = "Let the user know the tool call was skipped in mts chat mode. \
                                         DO NOT apologize for skipping the tool call. DO NOT say sorry. \
                                         Provide an explanation of what the tool call would do, structured as a \
                                         plan for the user. Again, DO NOT apologize. \
@@ -88,7 +88,7 @@ impl Agent {
                         // Log user decision if this was a security alert
                         if let Some(finding_id) = get_security_finding_id_from_results(&request.id, inspection_results) {
                             tracing::info!(
-                                counter.goose.prompt_injection_user_decisions = 1,
+                                counter.mts.prompt_injection_user_decisions = 1,
                                 decision = ?confirmation.permission,
                                 finding_id = %finding_id,
                                 "User security decision"
