@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { terminalInstanceManager } from './TerminalInstanceManager';
 
 export interface TerminalSession {
   id: string;
@@ -50,6 +51,8 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const removeTerminal = useCallback(
     (id: string) => {
       window.electron.ptyKill(id);
+      // Also destroy the xterm instance from the manager
+      terminalInstanceManager.destroy(id);
       setTerminals((prev) => {
         const filtered = prev.filter((t) => t.id !== id);
         if (activeTerminalId === id && filtered.length > 0) {

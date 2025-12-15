@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FolderOpen, ChevronDown, ChevronUp, MessageSquarePlus } from 'lucide-react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { MainPanelLayout } from '../Layout/MainPanelLayout';
 import { Button } from '../ui/button';
 import { ScrollArea } from '../ui/scroll-area';
 import { TreeNode } from './TreeNode';
+import { FilePreviewPanel } from './FilePreviewPanel';
 import { useFolderTree } from './useFolderTree';
 
 const FolderTreeView: React.FC = () => {
@@ -15,11 +17,14 @@ const FolderTreeView: React.FC = () => {
     expanded,
     loading,
     error,
+    selectedFile,
     loadTree,
     toggleExpanded,
     expandAll,
     collapseAll,
     selectFolder,
+    selectFile,
+    clearSelection,
     generateTreeString,
   } = useFolderTree();
 
@@ -34,6 +39,16 @@ const FolderTreeView: React.FC = () => {
     navigate('/pair', {
       state: {
         initialMessage: `Here's the folder structure:\n\n\`\`\`\n${treeString}\`\`\``,
+      },
+    });
+  };
+
+  const handleInsertFileToChat = (content: string, filePath: string) => {
+    const fileName = filePath.split('/').pop() || filePath;
+    const ext = fileName.split('.').pop() || '';
+    navigate('/pair', {
+      state: {
+        initialMessage: `Here's the content of \`${fileName}\`:\n\n\`\`\`${ext}\n${content}\n\`\`\``,
       },
     });
   };
@@ -99,19 +114,40 @@ const FolderTreeView: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <ScrollArea className="h-full">
-              <ul className="list-none font-mono text-sm">
-                {tree.map((node) => (
-                  <TreeNode
-                    key={node.path}
-                    node={node}
-                    depth={0}
-                    expanded={expanded}
-                    onToggle={toggleExpanded}
-                  />
-                ))}
-              </ul>
-            </ScrollArea>
+            <PanelGroup direction="horizontal" className="h-full">
+              {/* Tree Panel */}
+              <Panel defaultSize={selectedFile ? 40 : 100} minSize={25}>
+                <ScrollArea className="h-full">
+                  <ul className="list-none font-mono text-sm">
+                    {tree.map((node) => (
+                      <TreeNode
+                        key={node.path}
+                        node={node}
+                        depth={0}
+                        expanded={expanded}
+                        onToggle={toggleExpanded}
+                        selectedPath={selectedFile?.path}
+                        onSelect={selectFile}
+                      />
+                    ))}
+                  </ul>
+                </ScrollArea>
+              </Panel>
+
+              {/* Preview Panel - conditional */}
+              {selectedFile && (
+                <>
+                  <PanelResizeHandle className="w-1 mx-2 bg-border-default hover:bg-mts-blue transition-colors rounded cursor-col-resize" />
+                  <Panel defaultSize={60} minSize={30}>
+                    <FilePreviewPanel
+                      file={selectedFile}
+                      onClose={clearSelection}
+                      onInsertToChat={handleInsertFileToChat}
+                    />
+                  </Panel>
+                </>
+              )}
+            </PanelGroup>
           )}
         </div>
       </div>

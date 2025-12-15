@@ -9,6 +9,7 @@ export function useFolderTree(initialPath?: string) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
 
   const loadTree = useCallback(async (path: string) => {
     setLoading(true);
@@ -67,6 +68,16 @@ export function useFolderTree(initialPath?: string) {
     }
   }, [loadTree]);
 
+  const selectFile = useCallback((node: FileNode | null) => {
+    if (node && !node.isDir) {
+      setSelectedFile(node);
+    }
+  }, []);
+
+  const clearSelection = useCallback(() => {
+    setSelectedFile(null);
+  }, []);
+
   const generateTreeString = useCallback((): string => {
     const rootName = rootPath.split('/').pop() || rootPath;
     let result = `${rootName}/\n`;
@@ -99,11 +110,14 @@ export function useFolderTree(initialPath?: string) {
     expanded,
     loading,
     error,
+    selectedFile,
     loadTree,
     toggleExpanded,
     expandAll,
     collapseAll,
     selectFolder,
+    selectFile,
+    clearSelection,
     generateTreeString,
   };
 }

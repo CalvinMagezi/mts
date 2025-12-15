@@ -2389,7 +2389,10 @@ async function appMain() {
       const cwd = options?.cwd || os.homedir();
 
       try {
-        const ptyProcess = pty.spawn(shellPath, [], {
+        // Use -l flag for login shell on Unix to source user configs (.zshrc, .bashrc, etc.)
+        // This ensures PATH includes tools like pnpm, nvm, pyenv, etc.
+        const shellArgs = process.platform === 'win32' ? [] : ['-l'];
+        const ptyProcess = pty.spawn(shellPath, shellArgs, {
           name: 'xterm-256color',
           cols: 80,
           rows: 24,
