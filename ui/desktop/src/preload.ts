@@ -137,6 +137,98 @@ type ElectronAPI = {
   offPtyData: () => void;
   onPtyExit: (callback: (terminalId: string, exitCode: number) => void) => void;
   offPtyExit: () => void;
+  // Git source control functions
+  gitIsRepo: (cwd: string) => Promise<boolean>;
+  gitRepoRoot: (cwd: string) => Promise<string | null>;
+  gitCurrentBranch: (cwd: string) => Promise<string | null>;
+  gitStatus: (cwd: string) => Promise<{
+    staged: Array<{ path: string; oldPath?: string; status: string; staged: boolean }>;
+    unstaged: Array<{ path: string; oldPath?: string; status: string; staged: boolean }>;
+    untracked: Array<{ path: string; status: string; staged: boolean }>;
+    error?: string;
+  }>;
+  gitDiff: (cwd: string, filePath?: string, staged?: boolean) => Promise<string>;
+  gitLog: (
+    cwd: string,
+    limit?: number,
+    skip?: number
+  ) => Promise<
+    Array<{
+      hash: string;
+      shortHash: string;
+      author: string;
+      authorEmail: string;
+      date: string;
+      message: string;
+      body?: string;
+    }>
+  >;
+  gitBranches: (cwd: string) => Promise<{
+    current: string | null;
+    local: Array<{
+      name: string;
+      isRemote: boolean;
+      isCurrent: boolean;
+      upstream?: string;
+    }>;
+    remote: Array<{
+      name: string;
+      isRemote: boolean;
+      isCurrent: boolean;
+      upstream?: string;
+    }>;
+  }>;
+  gitBranchCreate: (
+    cwd: string,
+    name: string,
+    checkout: boolean
+  ) => Promise<{ success: boolean; error?: string }>;
+  gitBranchCheckout: (cwd: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  gitBranchDelete: (
+    cwd: string,
+    name: string,
+    force: boolean
+  ) => Promise<{ success: boolean; error?: string }>;
+  gitStage: (cwd: string, paths: string[]) => Promise<{ success: boolean; error?: string }>;
+  gitUnstage: (cwd: string, paths: string[]) => Promise<{ success: boolean; error?: string }>;
+  gitDiscard: (cwd: string, paths: string[]) => Promise<{ success: boolean; error?: string }>;
+  gitCommit: (
+    cwd: string,
+    message: string,
+    description?: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  gitFetch: (cwd: string) => Promise<{ success: boolean; error?: string }>;
+  gitPull: (cwd: string) => Promise<{ success: boolean; error?: string }>;
+  gitPush: (cwd: string, force?: boolean) => Promise<{ success: boolean; error?: string }>;
+  gitRemoteStatus: (cwd: string) => Promise<{
+    ahead: number;
+    behind: number;
+    remote: string | null;
+  }>;
+  gitStashList: (cwd: string) => Promise<
+    Array<{
+      index: number;
+      ref: string;
+      message: string;
+      date: string;
+    }>
+  >;
+  gitStashSave: (cwd: string, message?: string) => Promise<{ success: boolean; error?: string }>;
+  gitStashPop: (cwd: string, index?: number) => Promise<{ success: boolean; error?: string }>;
+  gitStashDrop: (cwd: string, index: number) => Promise<{ success: boolean; error?: string }>;
+  gitShowCommit: (
+    cwd: string,
+    hash: string
+  ) => Promise<{
+    hash: string;
+    shortHash: string;
+    author: string;
+    authorEmail: string;
+    date: string;
+    message: string;
+    body?: string;
+    stats: string;
+  } | null>;
 };
 
 type AppConfigAPI = {
@@ -302,6 +394,36 @@ const electronAPI: ElectronAPI = {
   offPtyExit: () => {
     ipcRenderer.removeAllListeners('pty-exit');
   },
+  // Git source control functions
+  gitIsRepo: (cwd: string) => ipcRenderer.invoke('git-is-repo', cwd),
+  gitRepoRoot: (cwd: string) => ipcRenderer.invoke('git-repo-root', cwd),
+  gitCurrentBranch: (cwd: string) => ipcRenderer.invoke('git-current-branch', cwd),
+  gitStatus: (cwd: string) => ipcRenderer.invoke('git-status', cwd),
+  gitDiff: (cwd: string, filePath?: string, staged?: boolean) =>
+    ipcRenderer.invoke('git-diff', cwd, filePath, staged),
+  gitLog: (cwd: string, limit?: number, skip?: number) =>
+    ipcRenderer.invoke('git-log', cwd, limit, skip),
+  gitBranches: (cwd: string) => ipcRenderer.invoke('git-branches', cwd),
+  gitBranchCreate: (cwd: string, name: string, checkout: boolean) =>
+    ipcRenderer.invoke('git-branch-create', cwd, name, checkout),
+  gitBranchCheckout: (cwd: string, name: string) =>
+    ipcRenderer.invoke('git-branch-checkout', cwd, name),
+  gitBranchDelete: (cwd: string, name: string, force: boolean) =>
+    ipcRenderer.invoke('git-branch-delete', cwd, name, force),
+  gitStage: (cwd: string, paths: string[]) => ipcRenderer.invoke('git-stage', cwd, paths),
+  gitUnstage: (cwd: string, paths: string[]) => ipcRenderer.invoke('git-unstage', cwd, paths),
+  gitDiscard: (cwd: string, paths: string[]) => ipcRenderer.invoke('git-discard', cwd, paths),
+  gitCommit: (cwd: string, message: string, description?: string) =>
+    ipcRenderer.invoke('git-commit', cwd, message, description),
+  gitFetch: (cwd: string) => ipcRenderer.invoke('git-fetch', cwd),
+  gitPull: (cwd: string) => ipcRenderer.invoke('git-pull', cwd),
+  gitPush: (cwd: string, force?: boolean) => ipcRenderer.invoke('git-push', cwd, force),
+  gitRemoteStatus: (cwd: string) => ipcRenderer.invoke('git-remote-status', cwd),
+  gitStashList: (cwd: string) => ipcRenderer.invoke('git-stash-list', cwd),
+  gitStashSave: (cwd: string, message?: string) => ipcRenderer.invoke('git-stash-save', cwd, message),
+  gitStashPop: (cwd: string, index?: number) => ipcRenderer.invoke('git-stash-pop', cwd, index),
+  gitStashDrop: (cwd: string, index: number) => ipcRenderer.invoke('git-stash-drop', cwd, index),
+  gitShowCommit: (cwd: string, hash: string) => ipcRenderer.invoke('git-show-commit', cwd, hash),
 };
 
 const appConfigAPI: AppConfigAPI = {

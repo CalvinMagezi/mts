@@ -39,6 +39,7 @@ import ExtensionsView, { ExtensionsViewOptions } from './components/extensions/E
 import RecipesView from './components/recipes/RecipesView';
 import TerminalCenterView from './components/terminal/TerminalCenterView';
 import FolderTreeView from './components/folder-tree/FolderTreeView';
+import SourceControlView from './components/source-control/SourceControlView';
 import { TerminalProvider } from './components/terminal/TerminalContext';
 import { View, ViewOptions } from './utils/navigationUtils';
 import { NoProviderOrModelError, useAgent } from './hooks/useAgent';
@@ -454,12 +455,27 @@ export function AppInner() {
           console.error('Error creating new window:', error);
         }
       }
+      // Cmd/Ctrl+` for Terminal Center navigation
+      if ((isMac ? event.metaKey : event.ctrlKey) && event.key === '`') {
+        event.preventDefault();
+        navigate('/terminal-center');
+      }
+      // Cmd/Ctrl+Shift+F for Folder Tree navigation
+      if ((isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key === 'f') {
+        event.preventDefault();
+        navigate('/folder-tree');
+      }
+      // Cmd/Ctrl+Shift+S for Source Control navigation
+      if ((isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key === 's') {
+        event.preventDefault();
+        navigate('/source-control');
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [navigate]);
 
   // Prevent default drag and drop behavior globally to avoid opening files in new windows
   // but allow our React components to handle drops in designated areas
@@ -683,6 +699,7 @@ export function AppInner() {
             <Route path="recipes" element={<RecipesRoute />} />
             <Route path="terminal-center" element={<TerminalCenterView />} />
             <Route path="folder-tree" element={<FolderTreeView />} />
+            <Route path="source-control" element={<SourceControlView />} />
             <Route
               path="shared-session"
               element={

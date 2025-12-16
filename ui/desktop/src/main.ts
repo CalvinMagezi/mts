@@ -1809,6 +1809,457 @@ ipcMain.handle('read-directory-tree', async (_event, dirPath: string, maxDepth =
   return readDirectoryTree(expandedPath, 0, maxDepth);
 });
 
+// =============================================================================
+// Git IPC Handlers for Source Control
+// =============================================================================
+
+interface GitFile {
+  path: string;
+  oldPath?: string;
+  status: string;
+  staged: boolean;
+}
+
+interface GitCommit {
+  hash: string;
+  shortHash: string;
+  author: string;
+  authorEmail: string;
+  date: string;
+  message: string;
+  body?: string;
+}
+
+interface GitBranch {
+  name: string;
+  isRemote: boolean;
+  isCurrent: boolean;
+  upstream?: string;
+}
+
+interface GitStash {
+  index: number;
+  ref: string;
+  message: string;
+  date: string;
+}
+
+// Helper to execute git commands
+async function execGit(
+  cwd: string,
+  args: string[]
+): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  const expandedCwd = expandTilde(cwd);
+  return new Promise((resolve) => {
+    const process = spawn('git', args, {
+      cwd: expandedCwd,
+      env: {
+        ...globalThis.process.env,
+        GIT_TERMINAL_PROMPT: '0',
+        GIT_PAGER: 'cat',
+        GIT_EDITOR: 'true',
+        LANG: 'en_US.UTF-8',
+      },
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    process.stdout?.on('data', (data) => {
+      stdout += data.toString();
+    });
+
+    process.stderr?.on('data', (data) => {
+      stderr += data.toString();
+    });
+
+    process.on('close', (code) => {
+      resolve({ stdout, stderr, exitCode: code ?? 0 });
+    });
+
+    process.on('error', (err) => {
+      resolve({ stdout: '', stderr: err.message, exitCode: 1 });
+    });
+  });
+}
+
+// Check if directory is a git repository
+ipcMain.handle('git-is-repo', async (_event, cwd: string) => {
+  const result = await execGit(cwd, ['rev-parse', '--is-inside-work-tree']);
+  return result.exitCode === 0 && result.stdout.trim() === 'true';
+});
+
+// Get repository root path
+ipcMain.handle('git-repo-root', async (_event, cwd: string) => {
+  const result = await execGit(cwd, ['rev-parse', '--show-toplevel']);
+  if (result.exitCode !== 0) return null;
+  return result.stdout.trim();
+});
+
+// Get current branch name
+ipcMain.handle('git-current-branch', async (_event, cwd: string) => {
+  const result = await execGit(cwd, ['rev-parse', '--abbrev-ref', 'HEAD']);
+  if (result.exitCode !== 0) return null;
+  return result.stdout.trim();
+});
+
+// Get git status (staged, unstaged, untracked files)
+ipcMain.handle('git-status', async (_event, cwd: string) => {
+  const result = await execGit(cwd, ['status', '--porcelain=v2']);
+  if (result.exitCode !== 0) {
+    return { staged: [], unstaged: [], untracked: [], error: result.stderr };
+  }
+
+  const staged: GitFile[] = [];
+  const unstaged: GitFile[] = [];
+  const untracked: GitFile[] = [];
+
+  const lines = result.stdout.split('\n').filter((l) => l.trim());
+
+  for (const line of lines) {
+    if (line.startsWith('1 ')) {
+      // Ordinary changed entry
+      const parts = line.split(' ');
+      const xy = parts[1]; // XY status
+      const filePath = parts.slice(8).join(' ');
+      const indexStatus = xy[0];
+      const workTreeStatus = xy[1];
+
+      if (indexStatus !== '.') {
+        staged.push({ path: filePath, status: indexStatus, staged: true });
+      }
+      if (workTreeStatus !== '.') {
+        unstaged.push({ path: filePath, status: workTreeStatus, staged: false });
+      }
+    } else if (line.startsWith('2 ')) {
+      // Renamed/copied entry
+      const parts = line.split('\t');
+      const headerParts = parts[0].split(' ');
+      const xy = headerParts[1];
+      const paths = parts.slice(1);
+      const newPath = paths[0];
+      const oldPath = paths[1];
+      const indexStatus = xy[0];
+      const workTreeStatus = xy[1];
+
+      if (indexStatus !== '.') {
+        staged.push({
+          path: newPath,
+          oldPath,
+          status: indexStatus,
+          staged: true,
+        });
+      }
+      if (workTreeStatus !== '.') {
+        unstaged.push({
+          path: newPath,
+          oldPath,
+          status: workTreeStatus,
+          staged: false,
+        });
+      }
+    } else if (line.startsWith('? ')) {
+      // Untracked
+      const filePath = line.slice(2);
+      untracked.push({ path: filePath, status: '?', staged: false });
+    } else if (line.startsWith('u ')) {
+      // Unmerged entry
+      const parts = line.split(' ');
+      const filePath = parts.slice(10).join(' ');
+      unstaged.push({ path: filePath, status: 'U', staged: false });
+    }
+  }
+
+  return { staged, unstaged, untracked };
+});
+
+// Get diff for a file or all changes
+ipcMain.handle(
+  'git-diff',
+  async (_event, cwd: string, filePath?: string, staged?: boolean) => {
+    const args = ['diff', '--no-color'];
+    if (staged) args.push('--cached');
+    if (filePath) args.push('--', filePath);
+
+    const result = await execGit(cwd, args);
+    return result.stdout;
+  }
+);
+
+// Get commit log
+ipcMain.handle(
+  'git-log',
+  async (_event, cwd: string, limit = 50, skip = 0) => {
+    const format = '%H|%h|%an|%ae|%aI|%s|%b%x00';
+    const args = ['log', `--format=${format}`, `-n`, `${limit}`, `--skip=${skip}`];
+
+    const result = await execGit(cwd, args);
+    if (result.exitCode !== 0) return [];
+
+    const commits: GitCommit[] = [];
+    const entries = result.stdout.split('\x00').filter((e) => e.trim());
+
+    for (const entry of entries) {
+      const [firstLine, ...bodyLines] = entry.trim().split('\n');
+      const parts = firstLine.split('|');
+      if (parts.length >= 6) {
+        commits.push({
+          hash: parts[0],
+          shortHash: parts[1],
+          author: parts[2],
+          authorEmail: parts[3],
+          date: parts[4],
+          message: parts[5],
+          body: bodyLines.join('\n').trim() || undefined,
+        });
+      }
+    }
+
+    return commits;
+  }
+);
+
+// Get all branches
+ipcMain.handle('git-branches', async (_event, cwd: string) => {
+  const format = '%(refname:short)|%(upstream:short)|%(HEAD)';
+  const result = await execGit(cwd, ['branch', '-a', `--format=${format}`]);
+
+  if (result.exitCode !== 0) {
+    return { current: null, local: [], remote: [] };
+  }
+
+  const local: GitBranch[] = [];
+  const remote: GitBranch[] = [];
+  let current: string | null = null;
+
+  const lines = result.stdout.split('\n').filter((l) => l.trim());
+
+  for (const line of lines) {
+    const [name, upstream, head] = line.split('|');
+    const isCurrent = head === '*';
+    const isRemote = name.startsWith('remotes/') || name.includes('/');
+
+    if (isCurrent) current = name;
+
+    const branch: GitBranch = {
+      name: name.replace(/^remotes\//, ''),
+      isRemote,
+      isCurrent,
+      upstream: upstream || undefined,
+    };
+
+    if (isRemote) {
+      remote.push(branch);
+    } else {
+      local.push(branch);
+    }
+  }
+
+  return { current, local, remote };
+});
+
+// Create a new branch
+ipcMain.handle(
+  'git-branch-create',
+  async (_event, cwd: string, name: string, checkout: boolean) => {
+    const args = checkout ? ['checkout', '-b', name] : ['branch', name];
+    const result = await execGit(cwd, args);
+    return { success: result.exitCode === 0, error: result.stderr };
+  }
+);
+
+// Checkout a branch
+ipcMain.handle('git-branch-checkout', async (_event, cwd: string, name: string) => {
+  const result = await execGit(cwd, ['checkout', name]);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Delete a branch
+ipcMain.handle(
+  'git-branch-delete',
+  async (_event, cwd: string, name: string, force: boolean) => {
+    const args = ['branch', force ? '-D' : '-d', name];
+    const result = await execGit(cwd, args);
+    return { success: result.exitCode === 0, error: result.stderr };
+  }
+);
+
+// Stage files
+ipcMain.handle('git-stage', async (_event, cwd: string, paths: string[]) => {
+  const result = await execGit(cwd, ['add', '--', ...paths]);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Unstage files
+ipcMain.handle('git-unstage', async (_event, cwd: string, paths: string[]) => {
+  const result = await execGit(cwd, ['reset', 'HEAD', '--', ...paths]);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Discard changes to files
+ipcMain.handle('git-discard', async (_event, cwd: string, paths: string[]) => {
+  // First, restore tracked files
+  const restoreResult = await execGit(cwd, ['checkout', '--', ...paths]);
+  // Then clean untracked files if needed
+  const cleanResult = await execGit(cwd, ['clean', '-fd', '--', ...paths]);
+  return {
+    success: restoreResult.exitCode === 0 || cleanResult.exitCode === 0,
+    error: restoreResult.stderr || cleanResult.stderr,
+  };
+});
+
+// Create a commit
+ipcMain.handle(
+  'git-commit',
+  async (_event, cwd: string, message: string, description?: string) => {
+    const args = ['commit', '-m', message];
+    if (description) {
+      args.push('-m', description);
+    }
+    const result = await execGit(cwd, args);
+    return { success: result.exitCode === 0, error: result.stderr };
+  }
+);
+
+// Fetch from remote
+ipcMain.handle('git-fetch', async (_event, cwd: string) => {
+  const result = await execGit(cwd, ['fetch', '--all', '--prune']);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Pull from remote
+ipcMain.handle('git-pull', async (_event, cwd: string) => {
+  const result = await execGit(cwd, ['pull']);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Push to remote
+ipcMain.handle('git-push', async (_event, cwd: string, force?: boolean) => {
+  const args = ['push'];
+  if (force) args.push('--force');
+  const result = await execGit(cwd, args);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Get ahead/behind counts relative to upstream
+ipcMain.handle('git-remote-status', async (_event, cwd: string) => {
+  // First get the upstream branch
+  const upstreamResult = await execGit(cwd, [
+    'rev-parse',
+    '--abbrev-ref',
+    '--symbolic-full-name',
+    '@{upstream}',
+  ]);
+
+  if (upstreamResult.exitCode !== 0) {
+    return { ahead: 0, behind: 0, remote: null };
+  }
+
+  const remote = upstreamResult.stdout.trim();
+
+  // Get ahead/behind counts
+  const countResult = await execGit(cwd, [
+    'rev-list',
+    '--count',
+    '--left-right',
+    '@{upstream}...HEAD',
+  ]);
+
+  if (countResult.exitCode !== 0) {
+    return { ahead: 0, behind: 0, remote };
+  }
+
+  const [behind, ahead] = countResult.stdout.trim().split('\t').map(Number);
+  return { ahead: ahead || 0, behind: behind || 0, remote };
+});
+
+// Get stash list
+ipcMain.handle('git-stash-list', async (_event, cwd: string) => {
+  const result = await execGit(cwd, [
+    'stash',
+    'list',
+    '--format=%gd|%gs|%aI',
+  ]);
+
+  if (result.exitCode !== 0) return [];
+
+  const stashes: GitStash[] = [];
+  const lines = result.stdout.split('\n').filter((l) => l.trim());
+
+  for (const line of lines) {
+    const [ref, message, date] = line.split('|');
+    const indexMatch = ref.match(/stash@\{(\d+)\}/);
+    if (indexMatch) {
+      stashes.push({
+        index: parseInt(indexMatch[1], 10),
+        ref,
+        message: message || 'Stash',
+        date,
+      });
+    }
+  }
+
+  return stashes;
+});
+
+// Save to stash
+ipcMain.handle('git-stash-save', async (_event, cwd: string, message?: string) => {
+  const args = ['stash', 'push'];
+  if (message) args.push('-m', message);
+  const result = await execGit(cwd, args);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Pop from stash
+ipcMain.handle('git-stash-pop', async (_event, cwd: string, index?: number) => {
+  const args = ['stash', 'pop'];
+  if (index !== undefined) args.push(`stash@{${index}}`);
+  const result = await execGit(cwd, args);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Drop a stash entry
+ipcMain.handle('git-stash-drop', async (_event, cwd: string, index: number) => {
+  const result = await execGit(cwd, ['stash', 'drop', `stash@{${index}}`]);
+  return { success: result.exitCode === 0, error: result.stderr };
+});
+
+// Show commit details with diff
+ipcMain.handle('git-show-commit', async (_event, cwd: string, hash: string) => {
+  const format = '%H|%h|%an|%ae|%aI|%s|%b';
+  const result = await execGit(cwd, [
+    'show',
+    hash,
+    `--format=${format}`,
+    '--stat',
+    '--no-color',
+  ]);
+
+  if (result.exitCode !== 0) return null;
+
+  const lines = result.stdout.split('\n');
+  const headerLine = lines[0];
+  const parts = headerLine.split('|');
+
+  // Parse stats from the output
+  const statsLines = lines.slice(1).filter((l) => l.includes('|') || l.includes('changed'));
+
+  return {
+    hash: parts[0],
+    shortHash: parts[1],
+    author: parts[2],
+    authorEmail: parts[3],
+    date: parts[4],
+    message: parts[5],
+    body: parts.slice(6).join('|').trim() || undefined,
+    stats: statsLines.join('\n'),
+  };
+});
+
+// =============================================================================
+// End Git IPC Handlers
+// =============================================================================
+
 // Handle message box dialogs
 ipcMain.handle('show-message-box', async (_event, options) => {
   return dialog.showMessageBox(options);
@@ -2402,8 +2853,8 @@ async function appMain() {
           ? 'powershell.exe'
           : process.env.SHELL || '/bin/zsh');
 
-      // Determine working directory
-      const cwd = options?.cwd || os.homedir();
+      // Determine working directory - check for empty string as well as undefined
+      const cwd = (options?.cwd && options.cwd.trim()) || os.homedir();
 
       try {
         // Use -i -l flags for interactive login shell on Unix to source user configs

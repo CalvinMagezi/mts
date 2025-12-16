@@ -89,6 +89,22 @@ export const useTerminal = (options: UseTerminalOptions) => {
     });
     disposablesRef.current.push(titleDisposable);
 
+    // Handle Cmd+K (Mac) and Ctrl+L (Unix standard) to clear terminal
+    const keyHandler = terminal.onKey(({ domEvent }) => {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+
+      // Cmd+K on Mac OR Ctrl+L on any platform
+      const isClearShortcut =
+        (isMac && domEvent.metaKey && domEvent.key === 'k') ||
+        (domEvent.ctrlKey && domEvent.key === 'l');
+
+      if (isClearShortcut) {
+        domEvent.preventDefault();
+        terminal.clear();
+      }
+    });
+    disposablesRef.current.push(keyHandler);
+
     // Listen for PTY data and write to terminal
     const handlePtyData = (id: string, data: string) => {
       if (id === terminalId) {

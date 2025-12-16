@@ -140,19 +140,35 @@ class TerminalInstanceManager {
     instance?.terminal.scrollToBottom();
   }
 
+  isScrolledToBottom(terminalId: string): boolean {
+    const instance = this.instances.get(terminalId);
+    if (!instance) return true;
+    const term = instance.terminal;
+    // Check if viewport is at the bottom (buffer.active.baseY is the scrollback amount)
+    return term.buffer.active.viewportY >= term.buffer.active.baseY;
+  }
+
   write(terminalId: string, data: string): void {
     const instance = this.instances.get(terminalId);
     if (instance) {
+      // Only auto-scroll if user was already at the bottom
+      const wasAtBottom = this.isScrolledToBottom(terminalId);
       instance.terminal.write(data);
-      instance.terminal.scrollToBottom();
+      if (wasAtBottom) {
+        instance.terminal.scrollToBottom();
+      }
     }
   }
 
   writeln(terminalId: string, data: string): void {
     const instance = this.instances.get(terminalId);
     if (instance) {
+      // Only auto-scroll if user was already at the bottom
+      const wasAtBottom = this.isScrolledToBottom(terminalId);
       instance.terminal.writeln(data);
-      instance.terminal.scrollToBottom();
+      if (wasAtBottom) {
+        instance.terminal.scrollToBottom();
+      }
     }
   }
 

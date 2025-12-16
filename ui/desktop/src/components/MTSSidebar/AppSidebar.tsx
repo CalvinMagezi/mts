@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FileText, Clock, Home, Puzzle, History, Terminal, FolderTree } from 'lucide-react';
+import { FileText, Clock, Home, Puzzle, History, Terminal, FolderTree, GitBranch } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   SidebarContent,
@@ -98,6 +98,13 @@ const menuItems: NavigationEntry[] = [
     label: 'Folder Tree',
     icon: FolderTree,
     tooltip: 'View and share folder structure',
+  },
+  {
+    type: 'item',
+    path: '/source-control',
+    label: 'Source Control',
+    icon: GitBranch,
+    tooltip: 'Git source control',
   },
   { type: 'separator' },
   {
