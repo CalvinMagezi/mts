@@ -15,4 +15,6 @@ export interface FilePreviewState {
   error: string | null;
   truncated: boolean;
   totalLines: number;
+  isImage: boolean;
+  imagePath: string | null;
 }

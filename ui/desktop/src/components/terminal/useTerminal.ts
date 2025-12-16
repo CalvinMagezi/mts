@@ -70,9 +70,10 @@ export const useTerminal = (options: UseTerminalOptions) => {
       }, 50);
     }
 
-    // Handle user input - send to PTY
+    // Handle user input - send to PTY and scroll to bottom
     const inputDisposable = terminal.onData((data) => {
       window.electron.ptyWrite(terminalId, data);
+      terminal.scrollToBottom();
     });
     disposablesRef.current.push(inputDisposable);
 

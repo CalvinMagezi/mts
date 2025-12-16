@@ -38,7 +38,7 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
   onClose,
   onInsertToChat,
 }) => {
-  const { content, loading, error, truncated, totalLines } = useFilePreview(file.path);
+  const { content, loading, error, truncated, totalLines, isImage, imagePath } = useFilePreview(file.path);
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
@@ -92,30 +92,34 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
           </p>
         </div>
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCopy}
-            disabled={!content}
-            title="Copy to clipboard"
-            className="h-8 w-8 p-0"
-          >
-            {copied ? (
-              <Check className="w-4 h-4 text-green-500" />
-            ) : (
-              <Copy className="w-4 h-4" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleInsert}
-            disabled={!content}
-            title="Insert into chat"
-            className="h-8 w-8 p-0"
-          >
-            <MessageSquarePlus className="w-4 h-4" />
-          </Button>
+          {!isImage && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCopy}
+                disabled={!content}
+                title="Copy to clipboard"
+                className="h-8 w-8 p-0"
+              >
+                {copied ? (
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleInsert}
+                disabled={!content}
+                title="Insert into chat"
+                className="h-8 w-8 p-0"
+              >
+                <MessageSquarePlus className="w-4 h-4" />
+              </Button>
+            </>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -147,6 +151,19 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
         ) : error ? (
           <div className="flex items-center justify-center h-32 text-red-400">
             {error}
+          </div>
+        ) : isImage && imagePath ? (
+          <div className="flex items-center justify-center p-4 h-full">
+            <img
+              src={`file://${imagePath}`}
+              alt={file.name}
+              className="max-w-full max-h-full object-contain rounded"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement!.innerHTML =
+                  '<span class="text-red-400">Failed to load image</span>';
+              }}
+            />
           </div>
         ) : content ? (
           <SyntaxHighlighter

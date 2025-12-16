@@ -135,14 +135,25 @@ class TerminalInstanceManager {
     instance?.terminal.focus();
   }
 
+  scrollToBottom(terminalId: string): void {
+    const instance = this.instances.get(terminalId);
+    instance?.terminal.scrollToBottom();
+  }
+
   write(terminalId: string, data: string): void {
     const instance = this.instances.get(terminalId);
-    instance?.terminal.write(data);
+    if (instance) {
+      instance.terminal.write(data);
+      instance.terminal.scrollToBottom();
+    }
   }
 
   writeln(terminalId: string, data: string): void {
     const instance = this.instances.get(terminalId);
-    instance?.terminal.writeln(data);
+    if (instance) {
+      instance.terminal.writeln(data);
+      instance.terminal.scrollToBottom();
+    }
   }
 
   getTerminal(terminalId: string): Terminal | undefined {

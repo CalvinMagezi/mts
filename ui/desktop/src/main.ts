@@ -1760,9 +1760,26 @@ async function readDirectoryTree(
       return a.name.localeCompare(b.name);
     });
 
+    // Directories to always skip (large or not useful to browse)
+    const skipDirs = new Set([
+      'node_modules',
+      '__pycache__',
+      '.git',
+      '.svn',
+      '.hg',
+      '.idea',
+      '.vscode',
+      '.next',
+      '.nuxt',
+      '.cache',
+      'dist',
+      'build',
+      '.turbo',
+    ]);
+
     for (const entry of sorted) {
-      // Skip hidden files and common ignore patterns
-      if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === '__pycache__') {
+      // Skip certain directories but allow dotfiles like .env, .gitignore, etc.
+      if (entry.isDirectory() && skipDirs.has(entry.name)) {
         continue;
       }
 
@@ -2389,15 +2406,39 @@ async function appMain() {
       const cwd = options?.cwd || os.homedir();
 
       try {
-        // Use -l flag for login shell on Unix to source user configs (.zshrc, .bashrc, etc.)
-        // This ensures PATH includes tools like pnpm, nvm, pyenv, etc.
-        const shellArgs = process.platform === 'win32' ? [] : ['-l'];
+        // Use -i -l flags for interactive login shell on Unix to source user configs
+        // (.zshrc, .bashrc, .bash_profile, etc.)
+        const shellArgs = process.platform === 'win32' ? [] : ['-i', '-l'];
+
+        // Build enhanced environment with common tool paths
+        // Electron's process.env often lacks user-installed tool paths
+        const homeDir = os.homedir();
+        const additionalPaths = [
+          `${homeDir}/.bun/bin`,           // Bun
+          `${homeDir}/.local/bin`,         // pnpm, pip --user, etc.
+          `${homeDir}/.nvm/versions/node`, // nvm (will be updated by shell)
+          `${homeDir}/.cargo/bin`,         // Rust/Cargo
+          `${homeDir}/.deno/bin`,          // Deno
+          `/opt/homebrew/bin`,             // Homebrew on Apple Silicon
+          `/usr/local/bin`,                // Homebrew on Intel Mac / common tools
+          `/usr/local/sbin`,
+        ].join(':');
+
+        const enhancedEnv = {
+          ...process.env,
+          PATH: `${additionalPaths}:${process.env.PATH || ''}`,
+          // Ensure TERM is set for proper terminal behavior
+          TERM: 'xterm-256color',
+          // Set LANG for proper unicode support
+          LANG: process.env.LANG || 'en_US.UTF-8',
+        };
+
         const ptyProcess = pty.spawn(shellPath, shellArgs, {
           name: 'xterm-256color',
           cols: 80,
           rows: 24,
           cwd,
-          env: process.env as Record<string, string>,
+          env: enhancedEnv as Record<string, string>,
         });
 
         // Initialize map for this window if needed

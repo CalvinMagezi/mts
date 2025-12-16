@@ -4,8 +4,13 @@ import { FilePreviewState } from './types';
 const MAX_PREVIEW_LINES = 1000;
 const MAX_PREVIEW_SIZE = 100000; // 100KB
 
-const BINARY_EXTENSIONS = new Set([
+// Image extensions that can be previewed
+const IMAGE_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'gif', 'bmp', 'ico', 'webp', 'svg',
+]);
+
+// Binary files that cannot be previewed at all
+const BINARY_EXTENSIONS = new Set([
   'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
   'zip', 'tar', 'gz', 'rar', '7z',
   'exe', 'dll', 'so', 'dylib',
@@ -13,9 +18,16 @@ const BINARY_EXTENSIONS = new Set([
   'woff', 'woff2', 'ttf', 'otf', 'eot',
 ]);
 
+function getFileExtension(filePath: string): string {
+  return filePath.split('.').pop()?.toLowerCase() || '';
+}
+
+function isImageFile(filePath: string): boolean {
+  return IMAGE_EXTENSIONS.has(getFileExtension(filePath));
+}
+
 function isBinaryFile(filePath: string): boolean {
-  const ext = filePath.split('.').pop()?.toLowerCase() || '';
-  return BINARY_EXTENSIONS.has(ext);
+  return BINARY_EXTENSIONS.has(getFileExtension(filePath));
 }
 
 export function useFilePreview(filePath: string | null): FilePreviewState {
@@ -25,6 +37,8 @@ export function useFilePreview(filePath: string | null): FilePreviewState {
     error: null,
     truncated: false,
     totalLines: 0,
+    isImage: false,
+    imagePath: null,
   });
 
   useEffect(() => {
@@ -35,6 +49,22 @@ export function useFilePreview(filePath: string | null): FilePreviewState {
         error: null,
         truncated: false,
         totalLines: 0,
+        isImage: false,
+        imagePath: null,
+      });
+      return;
+    }
+
+    // Handle image files - just set the path, no need to read content
+    if (isImageFile(filePath)) {
+      setState({
+        content: null,
+        loading: false,
+        error: null,
+        truncated: false,
+        totalLines: 0,
+        isImage: true,
+        imagePath: filePath,
       });
       return;
     }
@@ -46,6 +76,8 @@ export function useFilePreview(filePath: string | null): FilePreviewState {
         error: 'Cannot preview binary file',
         truncated: false,
         totalLines: 0,
+        isImage: false,
+        imagePath: null,
       });
       return;
     }
@@ -75,6 +107,8 @@ export function useFilePreview(filePath: string | null): FilePreviewState {
           error: null,
           truncated,
           totalLines,
+          isImage: false,
+          imagePath: null,
         });
       } catch (err) {
         setState({
@@ -83,6 +117,8 @@ export function useFilePreview(filePath: string | null): FilePreviewState {
           error: err instanceof Error ? err.message : 'Failed to load file',
           truncated: false,
           totalLines: 0,
+          isImage: false,
+          imagePath: null,
         });
       }
     };

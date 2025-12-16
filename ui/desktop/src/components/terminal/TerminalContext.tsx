@@ -5,7 +5,7 @@ import { terminalInstanceManager } from './TerminalInstanceManager';
 export interface TerminalSession {
   id: string;
   title: string;
-  cwd: string;
+  cwd?: string;
   shell?: string;
   isActive: boolean;
   ptyCreated: boolean; // Track if PTY process has been spawned
@@ -30,8 +30,9 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const addTerminal = useCallback(
     (options?: { title?: string; cwd?: string; shell?: string }) => {
       const id = uuidv4();
-      const cwd =
-        options?.cwd || (window.appConfig?.get('MTS_WORKING_DIR') as string) || '';
+      // Use provided cwd, fallback to MTS_WORKING_DIR (project directory), or undefined for home
+      const workingDir = window.appConfig?.get('MTS_WORKING_DIR') as string | undefined;
+      const cwd = options?.cwd || workingDir;
       const newTerminal: TerminalSession = {
         id,
         title: options?.title || `Terminal ${terminals.length + 1}`,
