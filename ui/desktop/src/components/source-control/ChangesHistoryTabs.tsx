@@ -49,7 +49,7 @@ export const ChangesHistoryTabs: React.FC<ChangesHistoryTabsProps> = ({
     <Tabs
       value={activeTab}
       onValueChange={(value) => onTabChange(value as ActiveTab)}
-      className="flex-1 flex flex-col min-h-0"
+      className="flex-1 flex flex-col min-h-0 overflow-hidden"
     >
       <TabsList className="w-full justify-start rounded-none border-b border-border-default bg-transparent px-2">
         <TabsTrigger
@@ -71,7 +71,7 @@ export const ChangesHistoryTabs: React.FC<ChangesHistoryTabsProps> = ({
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="changes" className="flex-1 m-0 min-h-0">
+      <TabsContent value="changes" className="flex-1 m-0 min-h-0 overflow-hidden">
         <ChangesPanel
           statusState={statusState}
           selectedFile={selectedFile}
@@ -84,7 +84,7 @@ export const ChangesHistoryTabs: React.FC<ChangesHistoryTabsProps> = ({
         />
       </TabsContent>
 
-      <TabsContent value="history" className="flex-1 m-0 min-h-0">
+      <TabsContent value="history" className="flex-1 m-0 min-h-0 overflow-hidden">
         <HistoryPanel
           commits={commits}
           selectedCommit={selectedCommit}

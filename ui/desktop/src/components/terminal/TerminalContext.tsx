@@ -9,6 +9,7 @@ export interface TerminalSession {
   shell?: string;
   isActive: boolean;
   ptyCreated: boolean; // Track if PTY process has been spawned
+  exitCode?: number; // Exit code when process terminates (undefined = still running)
 }
 
 interface TerminalContextType {
@@ -17,8 +18,10 @@ interface TerminalContextType {
   addTerminal: (options?: { title?: string; cwd?: string; shell?: string }) => string;
   removeTerminal: (id: string) => void;
   setActiveTerminal: (id: string) => void;
+  setTerminalByIndex: (index: number) => void;
   updateTerminalTitle: (id: string, title: string) => void;
   markPtyCreated: (id: string) => void;
+  setExitCode: (id: string, exitCode: number) => void;
 }
 
 const TerminalContext = createContext<TerminalContextType | undefined>(undefined);
@@ -79,6 +82,19 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setTerminals((prev) => prev.map((t) => (t.id === id ? { ...t, ptyCreated: true } : t)));
   }, []);
 
+  const setTerminalByIndex = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < terminals.length) {
+        setActiveTerminalId(terminals[index].id);
+      }
+    },
+    [terminals]
+  );
+
+  const setExitCode = useCallback((id: string, exitCode: number) => {
+    setTerminals((prev) => prev.map((t) => (t.id === id ? { ...t, exitCode } : t)));
+  }, []);
+
   // Note: We don't cleanup terminals on unmount because TerminalProvider
   // is at the app root level and terminals should persist across navigation.
   // PTYs are only killed when explicitly closed via removeTerminal().
@@ -91,8 +107,10 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         addTerminal,
         removeTerminal,
         setActiveTerminal,
+        setTerminalByIndex,
         updateTerminalTitle,
         markPtyCreated,
+        setExitCode,
       }}
     >
       {children}

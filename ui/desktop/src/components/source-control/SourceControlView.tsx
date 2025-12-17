@@ -108,7 +108,7 @@ const SourceControlView: React.FC = () => {
         <PanelGroup direction="horizontal" className="flex-1">
           {/* Left Panel - Changes/History + Commit */}
           <Panel defaultSize={35} minSize={25} maxSize={50}>
-            <div className="flex flex-col h-full bg-background-default">
+            <div className="flex flex-col h-full bg-background-default overflow-hidden">
               {hasChanges || sourceControl.activeTab === 'history' ? (
                 <>
                   <ChangesHistoryTabs
@@ -130,6 +130,7 @@ const SourceControlView: React.FC = () => {
                     isLoading={sourceControl.isLoading}
                   />
                   {sourceControl.activeTab === 'changes' && (
+                    <div className="flex-shrink-0">
                     <CommitPanel
                       summary={sourceControl.commitSummary}
                       description={sourceControl.commitDescription}
@@ -140,6 +141,7 @@ const SourceControlView: React.FC = () => {
                       currentBranch={sourceControl.repoState.currentBranch}
                       stagedCount={sourceControl.statusState.staged.length}
                     />
+                    </div>
                   )}
                 </>
               ) : (

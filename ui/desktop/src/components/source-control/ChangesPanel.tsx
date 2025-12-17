@@ -54,7 +54,7 @@ export const ChangesPanel: React.FC<ChangesPanelProps> = ({
   }
 
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="h-full">
       <div className="p-2">
         {/* Staged Changes */}
         {hasStaged && (

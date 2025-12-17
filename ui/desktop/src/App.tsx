@@ -40,7 +40,7 @@ import RecipesView from './components/recipes/RecipesView';
 import TerminalCenterView from './components/terminal/TerminalCenterView';
 import FolderTreeView from './components/folder-tree/FolderTreeView';
 import SourceControlView from './components/source-control/SourceControlView';
-import { TerminalProvider } from './components/terminal/TerminalContext';
+import { TerminalProvider, useTerminalContext } from './components/terminal/TerminalContext';
 import { View, ViewOptions } from './utils/navigationUtils';
 import { NoProviderOrModelError, useAgent } from './hooks/useAgent';
 import { useNavigation } from './hooks/useNavigation';
@@ -376,6 +376,8 @@ export function AppInner() {
 
   const { addExtension } = useConfig();
   const { loadCurrentChat } = useAgent();
+  const { addTerminal, terminals, setTerminalByIndex, removeTerminal, activeTerminalId } =
+    useTerminalContext();
 
   useEffect(() => {
     console.log('Sending reactReady signal to Electron');
@@ -455,8 +457,8 @@ export function AppInner() {
           console.error('Error creating new window:', error);
         }
       }
-      // Cmd/Ctrl+` for Terminal Center navigation
-      if ((isMac ? event.metaKey : event.ctrlKey) && event.key === '`') {
+      // Cmd/Ctrl+Shift+E for Terminal Center navigation
+      if ((isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key === 'e') {
         event.preventDefault();
         navigate('/terminal-center');
       }
@@ -470,12 +472,47 @@ export function AppInner() {
         event.preventDefault();
         navigate('/source-control');
       }
+      // Cmd/Ctrl+Shift+\ for New Terminal
+      if ((isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key === '\\') {
+        event.preventDefault();
+        if (terminals.length < 4) {
+          addTerminal();
+          navigate('/terminal-center');
+        }
+      }
+      // Alt+1-4 for terminal switching (when in Terminal Center)
+      if (event.altKey && ['1', '2', '3', '4'].includes(event.key)) {
+        const index = parseInt(event.key) - 1;
+        if (index < terminals.length) {
+          event.preventDefault();
+          setTerminalByIndex(index);
+          navigate('/terminal-center');
+        }
+      }
+      // Cmd/Ctrl+W to close active terminal (when in Terminal Center)
+      if (
+        (isMac ? event.metaKey : event.ctrlKey) &&
+        event.key === 'w' &&
+        location.pathname === '/terminal-center' &&
+        activeTerminalId
+      ) {
+        event.preventDefault();
+        removeTerminal(activeTerminalId);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [navigate]);
+  }, [
+    navigate,
+    addTerminal,
+    terminals,
+    setTerminalByIndex,
+    removeTerminal,
+    activeTerminalId,
+    location.pathname,
+  ]);
 
   // Prevent default drag and drop behavior globally to avoid opening files in new windows
   // but allow our React components to handle drops in designated areas

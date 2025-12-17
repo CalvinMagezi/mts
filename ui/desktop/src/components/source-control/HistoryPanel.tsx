@@ -54,7 +54,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
   }
 
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="h-full">
       <div className="p-2">
         {commits.map((commit) => (
           <button

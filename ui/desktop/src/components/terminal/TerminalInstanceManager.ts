@@ -1,11 +1,13 @@
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
+import { SearchAddon } from '@xterm/addon-search';
 
 interface TerminalInstance {
   terminal: Terminal;
   fitAddon: FitAddon;
   webLinksAddon: WebLinksAddon;
+  searchAddon: SearchAddon;
   isOpened: boolean;
 }
 
@@ -50,14 +52,17 @@ class TerminalInstanceManager {
 
     const fitAddon = new FitAddon();
     const webLinksAddon = new WebLinksAddon();
+    const searchAddon = new SearchAddon();
 
     terminal.loadAddon(fitAddon);
     terminal.loadAddon(webLinksAddon);
+    terminal.loadAddon(searchAddon);
 
     const instance: TerminalInstance = {
       terminal,
       fitAddon,
       webLinksAddon,
+      searchAddon,
       isOpened: false,
     };
 
@@ -186,6 +191,40 @@ class TerminalInstanceManager {
       }
     }
     return undefined;
+  }
+
+  // Search methods
+  findNext(terminalId: string, term: string): boolean {
+    const instance = this.instances.get(terminalId);
+    if (instance && term) {
+      return instance.searchAddon.findNext(term, { caseSensitive: false });
+    }
+    return false;
+  }
+
+  findPrevious(terminalId: string, term: string): boolean {
+    const instance = this.instances.get(terminalId);
+    if (instance && term) {
+      return instance.searchAddon.findPrevious(term, { caseSensitive: false });
+    }
+    return false;
+  }
+
+  clearSearch(terminalId: string): void {
+    const instance = this.instances.get(terminalId);
+    instance?.searchAddon.clearDecorations();
+  }
+
+  // Clear terminal content
+  clear(terminalId: string): void {
+    const instance = this.instances.get(terminalId);
+    instance?.terminal.clear();
+  }
+
+  // Get selected text
+  getSelection(terminalId: string): string {
+    const instance = this.instances.get(terminalId);
+    return instance?.terminal.getSelection() || '';
   }
 }
 
