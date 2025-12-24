@@ -4,6 +4,7 @@ import { Recipe } from './recipe';
 interface NotificationData {
   title: string;
   body: string;
+  data?: Record<string, unknown>;
 }
 
 interface MessageBoxOptions {
@@ -229,6 +230,16 @@ type ElectronAPI = {
     body?: string;
     stats: string;
   } | null>;
+
+  // Browser control APIs
+  browserExecuteScript: (webviewId: string, script: string) => Promise<any>;
+  browserGetDOM: (webviewId: string, selector?: string) => Promise<string>;
+  browserClick: (webviewId: string, selector: string) => Promise<boolean>;
+  browserType: (webviewId: string, selector: string, text: string) => Promise<boolean>;
+  browserScreenshot: (webviewId: string) => Promise<string>; // returns base64
+  browserNavigate: (webviewId: string, url: string) => Promise<void>;
+  browserOnNavigate: (callback: (url: string) => void) => () => void; // returns cleanup function
+  browserOnLoadingChange: (callback: (loading: boolean) => void) => () => void; // returns cleanup function
 };
 
 type AppConfigAPI = {
@@ -424,6 +435,30 @@ const electronAPI: ElectronAPI = {
   gitStashPop: (cwd: string, index?: number) => ipcRenderer.invoke('git-stash-pop', cwd, index),
   gitStashDrop: (cwd: string, index: number) => ipcRenderer.invoke('git-stash-drop', cwd, index),
   gitShowCommit: (cwd: string, hash: string) => ipcRenderer.invoke('git-show-commit', cwd, hash),
+
+  // Browser control implementations
+  browserExecuteScript: (webviewId: string, script: string) =>
+    ipcRenderer.invoke('browser-execute-script', webviewId, script),
+  browserGetDOM: (webviewId: string, selector?: string) =>
+    ipcRenderer.invoke('browser-get-dom', webviewId, selector),
+  browserClick: (webviewId: string, selector: string) =>
+    ipcRenderer.invoke('browser-click', webviewId, selector),
+  browserType: (webviewId: string, selector: string, text: string) =>
+    ipcRenderer.invoke('browser-type', webviewId, selector, text),
+  browserScreenshot: (webviewId: string) =>
+    ipcRenderer.invoke('browser-screenshot', webviewId),
+  browserNavigate: (webviewId: string, url: string) =>
+    ipcRenderer.invoke('browser-navigate', webviewId, url),
+  browserOnNavigate: (callback: (url: string) => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, url: string) => callback(url);
+    ipcRenderer.on('browser-navigate-event', listener);
+    return () => ipcRenderer.removeListener('browser-navigate-event', listener);
+  },
+  browserOnLoadingChange: (callback: (loading: boolean) => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, loading: boolean) => callback(loading);
+    ipcRenderer.on('browser-loading-change-event', listener);
+    return () => ipcRenderer.removeListener('browser-loading-change-event', listener);
+  },
 };
 
 const appConfigAPI: AppConfigAPI = {

@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { AlertCircle, X } from 'lucide-react';
 import { MainPanelLayout } from '../Layout/MainPanelLayout';
 import { Button } from '../ui/button';
 import { useSourceControl } from './useSourceControl';
+import { useModelAndProvider } from '../ModelAndProviderContext';
 import { RepositoryHeader } from './RepositoryHeader';
 import { ChangesHistoryTabs } from './ChangesHistoryTabs';
 import { CommitPanel } from './CommitPanel';
@@ -12,7 +13,17 @@ import { DiffView } from './DiffView';
 import { EmptyStateView } from './EmptyStateView';
 
 const SourceControlView: React.FC = () => {
-  const sourceControl = useSourceControl();
+  const { getCurrentModelAndProvider } = useModelAndProvider();
+
+  const getProviderAndModel = useMemo(
+    () => async () => {
+      const result = await getCurrentModelAndProvider();
+      return { provider: result.provider, model: result.model };
+    },
+    [getCurrentModelAndProvider]
+  );
+
+  const sourceControl = useSourceControl({ getProviderAndModel });
 
   const handleSelectFolder = useCallback(async () => {
     const result = await window.electron.directoryChooser();
@@ -137,9 +148,16 @@ const SourceControlView: React.FC = () => {
                       onSummaryChange={sourceControl.setCommitSummary}
                       onDescriptionChange={sourceControl.setCommitDescription}
                       onCommit={sourceControl.commit}
+                      onGenerateCommitMessage={sourceControl.generateCommitMessage}
                       isCommitting={sourceControl.isCommitting}
+                      isGeneratingCommitMessage={sourceControl.isGeneratingCommitMessage}
                       currentBranch={sourceControl.repoState.currentBranch}
                       stagedCount={sourceControl.statusState.staged.length}
+                      totalChangesCount={
+                        sourceControl.statusState.staged.length +
+                        sourceControl.statusState.unstaged.length +
+                        sourceControl.statusState.untracked.length
+                      }
                     />
                     </div>
                   )}

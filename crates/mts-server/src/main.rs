@@ -1,3 +1,4 @@
+mod background_tasks;
 mod commands;
 mod configuration;
 mod error;
@@ -11,7 +12,8 @@ use clap::{Parser, Subcommand};
 use mts::config::paths::Paths;
 use mts_mcp::{
     mcp_server_runner::{serve, McpCommand},
-    AutoVisualiserRouter, ComputerControllerServer, DeveloperServer, MemoryServer, TutorialServer,
+    AutoVisualiserRouter, BrowserServer, ComputerControllerServer, DeveloperServer, MemoryServer,
+    TutorialServer,
 };
 
 #[derive(Parser)]
@@ -56,6 +58,11 @@ async fn main() -> anyhow::Result<()> {
                             .bash_env_file(Some(bash_env)),
                     )
                     .await?
+                }
+                McpCommand::Browser => {
+                    let server_url = std::env::var("MTS_SERVER_URL")
+                        .unwrap_or_else(|_| "http://localhost:3000".to_string());
+                    serve(BrowserServer::new(server_url)).await?
                 }
             }
         }

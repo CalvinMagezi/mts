@@ -1589,10 +1589,9 @@ fn configure_recipe_dialog() -> anyhow::Result<()> {
     let default_recipe_repo = std::env::var(key_name)
         .ok()
         .or_else(|| config.get_param(key_name).unwrap_or(None));
-    let mut recipe_repo_input = cliclack::input(
-        "Enter your mts recipe Github repo (owner/repo): eg: my_org/mts-recipes",
-    )
-    .required(false);
+    let mut recipe_repo_input =
+        cliclack::input("Enter your mts recipe Github repo (owner/repo): eg: my_org/mts-recipes")
+            .required(false);
     if let Some(recipe_repo) = default_recipe_repo {
         recipe_repo_input = recipe_repo_input.default_input(&recipe_repo);
     }

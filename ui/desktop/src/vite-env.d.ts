@@ -50,6 +50,17 @@ declare global {
   interface Window {
     isCreatingRecipe?: boolean;
   }
+  namespace JSX {
+    interface IntrinsicElements {
+      webview: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        src?: string;
+        partition?: string;
+        allowpopups?: string;
+        webpreferences?: string;
+        preload?: string;
+      };
+    }
+  }
 }
 
 export {};

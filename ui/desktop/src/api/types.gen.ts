@@ -336,11 +336,40 @@ export type ExtensionResponse = {
     extensions: Array<ExtensionEntry>;
 };
 
+export type FilenameMatch = {
+    name: string;
+    path: string;
+};
+
 export type FrontendToolRequest = {
     id: string;
     toolCall: {
         [key: string]: unknown;
     };
+};
+
+export type GenerateCommitMessageRequest = {
+    diff: string;
+    model: string;
+    provider: string;
+};
+
+export type GenerateCommitMessageResponse = {
+    description: string;
+    summary: string;
+};
+
+export type GenerateDiagramRequest = {
+    diagram_type: string;
+    edit_mode?: boolean;
+    existing_elements?: string | null;
+    model: string;
+    prompt: string;
+    provider: string;
+};
+
+export type GenerateDiagramResponse = {
+    diagram_json: string;
 };
 
 export type GetToolsQuery = {
@@ -672,6 +701,23 @@ export type RemoveExtensionRequest = {
     session_id: string;
 };
 
+export type ReplaceRequest = {
+    caseSensitive?: boolean;
+    excludePattern?: string | null;
+    filePaths?: Array<string> | null;
+    includePattern?: string | null;
+    query: string;
+    replacement: string;
+    useRegex?: boolean;
+    wholeWord?: boolean;
+    workingDir: string;
+};
+
+export type ReplaceResponse = {
+    filesModified: number;
+    totalReplacements: number;
+};
+
 export type ResourceContents = {
     _meta?: {
         [key: string]: unknown;
@@ -760,6 +806,45 @@ export type ScheduledJob = {
     paused?: boolean;
     process_start_time?: string | null;
     source: string;
+};
+
+export type SearchFilenamesRequest = {
+    maxResults?: number | null;
+    query: string;
+    workingDir: string;
+};
+
+export type SearchFilenamesResponse = {
+    matches: Array<FilenameMatch>;
+    truncated: boolean;
+};
+
+export type SearchFilesRequest = {
+    caseSensitive?: boolean;
+    contextLines?: number | null;
+    excludePattern?: string | null;
+    includePattern?: string | null;
+    maxResults?: number | null;
+    query: string;
+    useRegex?: boolean;
+    wholeWord?: boolean;
+    workingDir: string;
+};
+
+export type SearchFilesResponse = {
+    matches: Array<SearchMatch>;
+    totalFiles: number;
+    totalMatches: number;
+    truncated: boolean;
+};
+
+export type SearchMatch = {
+    column: number;
+    contextAfter: Array<string>;
+    contextBefore: Array<string>;
+    filePath: string;
+    lineNumber: number;
+    lineText: string;
 };
 
 export type Session = {
@@ -1659,6 +1744,60 @@ export type RemoveExtensionResponses = {
 };
 
 export type RemoveExtensionResponse = RemoveExtensionResponses[keyof RemoveExtensionResponses];
+
+export type GenerateCommitMessageData = {
+    body: GenerateCommitMessageRequest;
+    path?: never;
+    query?: never;
+    url: '/config/generate-commit-message';
+};
+
+export type GenerateCommitMessageErrors = {
+    /**
+     * Invalid request or provider not configured
+     */
+    400: unknown;
+    /**
+     * Internal server error
+     */
+    500: unknown;
+};
+
+export type GenerateCommitMessageResponses = {
+    /**
+     * Commit message generated successfully
+     */
+    200: GenerateCommitMessageResponse;
+};
+
+export type GenerateCommitMessageResponse2 = GenerateCommitMessageResponses[keyof GenerateCommitMessageResponses];
+
+export type GenerateDiagramData = {
+    body: GenerateDiagramRequest;
+    path?: never;
+    query?: never;
+    url: '/config/generate-diagram';
+};
+
+export type GenerateDiagramErrors = {
+    /**
+     * Invalid request or provider not configured
+     */
+    400: unknown;
+    /**
+     * Internal server error
+     */
+    500: unknown;
+};
+
+export type GenerateDiagramResponses = {
+    /**
+     * Diagram generated successfully
+     */
+    200: GenerateDiagramResponse;
+};
+
+export type GenerateDiagramResponse2 = GenerateDiagramResponses[keyof GenerateDiagramResponses];
 
 export type InitConfigData = {
     body?: never;
@@ -2564,6 +2703,91 @@ export type UnpauseScheduleResponses = {
 };
 
 export type UnpauseScheduleResponse = UnpauseScheduleResponses[keyof UnpauseScheduleResponses];
+
+export type SearchFilenamesData = {
+    body: SearchFilenamesRequest;
+    path?: never;
+    query?: never;
+    url: '/search/filenames';
+};
+
+export type SearchFilenamesErrors = {
+    /**
+     * Unauthorized - invalid secret key
+     */
+    401: unknown;
+    /**
+     * Internal server error
+     */
+    500: unknown;
+};
+
+export type SearchFilenamesResponses = {
+    /**
+     * Filename search completed successfully
+     */
+    200: SearchFilenamesResponse;
+};
+
+export type SearchFilenamesResponse2 = SearchFilenamesResponses[keyof SearchFilenamesResponses];
+
+export type SearchFilesData = {
+    body: SearchFilesRequest;
+    path?: never;
+    query?: never;
+    url: '/search/files';
+};
+
+export type SearchFilesErrors = {
+    /**
+     * Unauthorized - invalid secret key
+     */
+    401: unknown;
+    /**
+     * Internal server error
+     */
+    500: unknown;
+};
+
+export type SearchFilesResponses = {
+    /**
+     * Search completed successfully
+     */
+    200: SearchFilesResponse;
+};
+
+export type SearchFilesResponse2 = SearchFilesResponses[keyof SearchFilesResponses];
+
+export type ReplaceInFilesData = {
+    body: ReplaceRequest;
+    path?: never;
+    query?: never;
+    url: '/search/replace';
+};
+
+export type ReplaceInFilesErrors = {
+    /**
+     * Bad request - invalid regex pattern
+     */
+    400: unknown;
+    /**
+     * Unauthorized - invalid secret key
+     */
+    401: unknown;
+    /**
+     * Internal server error
+     */
+    500: unknown;
+};
+
+export type ReplaceInFilesResponses = {
+    /**
+     * Replace operation completed successfully
+     */
+    200: ReplaceResponse;
+};
+
+export type ReplaceInFilesResponse = ReplaceInFilesResponses[keyof ReplaceInFilesResponses];
 
 export type ListSessionsData = {
     body?: never;

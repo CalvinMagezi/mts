@@ -7,6 +7,8 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+use crate::background_tasks::BackgroundTaskManager;
+use crate::routes::browser::BrowserSessionManager;
 use crate::tunnel::TunnelManager;
 
 #[derive(Clone)]
@@ -17,12 +19,18 @@ pub struct AppState {
     /// Tracks sessions that have already emitted recipe telemetry to prevent double counting.
     recipe_session_tracker: Arc<Mutex<HashSet<String>>>,
     pub tunnel_manager: Arc<TunnelManager>,
+    /// Manages background agent tasks that continue running when clients disconnect
+    pub background_tasks: Arc<BackgroundTaskManager>,
+    /// Manages the browser WebSocket connection and state
+    pub browser_manager: Arc<BrowserSessionManager>,
 }
 
 impl AppState {
     pub async fn new() -> anyhow::Result<Arc<AppState>> {
         let agent_manager = AgentManager::instance().await?;
         let tunnel_manager = Arc::new(TunnelManager::new());
+        let background_tasks = Arc::new(BackgroundTaskManager::new());
+        let browser_manager = Arc::new(BrowserSessionManager::new());
 
         Ok(Arc::new(Self {
             agent_manager,
@@ -30,6 +38,8 @@ impl AppState {
             session_counter: Arc::new(AtomicUsize::new(0)),
             recipe_session_tracker: Arc::new(Mutex::new(HashSet::new())),
             tunnel_manager,
+            background_tasks,
+            browser_manager,
         }))
     }
 

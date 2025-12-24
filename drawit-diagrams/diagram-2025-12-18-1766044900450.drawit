@@ -1,0 +1,268 @@
+{
+  "width": 800,
+  "height": 600,
+  "background": "#ffffff",
+  "elements": [
+    {
+      "id": "el_mjb5j8u8_rv4vvtr",
+      "type": "node",
+      "properties": {
+        "id": "el_mjb5j8u8_rv4vvtr",
+        "type": "node",
+        "position": {
+          "x": 280,
+          "y": 80
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#12141A",
+          "strokeStyle": "#1DE52F",
+          "lineWidth": 2
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 110,
+          "height": 100
+        },
+        "shape": "hexagon",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "vertex-0",
+            "position": {
+              "x": 55,
+              "y": 0
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "vertex-1",
+            "position": {
+              "x": 98.30127018922192,
+              "y": 25
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "vertex-2",
+            "position": {
+              "x": 98.30127018922194,
+              "y": 75
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "vertex-3",
+            "position": {
+              "x": 55,
+              "y": 100
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "vertex-4",
+            "position": {
+              "x": 11.698729810778076,
+              "y": 75.00000000000001
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "vertex-5",
+            "position": {
+              "x": 11.698729810778048,
+              "y": 25.000000000000032
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "edge-0",
+            "position": {
+              "x": 76.65063509461096,
+              "y": 12.5
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "edge-1",
+            "position": {
+              "x": 98.30127018922192,
+              "y": 50
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "edge-2",
+            "position": {
+              "x": 76.65063509461098,
+              "y": 87.5
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "edge-3",
+            "position": {
+              "x": 33.34936490538904,
+              "y": 87.5
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "edge-4",
+            "position": {
+              "x": 11.698729810778062,
+              "y": 50.00000000000002
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "edge-5",
+            "position": {
+              "x": 33.349364905389024,
+              "y": 12.500000000000016
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "center",
+            "position": {
+              "x": 55,
+              "y": 50
+            },
+            "size": 8,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          }
+        ],
+        "text": {
+          "0": "H",
+          "1": "e",
+          "2": "x",
+          "3": "a",
+          "4": "g",
+          "5": "o",
+          "6": "n",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "name": "diagram-2025-12-18",
+    "elementCount": 1,
+    "diagramType": "flowchart",
+    "createdAt": 1766044900450,
+    "modifiedAt": 1766044900450
+  }
+}

@@ -226,10 +226,8 @@ impl ModelRunner {
                 if shim_opt.use_tool_shim {
                     shim_envs.push(("MTS_TOOLSHIM".to_string(), "true".to_string()));
                     if let Some(shim_model) = &shim_opt.tool_shim_model {
-                        shim_envs.push((
-                            "MTS_TOOLSHIM_OLLAMA_MODEL".to_string(),
-                            shim_model.clone(),
-                        ));
+                        shim_envs
+                            .push(("MTS_TOOLSHIM_OLLAMA_MODEL".to_string(), shim_model.clone()));
                     }
                 }
             }

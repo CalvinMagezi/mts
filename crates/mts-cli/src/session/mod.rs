@@ -23,13 +23,13 @@ use mts::utils::safe_truncate;
 
 use anyhow::{Context, Result};
 use completion::MTSCompleter;
+use input::InputResult;
 use mts::agents::extension::{Envs, ExtensionConfig, PLATFORM_EXTENSIONS};
 use mts::agents::types::RetryConfig;
 use mts::agents::{Agent, SessionConfig, MANUAL_COMPACT_TRIGGERS};
 use mts::config::{Config, MtsMode};
 use mts::providers::pricing::initialize_pricing_cache;
 use mts::session::SessionManager;
-use input::InputResult;
 use rmcp::model::PromptMessage;
 use rmcp::model::ServerNotification;
 use rmcp::model::{ErrorCode, ErrorData};
@@ -1557,8 +1557,7 @@ async fn get_reasoner() -> Result<Arc<dyn Provider>, anyhow::Error> {
             .expect("No model configured. Run 'mts configure' first")
     };
 
-    let model_config =
-        ModelConfig::new_with_context_env(model, Some("MTS_PLANNER_CONTEXT_LIMIT"))?;
+    let model_config = ModelConfig::new_with_context_env(model, Some("MTS_PLANNER_CONTEXT_LIMIT"))?;
     let reasoner = create(&provider, model_config).await?;
 
     Ok(reasoner)

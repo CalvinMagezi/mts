@@ -276,11 +276,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_create_lead_worker_provider() {
-        let _guard = EnvVarGuard::new(&[
-            "MTS_LEAD_MODEL",
-            "MTS_LEAD_PROVIDER",
-            "MTS_LEAD_TURNS",
-        ]);
+        let _guard = EnvVarGuard::new(&["MTS_LEAD_MODEL", "MTS_LEAD_PROVIDER", "MTS_LEAD_TURNS"]);
 
         _guard.set("MTS_LEAD_MODEL", "gpt-4o");
 

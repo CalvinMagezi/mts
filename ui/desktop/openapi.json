@@ -2,10 +2,9 @@
   "openapi": "3.0.3",
   "info": {
     "title": "mts-server",
-    "description": "An AI agent",
+    "description": "MTS - An AI agent by Magezi Tech Solutions",
     "contact": {
-      "name": "Block",
-      "email": "ai-oss-tools@block.xyz"
+      "name": "Magezi Tech Solutions"
     },
     "license": {
       "name": "Apache-2.0"
@@ -791,6 +790,78 @@
           },
           "404": {
             "description": "Extension not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/config/generate-commit-message": {
+      "post": {
+        "tags": [
+          "super::routes::config_management"
+        ],
+        "operationId": "generate_commit_message",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateCommitMessageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Commit message generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateCommitMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or provider not configured"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/config/generate-diagram": {
+      "post": {
+        "tags": [
+          "super::routes::config_management"
+        ],
+        "operationId": "generate_diagram",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateDiagramRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Diagram generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateDiagramResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or provider not configured"
           },
           "500": {
             "description": "Internal server error"
@@ -1944,6 +2015,117 @@
           },
           "404": {
             "description": "Scheduled job not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/search/filenames": {
+      "post": {
+        "tags": [
+          "super::routes::search"
+        ],
+        "operationId": "search_filenames",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFilenamesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Filename search completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchFilenamesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid secret key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/search/files": {
+      "post": {
+        "tags": [
+          "super::routes::search"
+        ],
+        "operationId": "search_files",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFilesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Search completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchFilesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid secret key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/search/replace": {
+      "post": {
+        "tags": [
+          "super::routes::search"
+        ],
+        "operationId": "replace_in_files",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Replace operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid regex pattern"
+          },
+          "401": {
+            "description": "Unauthorized - invalid secret key"
           },
           "500": {
             "description": "Internal server error"
@@ -3511,6 +3693,21 @@
           }
         }
       },
+      "FilenameMatch": {
+        "type": "object",
+        "required": [
+          "path",
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      },
       "FrontendToolRequest": {
         "type": "object",
         "required": [
@@ -3523,6 +3720,81 @@
           },
           "toolCall": {
             "type": "object"
+          }
+        }
+      },
+      "GenerateCommitMessageRequest": {
+        "type": "object",
+        "required": [
+          "diff",
+          "provider",
+          "model"
+        ],
+        "properties": {
+          "diff": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          }
+        }
+      },
+      "GenerateCommitMessageResponse": {
+        "type": "object",
+        "required": [
+          "summary",
+          "description"
+        ],
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      },
+      "GenerateDiagramRequest": {
+        "type": "object",
+        "required": [
+          "prompt",
+          "diagram_type",
+          "provider",
+          "model"
+        ],
+        "properties": {
+          "diagram_type": {
+            "type": "string"
+          },
+          "edit_mode": {
+            "type": "boolean"
+          },
+          "existing_elements": {
+            "type": "string",
+            "nullable": true
+          },
+          "model": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          }
+        }
+      },
+      "GenerateDiagramResponse": {
+        "type": "object",
+        "required": [
+          "diagram_json"
+        ],
+        "properties": {
+          "diagram_json": {
+            "type": "string"
           }
         }
       },
@@ -4634,6 +4906,66 @@
           }
         }
       },
+      "ReplaceRequest": {
+        "type": "object",
+        "required": [
+          "query",
+          "replacement",
+          "workingDir"
+        ],
+        "properties": {
+          "caseSensitive": {
+            "type": "boolean"
+          },
+          "excludePattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "filePaths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "includePattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "query": {
+            "type": "string"
+          },
+          "replacement": {
+            "type": "string"
+          },
+          "useRegex": {
+            "type": "boolean"
+          },
+          "wholeWord": {
+            "type": "boolean"
+          },
+          "workingDir": {
+            "type": "string"
+          }
+        }
+      },
+      "ReplaceResponse": {
+        "type": "object",
+        "required": [
+          "filesModified",
+          "totalReplacements"
+        ],
+        "properties": {
+          "filesModified": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalReplacements": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
       "ResourceContents": {
         "anyOf": [
           {
@@ -4866,6 +5198,154 @@
             "nullable": true
           },
           "source": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchFilenamesRequest": {
+        "type": "object",
+        "required": [
+          "query",
+          "workingDir"
+        ],
+        "properties": {
+          "maxResults": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0
+          },
+          "query": {
+            "type": "string"
+          },
+          "workingDir": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchFilenamesResponse": {
+        "type": "object",
+        "required": [
+          "matches",
+          "truncated"
+        ],
+        "properties": {
+          "matches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilenameMatch"
+            }
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SearchFilesRequest": {
+        "type": "object",
+        "required": [
+          "query",
+          "workingDir"
+        ],
+        "properties": {
+          "caseSensitive": {
+            "type": "boolean"
+          },
+          "contextLines": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "minimum": 0
+          },
+          "excludePattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "includePattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "maxResults": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0
+          },
+          "query": {
+            "type": "string"
+          },
+          "useRegex": {
+            "type": "boolean"
+          },
+          "wholeWord": {
+            "type": "boolean"
+          },
+          "workingDir": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchFilesResponse": {
+        "type": "object",
+        "required": [
+          "matches",
+          "totalFiles",
+          "totalMatches",
+          "truncated"
+        ],
+        "properties": {
+          "matches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchMatch"
+            }
+          },
+          "totalFiles": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalMatches": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SearchMatch": {
+        "type": "object",
+        "required": [
+          "filePath",
+          "lineNumber",
+          "column",
+          "lineText",
+          "contextBefore",
+          "contextAfter"
+        ],
+        "properties": {
+          "column": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "contextAfter": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "contextBefore": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "lineNumber": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lineText": {
             "type": "string"
           }
         }

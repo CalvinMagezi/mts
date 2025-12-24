@@ -18,3 +18,11 @@ export interface FilePreviewState {
   isImage: boolean;
   imagePath: string | null;
 }
+
+export interface OpenFile {
+  node: FileNode;
+  content: string;
+  originalContent: string;
+  isDirty: boolean;
+  language: string;
+}

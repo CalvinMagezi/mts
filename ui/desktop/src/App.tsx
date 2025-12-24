@@ -17,6 +17,10 @@ import AnnouncementModal from './components/AnnouncementModal';
 import TelemetryOptOutModal from './components/TelemetryOptOutModal';
 import ProviderGuard from './components/ProviderGuard';
 import { createSession } from './sessions';
+import { ActiveSessionProvider, useActiveSession } from './contexts/ActiveSessionContext';
+import { BrowserAgentProvider } from './contexts/BrowserAgentContext';
+import { useGlobalStream } from './hooks/useGlobalStream';
+import { BackgroundTaskIndicator } from './components/BackgroundTaskIndicator';
 
 import { ChatType } from './types/chat';
 import Hub from './components/Hub';
@@ -40,6 +44,9 @@ import RecipesView from './components/recipes/RecipesView';
 import TerminalCenterView from './components/terminal/TerminalCenterView';
 import FolderTreeView from './components/folder-tree/FolderTreeView';
 import SourceControlView from './components/source-control/SourceControlView';
+import CanvasView from './components/canvas/CanvasView';
+import BrowserView from './components/browser/BrowserView';
+import SearchView from './components/search/SearchView';
 import { TerminalProvider, useTerminalContext } from './components/terminal/TerminalContext';
 import { View, ViewOptions } from './utils/navigationUtils';
 import { NoProviderOrModelError, useAgent } from './hooks/useAgent';
@@ -363,6 +370,10 @@ export function AppInner() {
   const setView = useNavigation();
   const location = useLocation();
 
+  // Global stream manager for background agent tasks
+  const { activeSession } = useActiveSession();
+  useGlobalStream(); // Maintains connection to background tasks and triggers notifications
+
   const [chat, setChat] = useState<ChatType>({
     sessionId: '',
     name: 'Pair Chat',
@@ -471,6 +482,11 @@ export function AppInner() {
       if ((isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key === 's') {
         event.preventDefault();
         navigate('/source-control');
+      }
+      // Cmd/Ctrl+Shift+M for Browser navigation
+      if ((isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key === 'm') {
+        event.preventDefault();
+        navigate('/browser');
       }
       // Cmd/Ctrl+Shift+\ for New Terminal
       if ((isMac ? event.metaKey : event.ctrlKey) && event.shiftKey && event.key === '\\') {
@@ -588,6 +604,35 @@ export function AppInner() {
 
     window.electron.on('set-view', handleSetView);
     return () => window.electron.off('set-view', handleSetView);
+  }, [navigate]);
+
+  // Handle Cmd+T to return to active chat
+  useEffect(() => {
+    const handleReturnToActiveChat = (_event: IpcRendererEvent) => {
+      if (activeSession.sessionId) {
+        // Navigate to the active chat session
+        navigate(`/pair?resumeSessionId=${activeSession.sessionId}`);
+      } else {
+        // No active session, go to hub
+        navigate('/');
+      }
+    };
+
+    window.electron.on('return-to-active-chat', handleReturnToActiveChat);
+    return () => window.electron.off('return-to-active-chat', handleReturnToActiveChat);
+  }, [activeSession.sessionId, navigate]);
+
+  // Handle notification click navigation
+  useEffect(() => {
+    const handleNavigateToChat = (_event: IpcRendererEvent, ...args: unknown[]) => {
+      const sessionId = args[0] as string;
+      if (sessionId) {
+        navigate(`/pair?resumeSessionId=${sessionId}`);
+      }
+    };
+
+    window.electron.on('navigate-to-chat', handleNavigateToChat);
+    return () => window.electron.off('navigate-to-chat', handleNavigateToChat);
   }, [navigate]);
 
   useEffect(() => {
@@ -736,7 +781,10 @@ export function AppInner() {
             <Route path="recipes" element={<RecipesRoute />} />
             <Route path="terminal-center" element={<TerminalCenterView />} />
             <Route path="folder-tree" element={<FolderTreeView />} />
+            <Route path="search" element={<SearchView />} />
             <Route path="source-control" element={<SourceControlView />} />
+            <Route path="canvas" element={<CanvasView />} />
+            <Route path="browser" element={<BrowserView />} />
             <Route
               path="shared-session"
               element={
@@ -758,13 +806,18 @@ export function AppInner() {
 export default function App() {
   return (
     <ModelAndProviderProvider>
-      <HashRouter>
-        <TerminalProvider>
-          <AppInner />
-        </TerminalProvider>
-        <AnnouncementModal />
-        <TelemetryOptOutModal controlled={false} />
-      </HashRouter>
+      <ActiveSessionProvider>
+        <HashRouter>
+          <BrowserAgentProvider>
+            <TerminalProvider>
+              <AppInner />
+              <BackgroundTaskIndicator />
+            </TerminalProvider>
+            <AnnouncementModal />
+            <TelemetryOptOutModal controlled={false} />
+          </BrowserAgentProvider>
+        </HashRouter>
+      </ActiveSessionProvider>
     </ModelAndProviderProvider>
   );
 }

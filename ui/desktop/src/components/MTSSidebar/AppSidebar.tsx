@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FileText, Clock, Home, Puzzle, History, Terminal, FolderTree, GitBranch } from 'lucide-react';
+import { FileText, Clock, Home, Puzzle, History, Terminal, FolderTree, Search, GitBranch, LayoutDashboard, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   SidebarContent,
@@ -101,10 +101,31 @@ const menuItems: NavigationEntry[] = [
   },
   {
     type: 'item',
+    path: '/search',
+    label: 'Search',
+    icon: Search,
+    tooltip: 'Search files and code',
+  },
+  {
+    type: 'item',
     path: '/source-control',
     label: 'Source Control',
     icon: GitBranch,
     tooltip: 'Git source control',
+  },
+  {
+    type: 'item',
+    path: '/canvas',
+    label: 'Canvas',
+    icon: LayoutDashboard,
+    tooltip: 'AI-powered diagram editor',
+  },
+  {
+    type: 'item',
+    path: '/browser',
+    label: 'Browser',
+    icon: Globe,
+    tooltip: 'Web Browser',
   },
   { type: 'separator' },
   {

@@ -20,6 +20,7 @@ import {
   NotificationEvent,
 } from '../types/message';
 import { errorMessage } from '../utils/conversionUtils';
+import { useActiveSession } from '../contexts/ActiveSessionContext';
 
 const resultsCache = new Map<string, { messages: Message[]; session: Session }>();
 
@@ -169,6 +170,9 @@ export function useChatStream({
   const [notifications, setNotifications] = useState<NotificationEvent[]>([]);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Track active session for background task management
+  const { activeSession, setActiveSession, updateStatus } = useActiveSession();
+
   useEffect(() => {
     if (session) {
       resultsCache.set(sessionId, { session, messages });
@@ -188,6 +192,9 @@ export function useChatStream({
     async (error?: string): Promise<void> => {
       if (error) {
         setSessionLoadError(error);
+        updateStatus('error');
+      } else {
+        updateStatus('completed');
       }
 
       const isNewSession = sessionId && sessionId.match(/^\d{8}_\d{6}$/);
@@ -201,8 +208,11 @@ export function useChatStream({
       setChatState(ChatState.Idle);
       onStreamFinish();
     },
-    [onStreamFinish, sessionId]
+    [onStreamFinish, sessionId, updateStatus]
   );
+
+  // Track previous agent status to detect when task completes in background
+  const prevAgentStatusRef = useRef(activeSession.agentStatus);
 
   // Load session on mount or sessionId change
   useEffect(() => {
@@ -256,6 +266,45 @@ export function useChatStream({
     };
   }, [sessionId, updateMessages, onSessionLoaded]);
 
+  // Reload session when agent completes in background (status changes from 'running' to something else)
+  useEffect(() => {
+    const prevStatus = prevAgentStatusRef.current;
+    const currentStatus = activeSession.agentStatus;
+
+    // If status changed from 'running' to 'completed'/'idle' and this is our session, reload
+    if (
+      prevStatus === 'running' &&
+      (currentStatus === 'completed' || currentStatus === 'idle') &&
+      activeSession.sessionId === sessionId &&
+      chatState !== ChatState.Streaming
+    ) {
+      // Clear cache to force fresh load
+      resultsCache.delete(sessionId);
+
+      // Reload session from backend
+      (async () => {
+        try {
+          const response = await resumeAgent({
+            body: {
+              session_id: sessionId,
+              load_model_and_extensions: false, // Don't reload extensions, just get messages
+            },
+            throwOnError: true,
+          });
+
+          const session = response.data;
+          setSession(session);
+          updateMessages(session?.conversation || []);
+        } catch (error) {
+          console.error('Failed to reload session after background completion:', error);
+        }
+      })();
+    }
+
+    // Always update ref after checking (do this at the end to not interfere with the check)
+    prevAgentStatusRef.current = currentStatus;
+  }, [activeSession.agentStatus, activeSession.sessionId, sessionId, chatState, updateMessages]);
+
   const handleSubmit = useCallback(
     async (userMessage: string) => {
       // Guard: Don't submit if session hasn't been loaded yet
@@ -290,6 +339,9 @@ export function useChatStream({
       setNotifications([]);
       abortControllerRef.current = new AbortController();
 
+      // Mark this session as active with running agent
+      setActiveSession(sessionId, 'running');
+
       try {
         const { stream } = await reply({
           body: {
@@ -319,7 +371,7 @@ export function useChatStream({
         }
       }
     },
-    [sessionId, session, chatState, updateMessages, updateNotifications, onFinish]
+    [sessionId, session, chatState, updateMessages, updateNotifications, onFinish, setActiveSession]
   );
 
   const submitElicitationResponse = useCallback(

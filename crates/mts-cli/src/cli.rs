@@ -4,7 +4,7 @@ use clap::{Args, Parser, Subcommand};
 use mts::config::{Config, ExtensionConfig};
 use mts_mcp::mcp_server_runner::{serve, McpCommand};
 use mts_mcp::{
-    AutoVisualiserRouter, ComputerControllerServer, DeveloperServer, MemoryServer, TutorialServer,
+    AutoVisualiserRouter, BrowserServer, ComputerControllerServer, DeveloperServer, MemoryServer, TutorialServer,
 };
 
 use crate::commands::acp::run_acp_agent;
@@ -989,6 +989,13 @@ pub async fn cli() -> anyhow::Result<()> {
             crate::logging::setup_logging(Some(&format!("mcp-{name}")), None)?;
             match server {
                 McpCommand::AutoVisualiser => serve(AutoVisualiserRouter::new()).await?,
+                McpCommand::Browser => {
+                    // BrowserServer needs the server URL to connect to
+                    // Default to localhost:3000, can be configured via env var
+                    let server_url = std::env::var("MTS_SERVER_URL")
+                        .unwrap_or_else(|_| "http://localhost:3000".to_string());
+                    serve(BrowserServer::new(server_url)).await?
+                }
                 McpCommand::ComputerController => serve(ComputerControllerServer::new()).await?,
                 McpCommand::Memory => serve(MemoryServer::new()).await?,
                 McpCommand::Tutorial => serve(TutorialServer::new()).await?,

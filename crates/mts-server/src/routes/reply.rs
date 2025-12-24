@@ -1,9 +1,9 @@
 use crate::state::AppState;
 use axum::{
-    extract::{DefaultBodyLimit, State},
+    extract::{DefaultBodyLimit, Path, State},
     http::{self, StatusCode},
     response::IntoResponse,
-    routing::post,
+    routing::{get, post},
     Json, Router,
 };
 use bytes::Bytes;
@@ -21,7 +21,7 @@ use std::{
     task::{Context, Poll},
     time::Duration,
 };
-use tokio::sync::mpsc;
+use tokio::sync::{broadcast, mpsc};
 use tokio::time::timeout;
 use tokio_stream::wrappers::ReceiverStream;
 use tokio_util::sync::CancellationToken;
@@ -115,7 +115,7 @@ impl IntoResponse for SseResponse {
     }
 }
 
-#[derive(Debug, Serialize, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, utoipa::ToSchema)]
 #[serde(tag = "type")]
 pub enum MessageEvent {
     Message {
@@ -165,10 +165,11 @@ async fn get_token_state(session_id: &str) -> TokenState {
         .unwrap_or_default()
 }
 
+/// Stream event to the connected client and optionally broadcast to background subscribers
 async fn stream_event(
     event: MessageEvent,
     tx: &mpsc::Sender<String>,
-    cancel_token: &CancellationToken,
+    broadcaster: Option<&broadcast::Sender<MessageEvent>>,
 ) {
     let json = serde_json::to_string(&event).unwrap_or_else(|e| {
         format!(
@@ -177,9 +178,15 @@ async fn stream_event(
         )
     });
 
+    // Broadcast to background subscribers (ignore errors - subscribers may have disconnected)
+    if let Some(bc) = broadcaster {
+        let _ = bc.send(event);
+    }
+
+    // Send to connected client (ignore if client disconnected - task continues in background)
     if tx.send(format!("data: {}\n\n", json)).await.is_err() {
-        tracing::info!("client hung up");
-        cancel_token.cancel();
+        tracing::info!("client disconnected, task continues in background");
+        // Note: We do NOT cancel the task here - it continues running
     }
 }
 
@@ -238,6 +245,14 @@ pub async fn reply(
     let task_cancel = cancel_token.clone();
     let task_tx = tx.clone();
 
+    // Register this task with the background task manager for durable execution
+    let broadcaster = state
+        .background_tasks
+        .register_task(session_id.clone(), cancel_token.clone())
+        .await;
+    let bg_tasks = state.background_tasks.clone();
+    let bg_session_id = session_id.clone();
+
     drop(tokio::spawn(async move {
         let agent = match state.get_agent(session_id.clone()).await {
             Ok(agent) => agent,
@@ -248,9 +263,10 @@ pub async fn reply(
                         error: format!("Failed to get session agent: {}", e),
                     },
                     &task_tx,
-                    &task_cancel,
+                    Some(&broadcaster),
                 )
                 .await;
+                bg_tasks.mark_error(&bg_session_id).await;
                 return;
             }
         };
@@ -264,9 +280,10 @@ pub async fn reply(
                         error: format!("Failed to read session: {}", e),
                     },
                     &task_tx,
-                    &cancel_token,
+                    Some(&broadcaster),
                 )
                 .await;
+                bg_tasks.mark_error(&bg_session_id).await;
                 return;
             }
         };
@@ -286,9 +303,10 @@ pub async fn reply(
                         error: "Reply started with empty messages".to_string(),
                     },
                     &task_tx,
-                    &task_cancel,
+                    Some(&broadcaster),
                 )
                 .await;
+                bg_tasks.mark_error(&bg_session_id).await;
                 return;
             }
         };
@@ -309,9 +327,10 @@ pub async fn reply(
                         error: e.to_string(),
                     },
                     &task_tx,
-                    &cancel_token,
+                    Some(&broadcaster),
                 )
                 .await;
+                bg_tasks.mark_error(&bg_session_id).await;
                 return;
             }
         };
@@ -319,6 +338,7 @@ pub async fn reply(
         let mut all_messages = messages.clone();
 
         let mut heartbeat_interval = tokio::time::interval(Duration::from_millis(500));
+        let mut task_error = false;
         loop {
             tokio::select! {
                 _ = task_cancel.cancelled() => {
@@ -326,7 +346,9 @@ pub async fn reply(
                     break;
                 }
                 _ = heartbeat_interval.tick() => {
-                    stream_event(MessageEvent::Ping, &tx, &cancel_token).await;
+                    // Update activity timestamp and send heartbeat
+                    bg_tasks.update_activity(&bg_session_id).await;
+                    stream_event(MessageEvent::Ping, &tx, Some(&broadcaster)).await;
                 }
                 response = timeout(Duration::from_millis(500), stream.next()) => {
                     match response {
@@ -339,21 +361,22 @@ pub async fn reply(
 
                             let token_state = get_token_state(&session_id).await;
 
-                            stream_event(MessageEvent::Message { message, token_state }, &tx, &cancel_token).await;
+                            bg_tasks.update_activity(&bg_session_id).await;
+                            stream_event(MessageEvent::Message { message, token_state }, &tx, Some(&broadcaster)).await;
                         }
                         Ok(Some(Ok(AgentEvent::HistoryReplaced(new_messages)))) => {
                             all_messages = new_messages.clone();
-                            stream_event(MessageEvent::UpdateConversation {conversation: new_messages}, &tx, &cancel_token).await;
-
+                            bg_tasks.update_activity(&bg_session_id).await;
+                            stream_event(MessageEvent::UpdateConversation {conversation: new_messages}, &tx, Some(&broadcaster)).await;
                         }
                         Ok(Some(Ok(AgentEvent::ModelChange { model, mode }))) => {
-                            stream_event(MessageEvent::ModelChange { model, mode }, &tx, &cancel_token).await;
+                            stream_event(MessageEvent::ModelChange { model, mode }, &tx, Some(&broadcaster)).await;
                         }
                         Ok(Some(Ok(AgentEvent::McpNotification((request_id, n))))) => {
                             stream_event(MessageEvent::Notification{
                                 request_id: request_id.clone(),
                                 message: n,
-                            }, &tx, &cancel_token).await;
+                            }, &tx, Some(&broadcaster)).await;
                         }
 
                         Ok(Some(Err(e))) => {
@@ -363,17 +386,17 @@ pub async fn reply(
                                     error: e.to_string(),
                                 },
                                 &tx,
-                                &cancel_token,
+                                Some(&broadcaster),
                             ).await;
+                            task_error = true;
                             break;
                         }
                         Ok(None) => {
+                            // Agent stream completed normally
                             break;
                         }
                         Err(_) => {
-                            if tx.is_closed() {
-                                break;
-                            }
+                            // Timeout - continue processing (client disconnect doesn't stop the task)
                             continue;
                         }
                     }
@@ -439,11 +462,133 @@ pub async fn reply(
                 token_state: final_token_state,
             },
             &task_tx,
-            &cancel_token,
+            Some(&broadcaster),
         )
         .await;
+
+        // Mark task as completed or errored in background task manager
+        if task_error {
+            bg_tasks.mark_error(&bg_session_id).await;
+        } else {
+            bg_tasks.mark_completed(&bg_session_id).await;
+        }
     }));
     Ok(SseResponse::new(stream))
+}
+
+/// Subscribe to updates from an existing running agent task
+/// Returns SSE stream of events from the background task
+#[utoipa::path(
+    get,
+    path = "/sessions/{session_id}/subscribe",
+    params(
+        ("session_id" = String, Path, description = "Session ID to subscribe to")
+    ),
+    responses(
+        (status = 200, description = "Subscribed to session events",
+         body = MessageEvent,
+         content_type = "text/event-stream"),
+        (status = 404, description = "No active task for this session")
+    )
+)]
+pub async fn subscribe_to_session(
+    State(state): State<Arc<AppState>>,
+    Path(session_id): Path<String>,
+) -> Result<SseResponse, StatusCode> {
+    // Try to subscribe to the background task
+    let receiver = state
+        .background_tasks
+        .subscribe(&session_id)
+        .await
+        .ok_or(StatusCode::NOT_FOUND)?;
+
+    let (tx, rx) = mpsc::channel(100);
+    let stream = ReceiverStream::new(rx);
+
+    // Spawn a task to forward events from the broadcaster to the SSE stream
+    tokio::spawn(async move {
+        let mut receiver = receiver;
+        loop {
+            match receiver.recv().await {
+                Ok(event) => {
+                    let json = serde_json::to_string(&event).unwrap_or_else(|e| {
+                        format!(
+                            r#"{{"type":"Error","error":"Failed to serialize event: {}"}}"#,
+                            e
+                        )
+                    });
+
+                    if tx.send(format!("data: {}\n\n", json)).await.is_err() {
+                        // Client disconnected
+                        break;
+                    }
+
+                    // If this is a Finish event, we're done
+                    if matches!(event, MessageEvent::Finish { .. }) {
+                        break;
+                    }
+                }
+                Err(broadcast::error::RecvError::Closed) => {
+                    // Broadcaster closed, task finished
+                    break;
+                }
+                Err(broadcast::error::RecvError::Lagged(_)) => {
+                    // We missed some events, continue
+                    continue;
+                }
+            }
+        }
+    });
+
+    Ok(SseResponse::new(stream))
+}
+
+/// Get the status of a background task for a session
+#[utoipa::path(
+    get,
+    path = "/sessions/{session_id}/task-status",
+    params(
+        ("session_id" = String, Path, description = "Session ID to check")
+    ),
+    responses(
+        (status = 200, description = "Task status",
+         body = crate::background_tasks::TaskStatusResponse),
+        (status = 404, description = "No task for this session")
+    )
+)]
+pub async fn get_task_status(
+    State(state): State<Arc<AppState>>,
+    Path(session_id): Path<String>,
+) -> Result<Json<crate::background_tasks::TaskStatusResponse>, StatusCode> {
+    state
+        .background_tasks
+        .get_status(&session_id)
+        .await
+        .map(Json)
+        .ok_or(StatusCode::NOT_FOUND)
+}
+
+/// Cancel a running background task
+#[utoipa::path(
+    post,
+    path = "/sessions/{session_id}/cancel-task",
+    params(
+        ("session_id" = String, Path, description = "Session ID to cancel")
+    ),
+    responses(
+        (status = 200, description = "Task cancelled"),
+        (status = 404, description = "No active task for this session")
+    )
+)]
+pub async fn cancel_task(
+    State(state): State<Arc<AppState>>,
+    Path(session_id): Path<String>,
+) -> Result<StatusCode, StatusCode> {
+    if state.background_tasks.cancel_task(&session_id).await {
+        Ok(StatusCode::OK)
+    } else {
+        Err(StatusCode::NOT_FOUND)
+    }
 }
 
 pub fn routes(state: Arc<AppState>) -> Router {
@@ -452,6 +597,12 @@ pub fn routes(state: Arc<AppState>) -> Router {
             "/reply",
             post(reply).layer(DefaultBodyLimit::max(50 * 1024 * 1024)),
         )
+        .route(
+            "/sessions/{session_id}/subscribe",
+            get(subscribe_to_session),
+        )
+        .route("/sessions/{session_id}/task-status", get(get_task_status))
+        .route("/sessions/{session_id}/cancel-task", post(cancel_task))
         .with_state(state)
 }
 

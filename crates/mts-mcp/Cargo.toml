@@ -77,6 +77,10 @@ libc = "0.2"
 mpatch = "=0.2.0"
 tokio-util = "0.7.16"
 clap = { version = "4", features = ["derive"] }
+html2text = "0.12"
+tokio-tungstenite = { version = "0.28.0", features = ["rustls-tls-native-roots"] }
+futures = "0.3"
+uuid = { version = "1.11", features = ["v4"] }
 
 
 [dev-dependencies]

@@ -1,6 +1,7 @@
 use anstream::println;
 use bat::WrappingMode;
 use console::{measure_text_width, style, Color, Term};
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use mts::config::Config;
 use mts::conversation::message::{
     ActionRequiredData, Message, MessageContent, ToolRequest, ToolResponse,
@@ -8,7 +9,6 @@ use mts::conversation::message::{
 use mts::providers::pricing::get_model_pricing;
 use mts::providers::pricing::parse_model_id;
 use mts::utils::safe_truncate;
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use regex::Regex;
 use rmcp::model::{CallToolRequestParam, JsonObject, PromptArgument};
 use serde_json::Value;
@@ -186,8 +186,7 @@ pub fn render_message(message: &Message, debug: bool) {
                 println!("Image: [data: {}, type: {}]", image.data, image.mime_type);
             }
             MessageContent::Thinking(thinking) => {
-                if std::env::var("MTS_CLI_SHOW_THINKING").is_ok()
-                    && std::io::stdout().is_terminal()
+                if std::env::var("MTS_CLI_SHOW_THINKING").is_ok() && std::io::stdout().is_terminal()
                 {
                     println!("\n{}", style("Thinking:").dim().italic());
                     print_markdown(&thinking.thinking, theme);
@@ -453,11 +452,7 @@ fn render_subagent_request(call: &CallToolRequestParam, debug: bool) {
     if let Some(args) = &call.arguments {
         // Print subrecipe if provided
         if let Some(Value::String(subrecipe)) = args.get("subrecipe") {
-            println!(
-                "{}: {}",
-                style("subrecipe").dim(),
-                style(subrecipe).green()
-            );
+            println!("{}: {}", style("subrecipe").dim(), style(subrecipe).green());
         }
 
         // Print instructions if provided

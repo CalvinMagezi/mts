@@ -260,13 +260,7 @@ async fn execute_subagent(
             data: None,
         })?;
 
-    let result = run_complete_subagent_task(
-        recipe,
-        task_config,
-        params.summary,
-        session.id,
-    )
-    .await;
+    let result = run_complete_subagent_task(recipe, task_config, params.summary, session.id).await;
 
     match result {
         Ok(text) => Ok(rmcp::model::CallToolResult {

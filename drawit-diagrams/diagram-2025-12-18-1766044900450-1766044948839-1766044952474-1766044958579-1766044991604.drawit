@@ -1,0 +1,1070 @@
+{
+  "width": 800,
+  "height": 600,
+  "background": "#ffffff",
+  "elements": [
+    {
+      "id": "ceo",
+      "type": "node",
+      "properties": {
+        "id": "ceo",
+        "type": "node",
+        "position": {
+          "x": 400,
+          "y": 60
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#1DE52F",
+          "strokeStyle": "#1DE52F"
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 140,
+          "height": 60
+        },
+        "shape": "ellipse",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "ellipse-top",
+            "position": {
+              "x": 70,
+              "y": -2
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "ellipse-right",
+            "position": {
+              "x": 142,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "ellipse-bottom",
+            "position": {
+              "x": 70,
+              "y": 62
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "ellipse-left",
+            "position": {
+              "x": -2,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "ellipse-center",
+            "position": {
+              "x": 70,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          }
+        ],
+        "text": {
+          "0": "C",
+          "1": "E",
+          "2": "O",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    },
+    {
+      "id": "design-team",
+      "type": "node",
+      "properties": {
+        "id": "design-team",
+        "type": "node",
+        "position": {
+          "x": 200,
+          "y": 350
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#1a1d21",
+          "strokeStyle": "#1DE52F"
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 140,
+          "height": 60
+        },
+        "shape": "rectangle",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "rect-top",
+            "position": {
+              "x": 70,
+              "y": -2
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "rect-right",
+            "position": {
+              "x": 142,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "rect-bottom",
+            "position": {
+              "x": 70,
+              "y": 62
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "rect-left",
+            "position": {
+              "x": -2,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "rect-center",
+            "position": {
+              "x": 70,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          }
+        ],
+        "text": {
+          "0": "D",
+          "1": "e",
+          "2": "s",
+          "3": "i",
+          "4": "g",
+          "5": "n",
+          "6": " ",
+          "7": "T",
+          "8": "e",
+          "9": "a",
+          "10": "m",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    },
+    {
+      "id": "e1",
+      "type": "node",
+      "properties": {
+        "id": "e1",
+        "type": "edge",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "strokeStyle": "#000000",
+          "lineWidth": 1,
+          "routing": "bezier",
+          "arrowheadStart": false,
+          "arrowheadEnd": true,
+          "avoidObstacles": false
+        },
+        "metadata": {},
+        "locked": false,
+        "source": "ceo",
+        "target": "vp-design",
+        "points": []
+      }
+    },
+    {
+      "id": "e2",
+      "type": "node",
+      "properties": {
+        "id": "e2",
+        "type": "edge",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "strokeStyle": "#000000",
+          "lineWidth": 1,
+          "routing": "bezier",
+          "arrowheadStart": false,
+          "arrowheadEnd": true,
+          "avoidObstacles": false
+        },
+        "metadata": {},
+        "locked": false,
+        "source": "ceo",
+        "target": "vp-mfg",
+        "points": []
+      }
+    },
+    {
+      "id": "e3",
+      "type": "node",
+      "properties": {
+        "id": "e3",
+        "type": "edge",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "strokeStyle": "#000000",
+          "lineWidth": 1,
+          "routing": "bezier",
+          "arrowheadStart": false,
+          "arrowheadEnd": true,
+          "avoidObstacles": false
+        },
+        "metadata": {},
+        "locked": false,
+        "source": "ceo",
+        "target": "vp-sales",
+        "points": []
+      }
+    },
+    {
+      "id": "e4",
+      "type": "node",
+      "properties": {
+        "id": "e4",
+        "type": "edge",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "strokeStyle": "#000000",
+          "lineWidth": 1,
+          "routing": "bezier",
+          "arrowheadStart": false,
+          "arrowheadEnd": true,
+          "avoidObstacles": false
+        },
+        "metadata": {},
+        "locked": false,
+        "source": "vp-design",
+        "target": "design-team",
+        "points": []
+      }
+    },
+    {
+      "id": "e5",
+      "type": "node",
+      "properties": {
+        "id": "e5",
+        "type": "edge",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "strokeStyle": "#000000",
+          "lineWidth": 1,
+          "routing": "bezier",
+          "arrowheadStart": false,
+          "arrowheadEnd": true,
+          "avoidObstacles": false
+        },
+        "metadata": {},
+        "locked": false,
+        "source": "vp-mfg",
+        "target": "factory-mgr",
+        "points": []
+      }
+    },
+    {
+      "id": "e6",
+      "type": "node",
+      "properties": {
+        "id": "e6",
+        "type": "edge",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "strokeStyle": "#000000",
+          "lineWidth": 1,
+          "routing": "bezier",
+          "arrowheadStart": false,
+          "arrowheadEnd": true,
+          "avoidObstacles": false
+        },
+        "metadata": {},
+        "locked": false,
+        "source": "vp-sales",
+        "target": "sales-team",
+        "points": []
+      }
+    },
+    {
+      "id": "factory-mgr",
+      "type": "node",
+      "properties": {
+        "id": "factory-mgr",
+        "type": "node",
+        "position": {
+          "x": 400,
+          "y": 350
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#1a1d21",
+          "strokeStyle": "#1DE52F"
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 140,
+          "height": 60
+        },
+        "shape": "rectangle",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "rect-top",
+            "position": {
+              "x": 70,
+              "y": -2
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "rect-right",
+            "position": {
+              "x": 142,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "rect-bottom",
+            "position": {
+              "x": 70,
+              "y": 62
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "rect-left",
+            "position": {
+              "x": -2,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "rect-center",
+            "position": {
+              "x": 70,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          }
+        ],
+        "text": {
+          "0": "F",
+          "1": "a",
+          "2": "c",
+          "3": "t",
+          "4": "o",
+          "5": "r",
+          "6": "y",
+          "7": " ",
+          "8": "O",
+          "9": "p",
+          "10": "s",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    },
+    {
+      "id": "sales-team",
+      "type": "node",
+      "properties": {
+        "id": "sales-team",
+        "type": "node",
+        "position": {
+          "x": 600,
+          "y": 350
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#1a1d21",
+          "strokeStyle": "#1DE52F"
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 140,
+          "height": 60
+        },
+        "shape": "rectangle",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "rect-top",
+            "position": {
+              "x": 70,
+              "y": -2
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "rect-right",
+            "position": {
+              "x": 142,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "rect-bottom",
+            "position": {
+              "x": 70,
+              "y": 62
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "rect-left",
+            "position": {
+              "x": -2,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "rect-center",
+            "position": {
+              "x": 70,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          }
+        ],
+        "text": {
+          "0": "S",
+          "1": "a",
+          "2": "l",
+          "3": "e",
+          "4": "s",
+          "5": " ",
+          "6": "T",
+          "7": "e",
+          "8": "a",
+          "9": "m",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    },
+    {
+      "id": "vp-design",
+      "type": "node",
+      "properties": {
+        "id": "vp-design",
+        "type": "node",
+        "position": {
+          "x": 200,
+          "y": 200
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#1a1d21",
+          "strokeStyle": "#00C6FA"
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 160,
+          "height": 60
+        },
+        "shape": "rectangle",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "rect-top",
+            "position": {
+              "x": 80,
+              "y": -2
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "rect-right",
+            "position": {
+              "x": 162,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "rect-bottom",
+            "position": {
+              "x": 80,
+              "y": 62
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "rect-left",
+            "position": {
+              "x": -2,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "rect-center",
+            "position": {
+              "x": 80,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          }
+        ],
+        "text": {
+          "0": "V",
+          "1": "P",
+          "2": " ",
+          "3": "D",
+          "4": "e",
+          "5": "s",
+          "6": "i",
+          "7": "g",
+          "8": "n",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    },
+    {
+      "id": "vp-mfg",
+      "type": "node",
+      "properties": {
+        "id": "vp-mfg",
+        "type": "node",
+        "position": {
+          "x": 400,
+          "y": 200
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#1a1d21",
+          "strokeStyle": "#00C6FA"
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 160,
+          "height": 60
+        },
+        "shape": "rectangle",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "rect-top",
+            "position": {
+              "x": 80,
+              "y": -2
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "rect-right",
+            "position": {
+              "x": 162,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "rect-bottom",
+            "position": {
+              "x": 80,
+              "y": 62
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "rect-left",
+            "position": {
+              "x": -2,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "rect-center",
+            "position": {
+              "x": 80,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          }
+        ],
+        "text": {
+          "0": "V",
+          "1": "P",
+          "2": " ",
+          "3": "M",
+          "4": "a",
+          "5": "n",
+          "6": "u",
+          "7": "f",
+          "8": "a",
+          "9": "c",
+          "10": "t",
+          "11": "u",
+          "12": "r",
+          "13": "i",
+          "14": "n",
+          "15": "g",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    },
+    {
+      "id": "vp-sales",
+      "type": "node",
+      "properties": {
+        "id": "vp-sales",
+        "type": "node",
+        "position": {
+          "x": 600,
+          "y": 200
+        },
+        "angle": 0,
+        "zIndex": 0,
+        "style": {
+          "fillStyle": "#1a1d21",
+          "strokeStyle": "#00C6FA"
+        },
+        "metadata": {},
+        "locked": false,
+        "size": {
+          "width": 160,
+          "height": 60
+        },
+        "shape": "rectangle",
+        "constrainAspectRatio": false,
+        "ports": [
+          {
+            "id": "rect-top",
+            "position": {
+              "x": 80,
+              "y": -2
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          },
+          {
+            "id": "rect-right",
+            "position": {
+              "x": 162,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "right"
+          },
+          {
+            "id": "rect-bottom",
+            "position": {
+              "x": 80,
+              "y": 62
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "bottom"
+          },
+          {
+            "id": "rect-left",
+            "position": {
+              "x": -2,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "left"
+          },
+          {
+            "id": "rect-center",
+            "position": {
+              "x": 80,
+              "y": 30
+            },
+            "size": 6,
+            "style": {
+              "fillStyle": "#ffffff",
+              "strokeStyle": "#374151",
+              "lineWidth": 1
+            },
+            "type": "bidirectional",
+            "isVisible": true,
+            "orientation": "top"
+          }
+        ],
+        "text": {
+          "0": "V",
+          "1": "P",
+          "2": " ",
+          "3": "S",
+          "4": "a",
+          "5": "l",
+          "6": "e",
+          "7": "s",
+          "content": "",
+          "fontSize": 16,
+          "fontFamily": "arial",
+          "color": "#374151",
+          "textAlign": "center",
+          "verticalAlign": "middle",
+          "padding": 8,
+          "lineHeight": 1.4
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "name": "diagram-2025-12-18-1766044900450-1766044948839-1766044952474-1766044958579",
+    "elementCount": 13,
+    "diagramType": "flowchart",
+    "createdAt": 1766044991604,
+    "modifiedAt": 1766044991604
+  }
+}

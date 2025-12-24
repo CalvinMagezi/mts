@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { FileNode } from './types';
+import { useFileEditor } from './useFileEditor';
 
 export function useFolderTree(initialPath?: string) {
   const [rootPath, setRootPath] = useState<string>(
@@ -10,6 +11,9 @@ export function useFolderTree(initialPath?: string) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
+
+  // File editor integration
+  const fileEditor = useFileEditor();
 
   const loadTree = useCallback(async (path: string) => {
     setLoading(true);
@@ -74,6 +78,28 @@ export function useFolderTree(initialPath?: string) {
     }
   }, []);
 
+  const enterEditMode = useCallback(async () => {
+    if (!selectedFile) return;
+
+    // Check if file is already open
+    if (fileEditor.openFiles.has(selectedFile.path)) {
+      // Just switch to it
+      await fileEditor.switchFile(selectedFile.path);
+    } else {
+      // Load file content and open in editor
+      try {
+        const result = await window.electron.readFile(selectedFile.path);
+        if (result.found && !result.error) {
+          fileEditor.openFileForEditing(selectedFile, result.file);
+        } else {
+          setError(result.error || 'Failed to read file');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to read file');
+      }
+    }
+  }, [selectedFile, fileEditor]);
+
   const clearSelection = useCallback(() => {
     setSelectedFile(null);
   }, []);
@@ -119,5 +145,13 @@ export function useFolderTree(initialPath?: string) {
     selectFile,
     clearSelection,
     generateTreeString,
+    // File editor functions
+    openFiles: fileEditor.openFiles,
+    activeFilePath: fileEditor.activeFilePath,
+    enterEditMode,
+    closeFile: fileEditor.closeFile,
+    switchFile: fileEditor.switchFile,
+    saveFile: fileEditor.saveFile,
+    updateFileContent: fileEditor.updateFileContent,
   };
 }

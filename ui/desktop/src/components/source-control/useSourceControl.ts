@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useGitCommands } from './useGitCommands';
+import { generateCommitMessage as generateCommitMessageApi } from '../../api';
 import {
   GitFile,
   GitCommit,
@@ -52,6 +53,8 @@ export interface UseSourceControlResult {
   commitDescription: string;
   setCommitDescription: (description: string) => void;
   isCommitting: boolean;
+  isGeneratingCommitMessage: boolean;
+  generateCommitMessage: () => Promise<void>;
 
   // Loading states
   isLoading: boolean;
@@ -82,7 +85,13 @@ export interface UseSourceControlResult {
   clearError: () => void;
 }
 
-export function useSourceControl(initialPath?: string): UseSourceControlResult {
+export interface UseSourceControlOptions {
+  initialPath?: string;
+  getProviderAndModel?: () => Promise<{ provider: string; model: string }>;
+}
+
+export function useSourceControl(options: UseSourceControlOptions = {}): UseSourceControlResult {
+  const { initialPath, getProviderAndModel } = options;
   const [workingDir, setWorkingDir] = useState<string>(
     initialPath || (window.appConfig.get('MTS_WORKING_DIR') as string) || ''
   );
@@ -139,6 +148,7 @@ export function useSourceControl(initialPath?: string): UseSourceControlResult {
   const [commitSummary, setCommitSummary] = useState('');
   const [commitDescription, setCommitDescription] = useState('');
   const [isCommitting, setIsCommitting] = useState(false);
+  const [isGeneratingCommitMessage, setIsGeneratingCommitMessage] = useState(false);
 
   // Loading states
   const [isLoading, setIsLoading] = useState(false);
@@ -354,6 +364,61 @@ export function useSourceControl(initialPath?: string): UseSourceControlResult {
       setIsCommitting(false);
     }
   }, [commitSummary, commitDescription, statusState.staged, git, loadStatus, loadCommits, loadRepoInfo]);
+
+  // Generate commit message with AI
+  const generateCommitMessage = useCallback(async () => {
+    const totalChanges =
+      statusState.staged.length + statusState.unstaged.length + statusState.untracked.length;
+
+    if (totalChanges === 0) {
+      setError('No changes to generate commit message for');
+      return;
+    }
+
+    if (!getProviderAndModel) {
+      setError('AI provider not configured');
+      return;
+    }
+
+    setIsGeneratingCommitMessage(true);
+    setError(null);
+
+    try {
+      // Use staged diff if there are staged changes, otherwise use unstaged diff
+      const hasStaged = statusState.staged.length > 0;
+      const diff = await window.electron.gitDiff(workingDir, undefined, hasStaged);
+
+      if (!diff || diff.trim() === '') {
+        setError('No changes found');
+        return;
+      }
+
+      // Get current provider and model
+      const { provider, model } = await getProviderAndModel();
+
+      const response = await generateCommitMessageApi({
+        body: {
+          diff,
+          provider,
+          model,
+        },
+      });
+
+      if (response.data) {
+        setCommitSummary(response.data.summary);
+        setCommitDescription(response.data.description);
+      } else if (response.error) {
+        const errorMessage = typeof response.error === 'string'
+          ? response.error
+          : 'Failed to generate commit message';
+        setError(errorMessage);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate commit message');
+    } finally {
+      setIsGeneratingCommitMessage(false);
+    }
+  }, [workingDir, statusState.staged, statusState.unstaged, statusState.untracked, getProviderAndModel]);
 
   // Fetch
   const fetch = useCallback(async () => {
@@ -580,6 +645,8 @@ export function useSourceControl(initialPath?: string): UseSourceControlResult {
     commitDescription,
     setCommitDescription,
     isCommitting,
+    isGeneratingCommitMessage,
+    generateCommitMessage,
     isLoading,
     isFetching,
     isPulling,

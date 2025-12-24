@@ -735,10 +735,7 @@ impl DeveloperServer {
         if self.is_ignored(&path) {
             return Err(ErrorData::new(
                 ErrorCode::INTERNAL_ERROR,
-                format!(
-                    "Access to '{}' is restricted by .mtsignore",
-                    path.display()
-                ),
+                format!("Access to '{}' is restricted by .mtsignore", path.display()),
                 None,
             ));
         }
@@ -1178,10 +1175,7 @@ impl DeveloperServer {
         if self.is_ignored(&path) {
             return Err(ErrorData::new(
                 ErrorCode::INTERNAL_ERROR,
-                format!(
-                    "Access to '{}' is restricted by .mtsignore",
-                    path.display()
-                ),
+                format!("Access to '{}' is restricted by .mtsignore", path.display()),
                 None,
             ));
         }

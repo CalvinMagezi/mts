@@ -1,12 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { X, MessageSquarePlus, AlertTriangle } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { X, MessageSquarePlus, AlertTriangle, Save, Edit, Eye } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Editor from '@monaco-editor/react';
 import { Button } from '../ui/button';
 import { ScrollArea } from '../ui/scroll-area';
 import { Check, Copy } from '../icons';
-import { FileNode } from './types';
+import { FileNode, OpenFile } from './types';
 import { useFilePreview, getLanguageFromPath } from './useFilePreview';
+import { FileTabBar } from './FileTabBar';
 
 // Custom theme with better comment contrast (matching MarkdownContent)
 const customOneDarkTheme = {
@@ -31,18 +33,39 @@ interface FilePreviewPanelProps {
   file: FileNode;
   onClose: () => void;
   onInsertToChat: (content: string, filePath: string) => void;
+  // Editor props
+  openFiles?: Map<string, OpenFile>;
+  activeFilePath?: string | null;
+  onSelectTab?: (filePath: string) => void;
+  onCloseTab?: (filePath: string) => void;
+  onSaveFile?: (filePath: string) => Promise<void>;
+  onUpdateContent?: (filePath: string, content: string) => void;
+  onEnterEditMode?: () => void;
 }
 
 export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
   file,
   onClose,
   onInsertToChat,
+  openFiles,
+  activeFilePath,
+  onSelectTab,
+  onCloseTab,
+  onSaveFile,
+  onUpdateContent,
+  onEnterEditMode,
 }) => {
-  const { content, loading, error, truncated, totalLines, isImage, imagePath } = useFilePreview(file.path);
+  const { content, loading, error, truncated, totalLines, isImage, imagePath } = useFilePreview(
+    file.path
+  );
   const [copied, setCopied] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
   const language = getLanguageFromPath(file.path);
+
+  // Check if file is currently open in editor
+  const activeFile = activeFilePath && openFiles ? openFiles.get(activeFilePath) : null;
 
   const handleCopy = async () => {
     if (!content) return;
@@ -62,25 +85,105 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
     }
   };
 
+  const handleToggleEditMode = () => {
+    if (!isEditMode && onEnterEditMode) {
+      // Entering edit mode
+      onEnterEditMode();
+      setIsEditMode(true);
+    } else {
+      // Exiting edit mode
+      setIsEditMode(false);
+    }
+  };
+
+  const handleSave = useCallback(async () => {
+    if (activeFilePath && onSaveFile) {
+      await onSaveFile(activeFilePath);
+    }
+  }, [activeFilePath, onSaveFile]);
+
+  const handleEditorChange = (value: string | undefined) => {
+    if (value !== undefined && activeFilePath && onUpdateContent) {
+      onUpdateContent(activeFilePath, value);
+    }
+  };
+
+  const handleTabClose = (filePath: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onCloseTab) {
+      onCloseTab(filePath);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     };
   }, []);
 
-  // Handle Escape key to close
+  // Handle Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        if (isEditMode) {
+          setIsEditMode(false);
+        } else {
+          onClose();
+        }
+      }
+      // Cmd/Ctrl+S to save
+      if ((e.metaKey || e.ctrlKey) && e.key === 's' && isEditMode) {
+        e.preventDefault();
+        handleSave();
+      }
+      // Cmd/Ctrl+W to close tab
+      if ((e.metaKey || e.ctrlKey) && e.key === 'w' && isEditMode && activeFilePath) {
+        e.preventDefault();
+        if (onCloseTab) {
+          onCloseTab(activeFilePath);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, [onClose, isEditMode, activeFilePath, onCloseTab, handleSave]);
+
+  // Check file size for editing
+  const checkFileSizeForEditing = (content: string): { canEdit: boolean; warning?: string; error?: string } => {
+    const lines = content.split('\n').length;
+    const sizeKB = new Blob([content]).size / 1024;
+
+    if (lines > 10000 || sizeKB > 1024) {
+      return {
+        canEdit: false,
+        error: 'File too large to edit. Please use an external editor.',
+      };
+    }
+
+    if (lines > 5000 || sizeKB > 500) {
+      return {
+        canEdit: true,
+        warning: 'Large file detected. Editing may be slow.',
+      };
+    }
+
+    return { canEdit: true };
+  };
+
+  const fileSizeCheck = content ? checkFileSizeForEditing(content) : { canEdit: false };
 
   return (
     <div className="flex flex-col h-full bg-background-default rounded-lg border border-border-default overflow-hidden">
+      {/* File Tabs */}
+      {openFiles && openFiles.size > 0 && onSelectTab && (
+        <FileTabBar
+          openFiles={openFiles}
+          activeFilePath={activeFilePath || null}
+          onSelectTab={onSelectTab}
+          onCloseTab={handleTabClose}
+        />
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-border-default bg-background-medium/30">
         <div className="flex-1 min-w-0 mr-4">
@@ -94,6 +197,44 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
         <div className="flex items-center gap-1">
           {!isImage && (
             <>
+              {/* View/Edit Toggle */}
+              <Button
+                variant={isEditMode ? 'ghost' : 'default'}
+                size="sm"
+                onClick={handleToggleEditMode}
+                disabled={!content || !fileSizeCheck.canEdit}
+                title={isEditMode ? 'View mode' : 'Edit mode'}
+                className="h-8 px-3"
+              >
+                {isEditMode ? (
+                  <>
+                    <Eye className="w-4 h-4 mr-1" />
+                    View
+                  </>
+                ) : (
+                  <>
+                    <Edit className="w-4 h-4 mr-1" />
+                    Edit
+                  </>
+                )}
+              </Button>
+
+              {/* Save Button (only in edit mode) */}
+              {isEditMode && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleSave}
+                  disabled={!activeFile?.isDirty}
+                  title="Save (Cmd+S)"
+                  className="h-8 px-3"
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  Save
+                </Button>
+              )}
+
+              {/* Copy Button */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -108,6 +249,8 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
                   <Copy className="w-4 h-4" />
                 )}
               </Button>
+
+              {/* Insert to Chat Button */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -133,7 +276,7 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
       </div>
 
       {/* Truncation warning */}
-      {truncated && (
+      {truncated && !isEditMode && (
         <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 text-xs border-b border-border-default">
           <AlertTriangle className="w-4 h-4 flex-shrink-0" />
           <span>
@@ -142,17 +285,27 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
         </div>
       )}
 
+      {/* File size warning/error */}
+      {!isEditMode && content && fileSizeCheck.warning && (
+        <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 text-xs border-b border-border-default">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>{fileSizeCheck.warning}</span>
+        </div>
+      )}
+      {!isEditMode && content && fileSizeCheck.error && (
+        <div className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 text-xs border-b border-border-default">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>{fileSizeCheck.error}</span>
+        </div>
+      )}
+
       {/* Content */}
-      <ScrollArea className="flex-1">
-        {loading ? (
-          <div className="flex items-center justify-center h-32 text-text-muted">
-            Loading...
-          </div>
-        ) : error ? (
-          <div className="flex items-center justify-center h-32 text-red-400">
-            {error}
-          </div>
-        ) : isImage && imagePath ? (
+      {loading ? (
+        <div className="flex items-center justify-center h-32 text-text-muted">Loading...</div>
+      ) : error ? (
+        <div className="flex items-center justify-center h-32 text-red-400">{error}</div>
+      ) : isImage && imagePath ? (
+        <ScrollArea className="flex-1">
           <div className="flex items-center justify-center p-4 h-full">
             <img
               src={`file://${imagePath}`}
@@ -165,7 +318,35 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
               }}
             />
           </div>
-        ) : content ? (
+        </ScrollArea>
+      ) : isEditMode && activeFile ? (
+        // Monaco Editor
+        <div className="flex-1 min-h-0">
+          <Editor
+            height="100%"
+            language={activeFile.language}
+            value={activeFile.content}
+            onChange={handleEditorChange}
+            theme="vs-dark"
+            options={{
+              fontSize: 13,
+              fontFamily: 'JetBrains Mono, Menlo, Monaco, Courier New, monospace',
+              minimap: { enabled: true },
+              scrollBeyondLastLine: false,
+              wordWrap: 'on',
+              lineNumbers: 'on',
+              renderWhitespace: 'selection',
+              tabSize: 2,
+              insertSpaces: true,
+              formatOnPaste: true,
+              formatOnType: false,
+              automaticLayout: true,
+            }}
+          />
+        </div>
+      ) : content ? (
+        // Syntax Highlighter (View Mode)
+        <ScrollArea className="flex-1">
           <SyntaxHighlighter
             language={language}
             style={customOneDarkTheme}
@@ -185,12 +366,10 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
           >
             {content}
           </SyntaxHighlighter>
-        ) : (
-          <div className="flex items-center justify-center h-32 text-text-muted">
-            Empty file
-          </div>
-        )}
-      </ScrollArea>
+        </ScrollArea>
+      ) : (
+        <div className="flex items-center justify-center h-32 text-text-muted">Empty file</div>
+      )}
     </div>
   );
 };

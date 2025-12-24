@@ -5,9 +5,7 @@
 ///   cargo run --example build_canonical_models
 ///
 use anyhow::{Context, Result};
-use mts::providers::canonical::{
-    canonical_name, CanonicalModel, CanonicalModelRegistry, Pricing,
-};
+use mts::providers::canonical::{canonical_name, CanonicalModel, CanonicalModelRegistry, Pricing};
 use serde_json::Value;
 use std::collections::HashMap;
 

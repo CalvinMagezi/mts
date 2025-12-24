@@ -55,6 +55,9 @@ const AppLayoutContent: React.FC = () => {
       case 'welcome':
         navigate('/welcome');
         break;
+      case 'browser':
+        navigate('/browser');
+        break;
       default:
         navigate('/');
     }

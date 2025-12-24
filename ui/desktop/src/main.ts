@@ -14,6 +14,7 @@ import {
   session,
   shell,
   Tray,
+  webContents,
 } from 'electron';
 import { pathToFileURL, format as formatUrl, URLSearchParams } from 'node:url';
 import { Buffer } from 'node:buffer';
@@ -542,6 +543,7 @@ const createChat = async (
       webSecurity: true,
       nodeIntegration: false,
       contextIsolation: true,
+      webviewTag: true,
       additionalArguments: [
         JSON.stringify({
           ...appConfig,
@@ -2260,6 +2262,177 @@ ipcMain.handle('git-show-commit', async (_event, cwd: string, hash: string) => {
 // End Git IPC Handlers
 // =============================================================================
 
+// =============================================================================
+// Browser Control IPC Handlers
+// =============================================================================
+
+// Helper function to find webview by ID
+const getWebviewById = (webviewId: string): Electron.WebContents | null => {
+  const allWebContents = webContents.getAllWebContents();
+  for (const wc of allWebContents) {
+    if (wc.id.toString() === webviewId && wc.getType() === 'webview') {
+      return wc;
+    }
+  }
+  return null;
+};
+
+// Execute JavaScript in webview
+ipcMain.handle('browser-execute-script', async (_event, webviewId: string, script: string) => {
+  try {
+    const webview = getWebviewById(webviewId);
+    if (!webview) {
+      throw new Error(`Webview with ID ${webviewId} not found`);
+    }
+    const result = await webview.executeJavaScript(script);
+    return result;
+  } catch (error) {
+    console.error('[Browser] Execute script error:', error);
+    throw error;
+  }
+});
+
+// Get DOM content from webview
+ipcMain.handle('browser-get-dom', async (_event, webviewId: string, selector?: string) => {
+  try {
+    const webview = getWebviewById(webviewId);
+    if (!webview) {
+      throw new Error(`Webview with ID ${webviewId} not found`);
+    }
+
+    const script = selector
+      ? `
+        try {
+          const element = document.querySelector(${JSON.stringify(selector)});
+          element ? element.outerHTML : null;
+        } catch (e) {
+          throw new Error('Invalid selector: ' + e.message);
+        }
+      `
+      : 'document.documentElement.outerHTML';
+
+    const html = await webview.executeJavaScript(script);
+    return html || '';
+  } catch (error) {
+    console.error('[Browser] Get DOM error:', error);
+    throw error;
+  }
+});
+
+// Click element in webview
+ipcMain.handle('browser-click', async (_event, webviewId: string, selector: string) => {
+  try {
+    const webview = getWebviewById(webviewId);
+    if (!webview) {
+      throw new Error(`Webview with ID ${webviewId} not found`);
+    }
+
+    const script = `
+      (function() {
+        try {
+          const element = document.querySelector(${JSON.stringify(selector)});
+          if (!element) return { success: false, error: 'Element not found' };
+          element.click();
+          return { success: true };
+        } catch (e) {
+          return { success: false, error: e.message };
+        }
+      })()
+    `;
+
+    const result = await webview.executeJavaScript(script);
+    return result.success;
+  } catch (error) {
+    console.error('[Browser] Click error:', error);
+    return false;
+  }
+});
+
+// Type text into input in webview
+ipcMain.handle('browser-type', async (_event, webviewId: string, selector: string, text: string) => {
+  try {
+    const webview = getWebviewById(webviewId);
+    if (!webview) {
+      throw new Error(`Webview with ID ${webviewId} not found`);
+    }
+
+    const script = `
+      (function() {
+        try {
+          const element = document.querySelector(${JSON.stringify(selector)});
+          if (!element) return { success: false, error: 'Element not found' };
+
+          // Set value
+          element.value = ${JSON.stringify(text)};
+
+          // Trigger events for frameworks
+          element.dispatchEvent(new Event('input', { bubbles: true }));
+          element.dispatchEvent(new Event('change', { bubbles: true }));
+
+          return { success: true };
+        } catch (e) {
+          return { success: false, error: e.message };
+        }
+      })()
+    `;
+
+    const result = await webview.executeJavaScript(script);
+    return result.success;
+  } catch (error) {
+    console.error('[Browser] Type error:', error);
+    return false;
+  }
+});
+
+// Capture screenshot of webview
+ipcMain.handle('browser-screenshot', async (_event, webviewId: string) => {
+  try {
+    const webview = getWebviewById(webviewId);
+    if (!webview) {
+      throw new Error(`Webview with ID ${webviewId} not found`);
+    }
+
+    const image = await webview.capturePage();
+    const base64 = image.toDataURL();
+
+    // Optionally save to temp directory
+    const screenshotDir = path.join(app.getPath('temp'), 'mts-browser-screenshots');
+    await fs.mkdir(screenshotDir, { recursive: true });
+
+    const timestamp = Date.now();
+    const filename = `screenshot_${timestamp}.png`;
+    const filepath = path.join(screenshotDir, filename);
+
+    await fs.writeFile(filepath, image.toPNG());
+    console.log('[Browser] Screenshot saved:', filepath);
+
+    return base64;
+  } catch (error) {
+    console.error('[Browser] Screenshot error:', error);
+    throw error;
+  }
+});
+
+// Navigate webview to URL
+ipcMain.handle('browser-navigate', async (_event, webviewId: string, url: string) => {
+  try {
+    const webview = getWebviewById(webviewId);
+    if (!webview) {
+      throw new Error(`Webview with ID ${webviewId} not found`);
+    }
+
+    await webview.loadURL(url);
+    console.log('[Browser] Navigated to:', url);
+  } catch (error) {
+    console.error('[Browser] Navigate error:', error);
+    throw error;
+  }
+});
+
+// =============================================================================
+// End Browser Control IPC Handlers
+// =============================================================================
+
 // Handle message box dialogs
 ipcMain.handle('show-message-box', async (_event, options) => {
   return dialog.showMessageBox(options);
@@ -2476,11 +2649,11 @@ async function appMain() {
     fileMenu.submenu.insert(
       0,
       new MenuItem({
-        label: 'New Chat',
+        label: 'Return to Chat',
         accelerator: 'CmdOrCtrl+T',
         click() {
           const focusedWindow = BrowserWindow.getFocusedWindow();
-          if (focusedWindow) focusedWindow.webContents.send('set-view', '');
+          if (focusedWindow) focusedWindow.webContents.send('return-to-active-chat');
         },
       })
     );
@@ -2689,7 +2862,7 @@ async function appMain() {
         body: sanitizeText(data.body),
       });
 
-      // Add click handler to focus the window
+      // Add click handler to focus the window and navigate to chat if session data provided
       notification.on('click', () => {
         const window = BrowserWindow.fromWebContents(event.sender);
         if (window) {
@@ -2698,6 +2871,11 @@ async function appMain() {
           }
           window.show();
           window.focus();
+
+          // If notification has session data, navigate to that chat
+          if (data.data?.sessionId) {
+            window.webContents.send('navigate-to-chat', data.data.sessionId);
+          }
         }
       });
 

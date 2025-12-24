@@ -39,8 +39,7 @@ pub async fn run() -> Result<()> {
         );
     }
 
-    let secret_key =
-        std::env::var("MTS_SERVER__SECRET_KEY").unwrap_or_else(|_| "test".to_string());
+    let secret_key = std::env::var("MTS_SERVER__SECRET_KEY").unwrap_or_else(|_| "test".to_string());
 
     let app_state = state::AppState::new().await?;
 

@@ -74,10 +74,7 @@ pub fn handle_info(verbose: bool) -> Result<()> {
         let values = config.all_values()?;
         if values.is_empty() {
             println!("  No configuration values set");
-            println!(
-                "  Run '{}' to configure mts",
-                style("mts configure").cyan()
-            );
+            println!("  Run '{}' to configure mts", style("mts configure").cyan());
         } else {
             let sorted_values: std::collections::BTreeMap<_, _> =
                 values.iter().map(|(k, v)| (k.clone(), v.clone())).collect();

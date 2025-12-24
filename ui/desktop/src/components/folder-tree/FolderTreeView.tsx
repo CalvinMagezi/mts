@@ -26,6 +26,14 @@ const FolderTreeView: React.FC = () => {
     selectFile,
     clearSelection,
     generateTreeString,
+    // File editor
+    openFiles,
+    activeFilePath,
+    enterEditMode,
+    closeFile,
+    switchFile,
+    saveFile,
+    updateFileContent,
   } = useFolderTree();
 
   useEffect(() => {
@@ -143,6 +151,13 @@ const FolderTreeView: React.FC = () => {
                       file={selectedFile}
                       onClose={clearSelection}
                       onInsertToChat={handleInsertFileToChat}
+                      openFiles={openFiles}
+                      activeFilePath={activeFilePath}
+                      onSelectTab={switchFile}
+                      onCloseTab={closeFile}
+                      onSaveFile={saveFile}
+                      onUpdateContent={updateFileContent}
+                      onEnterEditMode={enterEditMode}
                     />
                   </Panel>
                 </>

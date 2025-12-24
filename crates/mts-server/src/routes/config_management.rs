@@ -6,6 +6,7 @@ use axum::{
     routing::{delete, get, post},
     Json, Router,
 };
+use http::StatusCode;
 use mts::config::declarative_providers::LoadedProvider;
 use mts::config::paths::Paths;
 use mts::config::ExtensionEntry;
@@ -19,7 +20,6 @@ use mts::providers::pricing::{
 };
 use mts::providers::providers as get_providers;
 use mts::{agents::ExtensionConfig, config::permission::PermissionLevel, slash_commands};
-use http::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use serde_yaml;
@@ -142,6 +142,37 @@ pub struct DetectProviderResponse {
     pub provider_name: String,
     pub models: Vec<String>,
 }
+
+#[derive(Deserialize, ToSchema)]
+pub struct GenerateCommitMessageRequest {
+    pub diff: String,
+    pub provider: String,
+    pub model: String,
+}
+
+#[derive(Serialize, ToSchema)]
+pub struct GenerateCommitMessageResponse {
+    pub summary: String,
+    pub description: String,
+}
+
+#[derive(Deserialize, ToSchema)]
+pub struct GenerateDiagramRequest {
+    pub prompt: String,
+    pub diagram_type: String,
+    pub provider: String,
+    pub model: String,
+    #[serde(default)]
+    pub edit_mode: bool,
+    #[serde(default)]
+    pub existing_elements: Option<String>,
+}
+
+#[derive(Serialize, ToSchema)]
+pub struct GenerateDiagramResponse {
+    pub diagram_json: String,
+}
+
 #[utoipa::path(
     post,
     path = "/config/upsert",
@@ -634,6 +665,297 @@ pub async fn detect_provider(
 
 #[utoipa::path(
     post,
+    path = "/config/generate-commit-message",
+    request_body = GenerateCommitMessageRequest,
+    responses(
+        (status = 200, description = "Commit message generated successfully", body = GenerateCommitMessageResponse),
+        (status = 400, description = "Invalid request or provider not configured"),
+        (status = 500, description = "Internal server error")
+    )
+)]
+pub async fn generate_commit_message(
+    Json(request): Json<GenerateCommitMessageRequest>,
+) -> Result<Json<GenerateCommitMessageResponse>, (StatusCode, String)> {
+    use mts::conversation::message::Message;
+    use mts::providers::create_with_named_model;
+
+    // Truncate diff if too large (avoid token limit issues)
+    let max_diff_chars = 32000;
+    let diff = if request.diff.chars().count() > max_diff_chars {
+        let truncated: String = request.diff.chars().take(max_diff_chars).collect();
+        let remaining = request.diff.chars().count() - max_diff_chars;
+        format!(
+            "{}\n\n... (diff truncated, {} more characters)",
+            truncated, remaining
+        )
+    } else {
+        request.diff
+    };
+
+    // Create provider instance
+    let provider = create_with_named_model(&request.provider, &request.model)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to create provider: {}", e);
+            (
+                StatusCode::BAD_REQUEST,
+                format!("Failed to create provider: {}", e),
+            )
+        })?;
+
+    // Create the prompt for commit message generation
+    let system_prompt = r#"You are a helpful assistant that generates git commit messages.
+Given a git diff, generate a concise and descriptive commit message following conventional commit standards.
+Your response must be in exactly this format:
+SUMMARY: <one-line summary, max 72 characters, imperative mood>
+DESCRIPTION: <optional detailed description, can be multiple lines>
+
+Guidelines:
+- Summary should be in imperative mood (e.g., "Add feature" not "Added feature")
+- Summary should be max 72 characters
+- Description should explain WHY the change was made, not just WHAT changed
+- If the diff is small/simple, description can be empty
+- Do not include the diff itself in the response"#;
+
+    let user_message = format!(
+        "Generate a commit message for the following staged changes:\n\n```diff\n{}\n```",
+        diff
+    );
+
+    let message = Message::user().with_text(&user_message);
+
+    let (response, _usage) = provider
+        .complete(system_prompt, &[message], &[])
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to generate commit message: {}", e);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to generate commit message: {}", e),
+            )
+        })?;
+
+    let response_text = response.as_concat_text();
+
+    // Parse the response to extract summary and description
+    let (summary, description) = parse_commit_message_response(&response_text);
+
+    Ok(Json(GenerateCommitMessageResponse {
+        summary,
+        description,
+    }))
+}
+
+fn parse_commit_message_response(response: &str) -> (String, String) {
+    let mut summary = String::new();
+    let mut description = String::new();
+    let mut in_description = false;
+
+    for line in response.lines() {
+        let trimmed = line.trim();
+        if let Some(rest) = trimmed.strip_prefix("SUMMARY:") {
+            summary = rest.trim().to_string();
+        } else if let Some(rest) = trimmed.strip_prefix("DESCRIPTION:") {
+            in_description = true;
+            let desc_part = rest.trim();
+            if !desc_part.is_empty() {
+                description = desc_part.to_string();
+            }
+        } else if in_description && !trimmed.is_empty() {
+            if !description.is_empty() {
+                description.push('\n');
+            }
+            description.push_str(trimmed);
+        }
+    }
+
+    // Fallback: if parsing failed, use the first line as summary
+    if summary.is_empty() {
+        let lines: Vec<&str> = response.lines().collect();
+        if !lines.is_empty() {
+            summary = lines[0].chars().take(72).collect();
+            if lines.len() > 1 {
+                description = lines[1..].join("\n").trim().to_string();
+            }
+        }
+    }
+
+    // Truncate summary to 72 characters
+    if summary.chars().count() > 72 {
+        summary = summary.chars().take(72).collect();
+    }
+
+    (summary, description)
+}
+
+#[utoipa::path(
+    post,
+    path = "/config/generate-diagram",
+    request_body = GenerateDiagramRequest,
+    responses(
+        (status = 200, description = "Diagram generated successfully", body = GenerateDiagramResponse),
+        (status = 400, description = "Invalid request or provider not configured"),
+        (status = 500, description = "Internal server error")
+    )
+)]
+pub async fn generate_diagram(
+    Json(request): Json<GenerateDiagramRequest>,
+) -> Result<Json<GenerateDiagramResponse>, (StatusCode, String)> {
+    use mts::conversation::message::Message;
+    use mts::providers::create_with_named_model;
+
+    // Create provider instance
+    let provider = create_with_named_model(&request.provider, &request.model)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to create provider: {}", e);
+            (
+                StatusCode::BAD_REQUEST,
+                format!("Failed to create provider: {}", e),
+            )
+        })?;
+
+    // Build the diagram type instructions
+    let type_instructions = match request.diagram_type.as_str() {
+        "flowchart" => "Create a flowchart with process steps, decisions, and flow arrows.",
+        "architecture" => "Create a system architecture diagram with components and connections.",
+        "mindmap" => "Create a mind map with a central topic and branching ideas.",
+        "sequence" => "Create a sequence diagram showing interactions between entities.",
+        "org-chart" => "Create an organizational chart with hierarchy.",
+        "network" => "Create a network topology diagram.",
+        "er-diagram" => "Create an entity-relationship diagram for data modeling.",
+        _ => "Create a general-purpose diagram.",
+    };
+
+    let edit_context = if request.edit_mode {
+        if let Some(ref elements) = request.existing_elements {
+            format!(
+                "\nExisting diagram to extend:\n{}\n\nAdd new elements that complement the existing ones.",
+                elements
+            )
+        } else {
+            String::new()
+        }
+    } else {
+        String::new()
+    };
+
+    // System prompt for diagram generation
+    let system_prompt = format!(
+        "You are a diagram generation assistant. Generate diagram elements in JSON format.\n\n\
+Diagram Type: {}\n\
+Instructions: {}\n\
+Mode: {}\n\n\
+**CRITICAL REQUIREMENT - TEXT LABELS:**\n\
+- EVERY node MUST have a meaningful \"text\" field with a descriptive label (1-4 words)\n\
+- The text should describe what the node represents (e.g., \"User Login\", \"API Gateway\", \"Database\", \"Validate Input\")\n\
+- NEVER leave text empty or use placeholder values like \"Label\" or \"Node\"\n\
+- Edge labels are optional but encouraged for clarity\n\n\
+Respond ONLY with a valid JSON object, no additional text or markdown. The format must be exactly:\n\
+{{\n\
+  \"nodes\": [\n\
+    {{\n\
+      \"id\": \"user\",\n\
+      \"position\": {{ \"x\": 100, \"y\": 200 }},\n\
+      \"size\": {{ \"width\": 140, \"height\": 60 }},\n\
+      \"shape\": \"ellipse\",\n\
+      \"text\": \"User\",\n\
+      \"style\": {{ \"fillStyle\": \"#1DE52F\", \"strokeStyle\": \"#1DE52F\" }}\n\
+    }},\n\
+    {{\n\
+      \"id\": \"login-form\",\n\
+      \"position\": {{ \"x\": 300, \"y\": 200 }},\n\
+      \"size\": {{ \"width\": 140, \"height\": 60 }},\n\
+      \"shape\": \"rectangle\",\n\
+      \"text\": \"Login Form\",\n\
+      \"style\": {{ \"fillStyle\": \"#1a1d21\", \"strokeStyle\": \"#00C6FA\" }}\n\
+    }},\n\
+    {{\n\
+      \"id\": \"validate\",\n\
+      \"position\": {{ \"x\": 500, \"y\": 200 }},\n\
+      \"size\": {{ \"width\": 100, \"height\": 100 }},\n\
+      \"shape\": \"diamond\",\n\
+      \"text\": \"Valid?\",\n\
+      \"style\": {{ \"fillStyle\": \"#1a1d21\", \"strokeStyle\": \"#1DE52F\" }}\n\
+    }}\n\
+  ],\n\
+  \"edges\": [\n\
+    {{\n\
+      \"id\": \"e1\",\n\
+      \"source\": \"user\",\n\
+      \"target\": \"login-form\",\n\
+      \"label\": \"visits\"\n\
+    }},\n\
+    {{\n\
+      \"id\": \"e2\",\n\
+      \"source\": \"login-form\",\n\
+      \"target\": \"validate\",\n\
+      \"label\": \"submits\"\n\
+    }}\n\
+  ]\n\
+}}\n\n\
+Shape options: \"rectangle\", \"ellipse\", \"diamond\", \"triangle\", \"hexagon\"\n\
+- Use \"ellipse\" for start/end points and actors\n\
+- Use \"rectangle\" for processes and steps\n\
+- Use \"diamond\" for decision points\n\
+- Use \"hexagon\" for services and systems\n\n\
+Color scheme: Use #1DE52F (green) for primary elements, #00C6FA (blue) for accents, #1a1d21 (dark) for backgrounds.\n\n\
+Guidelines:\n\
+- Generate 3-8 nodes based on complexity\n\
+- Position nodes to avoid overlap (minimum 150px apart)\n\
+- Start at position (100, 200) and spread horizontally/vertically\n\
+- Create logical connections between related nodes\n\
+- REMEMBER: Every node MUST have descriptive text that matches the user's request\n\
+{}",
+        request.diagram_type,
+        type_instructions,
+        if request.edit_mode { "Edit existing diagram" } else { "Create new diagram" },
+        edit_context
+    );
+
+    let user_message = format!("Generate a diagram for: {}", request.prompt);
+    let message = Message::user().with_text(&user_message);
+
+    let (response, _usage) = provider
+        .complete(&system_prompt, &[message], &[])
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to generate diagram: {}", e);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to generate diagram: {}", e),
+            )
+        })?;
+
+    let response_text = response.as_concat_text();
+
+    // Clean up the response - remove markdown code blocks if present
+    let cleaned = clean_diagram_json(&response_text);
+
+    Ok(Json(GenerateDiagramResponse {
+        diagram_json: cleaned,
+    }))
+}
+
+fn clean_diagram_json(response: &str) -> String {
+    let mut cleaned = response.trim().to_string();
+
+    // Remove markdown code blocks
+    if cleaned.starts_with("```json") {
+        cleaned = cleaned.chars().skip(7).collect();
+    } else if cleaned.starts_with("```") {
+        cleaned = cleaned.chars().skip(3).collect();
+    }
+    if cleaned.ends_with("```") {
+        let len = cleaned.chars().count();
+        cleaned = cleaned.chars().take(len.saturating_sub(3)).collect();
+    }
+
+    cleaned.trim().to_string()
+}
+
+#[utoipa::path(
+    post,
     path = "/config/backup",
     responses(
         (status = 200, description = "Config file backed up", body = String),
@@ -870,6 +1192,11 @@ pub fn routes(state: Arc<AppState>) -> Router {
         .route("/config/providers", get(providers))
         .route("/config/providers/{name}/models", get(get_provider_models))
         .route("/config/detect-provider", post(detect_provider))
+        .route(
+            "/config/generate-commit-message",
+            post(generate_commit_message),
+        )
+        .route("/config/generate-diagram", post(generate_diagram))
         .route("/config/slash_commands", get(get_slash_commands))
         .route("/config/pricing", post(get_pricing))
         .route("/config/init", post(init_config))

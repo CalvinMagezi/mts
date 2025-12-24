@@ -46,8 +46,7 @@ pub static PLATFORM_EXTENSIONS: Lazy<HashMap<&'static str, PlatformExtensionDef>
             todo_extension::EXTENSION_NAME,
             PlatformExtensionDef {
                 name: todo_extension::EXTENSION_NAME,
-                description:
-                    "Enable a todo list for MTS so it can keep track of what it is doing",
+                description: "Enable a todo list for MTS so it can keep track of what it is doing",
                 default_enabled: true,
                 client_factory: |ctx| Box::new(todo_extension::TodoClient::new(ctx).unwrap()),
             },
